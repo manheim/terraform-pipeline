@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JenkinsfileTest$ParseScmUrl$WithHttpUrl$WithHttps" tests="2" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:11" hostname="kmanning-laptop" time="0.001">
-  <properties/>
-  <testcase name="returnsRepo" classname="JenkinsfileTest$ParseScmUrl$WithHttpUrl$WithHttps" time="0.001"/>
-  <testcase name="returnsOrganization" classname="JenkinsfileTest$ParseScmUrl$WithHttpUrl$WithHttps" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
