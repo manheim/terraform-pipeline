@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TerraformInitCommandTest$WithBackendConfig" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:10" hostname="kmanning-laptop" time="0.008">
+  <properties/>
+  <testcase name="notPresentByDefault" classname="TerraformInitCommandTest$WithBackendConfig" time="0.001"/>
+  <testcase name="addsBackendConfigIsCumulative" classname="TerraformInitCommandTest$WithBackendConfig" time="0.006"/>
+  <testcase name="addsBackendConfigValues" classname="TerraformInitCommandTest$WithBackendConfig" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="AnsiColorPluginTest$Init" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:10" hostname="kmanning-laptop" time="0.003">
+  <properties/>
+  <testcase name="modifiesTerraformEnvironmentStage" classname="AnsiColorPluginTest$Init" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

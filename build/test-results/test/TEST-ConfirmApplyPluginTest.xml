@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ConfirmApplyPluginTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:10" hostname="kmanning-laptop" time="0.147">
+  <properties/>
+  <testcase name="ConfirmApplyPluginDisabled" classname="ConfirmApplyPluginTest" time="0.108"/>
+  <testcase name="modifiesTerraformEnvironmentStageByDefault" classname="ConfirmApplyPluginTest" time="0.037"/>
+  <testcase name="ConfirmApplyPluginEnabled" classname="ConfirmApplyPluginTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

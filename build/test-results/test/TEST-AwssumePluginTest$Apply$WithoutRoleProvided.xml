@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="AwssumePluginTest$Apply$WithoutRoleProvided" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:11" hostname="kmanning-laptop" time="0.004">
+  <properties/>
+  <testcase name="skipsAwssumeForTerraformApply" classname="AwssumePluginTest$Apply$WithoutRoleProvided" time="0.001"/>
+  <testcase name="skipsAwssumeForTerraformInit" classname="AwssumePluginTest$Apply$WithoutRoleProvided" time="0.002"/>
+  <testcase name="skipsAwssumeForTerraformPlan" classname="AwssumePluginTest$Apply$WithoutRoleProvided" time="0.001"/>
+  <system-out><![CDATA[No AWS_ROLE_ARN is set, so awssume will not be used for terraform in the myEnv environment.
+No AWS_ROLE_ARN is set, so awssume will not be used for terraform in the myEnv environment.
+No AWS_ROLE_ARN is set, so awssume will not be used for terraform in the myEnv environment.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

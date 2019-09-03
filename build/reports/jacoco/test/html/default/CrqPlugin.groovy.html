@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CrqPlugin.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">terraform-pipeline</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">CrqPlugin.groovy</span></div><h1>CrqPlugin.groovy</h1><pre class="source lang-java linenums">class CrqPlugin implements TerraformEnvironmentStagePlugin {
+    public static defaultBau = 152
+    private Jenkinsfile jenkinsfile
+
+    public static void init() {
+<span class="fc" id="L6">        TerraformEnvironmentStage.addPlugin(new CrqPlugin())</span>
+    }
+
+    CrqPlugin() {
+<span class="fc" id="L10">        this.jenkinsfile = Jenkinsfile.instance</span>
+    }
+
+    @Override
+    public void apply(TerraformEnvironmentStage stage) {
+<span class="nc" id="L15">        def crqOptions = [</span>
+<span class="nc" id="L16">            environment: stage.getEnvironment(),</span>
+<span class="nc" id="L17">            app: jenkinsfile.getRepoName()</span>
+        ]
+
+<span class="nc" id="L20">        stage.decorate(TerraformEnvironmentStage.APPLY, addCrq(crqOptions))</span>
+    }
+
+    public static Closure addCrq(config = [:]) {
+<span class="nc" id="L24">        return { closure -&gt;</span>
+<span class="nc" id="L25">            sh &quot;if [ ! -z \$CRQ_ENVIRONMENT ]; then ${remedierOpen(config)}; else echo No CRQ_ENVIRONMENT set, skipping open CRQ; fi&quot;</span>
+            try {
+<span class="nc" id="L27">                closure()</span>
+<span class="nc" id="L28">                sh &quot;if [ ! -z \$CRQ_ENVIRONMENT ]; then ${remedierClose(config)}; else echo No CRQ_ENVIRONMENT set, skipping close CRQ; fi&quot;</span>
+            } catch (err) {
+<span class="nc" id="L30">                sh &quot;if [ ! -z \$CRQ_ENVIRONMENT ]; then ${remedierBackout(config)}; else echo No CRQ_ENVIRONMENT set, skipping backout CRQ; fi&quot;</span>
+<span class="nc" id="L31">                throw err</span>
+            }
+        }
+    }
+
+    public static String remedierOpen(config = [:]) {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        def app = config.app ?: &quot;\$APP&quot;</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        def bau = config.bau ?: defaultBau</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        def environment = config.environment ?: &quot;\$ENVIRONMENT&quot;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        def crqEnvironment = config.crqEnvironment ?: '$CRQ_ENVIRONMENT'</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        def summary     = config.summary ?: &quot;${app} - Deploy - ${environment}&quot;</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        def productName = config.productName ?: &quot;Software Delivery Pipeline&quot;</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        def firstName   = config.firstName ?: &quot;\$DEFAULT_PIPELINE_CRQ_FIRST_NAME&quot;</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        def lastName    = config.lastName ?: &quot;\$DEFAULT_PIPELINE_CRQ_LAST_NAME&quot;</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        def login       = config.login ?: &quot;\$DEFAULT_PIPELINE_CRQ_LOGIN&quot;</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        def tier1       = config.tier1 ?: &quot;Software&quot;</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        def tier2       = config.tier2 ?: &quot;Application&quot;</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        def tier3       = config.tier3 ?: &quot;Release Management&quot;</span>
+
+<span class="nc" id="L50">        def message = &quot;See \$BUILD_URL&quot;</span>
+<span class="nc" id="L51">        return &quot;manheim_remedy open \&quot;${bau}\&quot; \&quot;${productName}\&quot; \&quot;${firstName}\&quot; \&quot;${lastName}\&quot; \&quot;${login}\&quot; \&quot;${tier1}\&quot; \&quot;${tier2}\&quot; \&quot;${tier3}\&quot; \&quot;${summary}\&quot; \&quot;${crqEnvironment}\&quot; \&quot;${message}\&quot;&quot;</span>
+    }
+
+    public static String remedierClose(config = [:]) {
+<span class="nc" id="L55">        return &quot;manheim_remedy close `cat ChangeID.txt | sed 's/ChangeID=//g'`&quot;</span>
+    }
+
+    public static String remedierBackout(config = [:]) {
+<span class="nc" id="L59">        def reason = &quot;Change failed&quot;</span>
+<span class="nc" id="L60">        return &quot;manheim_remedy error `cat ChangeID.txt | sed 's/ChangeID=//g'` \&quot;${reason}\&quot;&quot;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

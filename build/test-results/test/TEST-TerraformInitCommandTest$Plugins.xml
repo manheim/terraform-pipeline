@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TerraformInitCommandTest$Plugins" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:10" hostname="kmanning-laptop" time="0.13">
+  <properties/>
+  <testcase name="areAppliedEvenAfterCommandAlreadyInstantiated" classname="TerraformInitCommandTest$Plugins" time="0.128"/>
+  <testcase name="areAppliedToTheCommand" classname="TerraformInitCommandTest$Plugins" time="0.001"/>
+  <testcase name="areAppliedExactlyOnce" classname="TerraformInitCommandTest$Plugins" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

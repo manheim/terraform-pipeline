@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TerraformEnvironmentStage.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">terraform-pipeline</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">TerraformEnvironmentStage.groovy</span></div><h1>TerraformEnvironmentStage.groovy</h1><pre class="source lang-java linenums">class TerraformEnvironmentStage {
+    private Jenkinsfile jenkinsfile
+    private String environment
+    private Map&lt;String,Closure&gt; decorations
+    private TerraformInitCommand initCommand
+    private TerraformPlanCommand planCommand
+    private TerraformApplyCommand applyCommand
+
+<span class="fc" id="L9">    private static plugins = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]</span>
+
+    public static final String ALL = 'all'
+    public static final String PLAN = 'plan'
+    public static final String CONFIRM = 'confirm'
+    public static final String APPLY = 'apply'
+
+    TerraformEnvironmentStage(String environment) {
+<span class="fc" id="L17">        this.environment = environment</span>
+<span class="fc" id="L18">        this.jenkinsfile = Jenkinsfile.instance</span>
+<span class="fc" id="L19">        this.decorations = new HashMap&lt;String,Closure&gt;()</span>
+    }
+
+    public then(nextStages) {
+<span class="nc bnc" id="L23" title="All 4 branches missed.">        build()</span>
+<span class="nc" id="L24">        return nextStages</span>
+    }
+
+    public void configure() {
+<span class="nc" id="L28">        initCommand = TerraformInitCommand.instanceFor(environment)</span>
+<span class="nc" id="L29">        planCommand = TerraformPlanCommand.instanceFor(environment)</span>
+<span class="nc" id="L30">        applyCommand = TerraformApplyCommand.instanceFor(environment)</span>
+
+<span class="nc bnc" id="L32" title="All 4 branches missed.">        applyPlugins()</span>
+    }
+
+    public TerraformEnvironmentStage withEnv(String key, String value) {
+<span class="nc" id="L36">        def environmentClosure = { closure -&gt;</span>
+<span class="nc" id="L37">            withEnv([&quot;${key}=${value}&quot;]) {</span>
+<span class="nc" id="L38">                closure()</span>
+            }
+        }
+<span class="nc" id="L41">        decorate(ALL, environmentClosure)</span>
+<span class="nc" id="L42">        return this</span>
+    }
+
+    public build() {
+<span class="nc bnc" id="L46" title="All 4 branches missed.">        configure()</span>
+<span class="nc bnc" id="L47" title="All 4 branches missed.">        def configuration = pipelineConfiguration()</span>
+<span class="nc" id="L48">        configuration.delegate = jenkinsfile</span>
+<span class="nc" id="L49">        configuration.call()</span>
+    }
+
+    private Closure pipelineConfiguration() {
+<span class="nc" id="L53">        def String environment = this.environment</span>
+<span class="nc" id="L54">        return { -&gt;</span>
+<span class="nc" id="L55">            node {</span>
+<span class="nc" id="L56">                deleteDir()</span>
+<span class="nc" id="L57">                checkout(scm)</span>
+
+<span class="nc" id="L59">                applyDecorations(ALL) {</span>
+<span class="nc" id="L60">                    stage(&quot;${PLAN}-${environment}&quot;) {</span>
+<span class="nc" id="L61">                        applyDecorations(PLAN) {</span>
+<span class="nc" id="L62">                            sh initCommand.toString()</span>
+<span class="nc" id="L63">                            sh planCommand.toString()</span>
+                        }
+                    }
+
+<span class="nc" id="L67">                    applyDecorationsAround(CONFIRM) {</span>
+<span class="nc" id="L68">                        stage(&quot;${CONFIRM}-${environment}&quot;) {</span>
+<span class="nc" id="L69">                            applyDecorations(CONFIRM) {</span>
+<span class="nc" id="L70">                                echo &quot;Approved&quot;</span>
+                            }
+                        }
+                    }
+
+<span class="nc" id="L75">                    applyDecorationsAround(APPLY) {</span>
+<span class="nc" id="L76">                        stage(&quot;${APPLY}-${environment}&quot;) {</span>
+<span class="nc" id="L77">                            applyDecorations(APPLY) {</span>
+<span class="nc" id="L78">                                sh initCommand.toString()</span>
+<span class="nc" id="L79">                                sh applyCommand.toString()</span>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void applyDecorations(String stageName, Closure stageClosure) {
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        def stageDecorations = decorations.get(stageName) ?: { stage -&gt; stage() }</span>
+<span class="nc" id="L90">        stageDecorations.delegate = jenkinsfile</span>
+<span class="nc" id="L91">        stageDecorations(stageClosure)</span>
+    }
+
+    public decorate(String stageName, Closure decoration) {
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        def existingDecorations = decorations.get(stageName) ?: { stage -&gt; stage() }</span>
+<span class="fc" id="L96">        def newDecoration = { stage -&gt;</span>
+<span class="nc" id="L97">            decoration.delegate = delegate</span>
+<span class="nc" id="L98">            decoration() {</span>
+<span class="nc" id="L99">                stage.delegate = delegate</span>
+<span class="nc" id="L100">                existingDecorations.delegate = delegate</span>
+<span class="nc" id="L101">                existingDecorations(stage)</span>
+            }
+        }
+
+<span class="pc" id="L105">        decorations.put(stageName,newDecoration)</span>
+    }
+
+    private void applyDecorationsAround(String stageName, Closure stageClosure) {
+<span class="nc" id="L109">        applyDecorations(&quot;Around-${stageName}&quot;, stageClosure)</span>
+    }
+
+    public decorateAround(String stageName, Closure decoration) {
+<span class="pc" id="L113">        decorate(&quot;Around-${stageName}&quot;, decoration)</span>
+    }
+
+    public String toString() {
+<span class="nc" id="L117">        return environment</span>
+    }
+
+    public static addPlugin(plugin) {
+<span class="pc" id="L121">        plugins &lt;&lt; plugin</span>
+    }
+
+    public void applyPlugins() {
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for(plugin in plugins) {</span>
+<span class="fc" id="L126">            plugin.apply(this)</span>
+        }
+    }
+
+    public String getEnvironment() {
+<span class="pc" id="L131">        return environment</span>
+    }
+
+    public static getPlugins() {
+<span class="pc" id="L135">        return plugins</span>
+    }
+
+    public static void resetPlugins() {
+<span class="fc" id="L139">        this.plugins = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

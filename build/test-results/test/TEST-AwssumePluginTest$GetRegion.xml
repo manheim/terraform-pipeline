@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="AwssumePluginTest$GetRegion" tests="5" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:11" hostname="kmanning-laptop" time="0.005">
+  <properties/>
+  <testcase name="prefersRegionOverEnvironmentSpecificRegion" classname="AwssumePluginTest$GetRegion" time="0.001"/>
+  <testcase name="returnsEnvironmentSpecificRegionIfPresent" classname="AwssumePluginTest$GetRegion" time="0.001"/>
+  <testcase name="returnsAwsRegionIfPresent" classname="AwssumePluginTest$GetRegion" time="0.001"/>
+  <testcase name="returnsAwsDefaultRegionIfPresent" classname="AwssumePluginTest$GetRegion" time="0.001"/>
+  <testcase name="prefersEnvironmentSpecificRegionOverDefaultRegion" classname="AwssumePluginTest$GetRegion" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
