@@ -308,4 +308,3 @@ Restart from Stage will now display more sensible names.  __Note:__ This is in _
     3.  Think of plugins as interchangeable Lego pieces - you can swap one piece out for another, without fundamentally altering what it is to be a Pipeline.
 4.  There should only be one way to Production, and that way should be crystal clear.
     1.  The master branch (or its equivalent) is the one-and-only way to Production.
-
