@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #156](https://github.com/manheim/terraform-pipeline/issues/156) Remove and ignore the build directory
+
 # v5.0
 
 * [Issue #132](https://github.com/manheim/terraform-pipeline/issues/132) OpenSource this project.
