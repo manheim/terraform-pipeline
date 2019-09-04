@@ -368,4 +368,110 @@ class S3BackendPluginTest {
             assertThat(actualTable, is(expectedTable))
         }
     }
+
+    public class GetEncrypt {
+        @Test
+        void shouldReturnS3BackendEncryptValue() {
+            def plugin = new S3BackendPlugin()
+            String expectedValue = 'true'
+
+            configureJenkins(env: [S3_BACKEND_ENCRYPT: expectedValue])
+
+            String actualValue = plugin.getEncrypt('myenv')
+
+            assertThat(expectedValue, is(actualValue))
+        }
+
+        @Test
+        void shouldReturnEnvironmentSpecificS3BackendEncryptValue() {
+            def plugin = new S3BackendPlugin()
+            String expectedValue = 'true'
+
+            configureJenkins(env: [MYENV_S3_BACKEND_ENCRYPT: expectedValue])
+
+            String actualValue = plugin.getEncrypt('myenv')
+
+            assertThat(expectedValue, is(actualValue))
+        }
+
+        @Test
+        void shouldReturnEnvironmentSpecificS3BackendEncryptValueCaseInsensitive() {
+            def plugin = new S3BackendPlugin()
+            String expectedValue = 'true'
+
+            configureJenkins(env: [myenv_S3_BACKEND_ENCRYPT: expectedValue])
+
+            String actualValue = plugin.getEncrypt('myenv')
+
+            assertThat(expectedValue, is(actualValue))
+        }
+
+        @Test
+        void shouldPreferS3BackendEncryptOverEnvironmentSpecificValue() {
+            def plugin = new S3BackendPlugin()
+            String expectedValue = 'true'
+
+            configureJenkins(env: [
+                S3_BACKEND_ENCRYPT: expectedValue,
+                MYENV_S3_BACKEND_ENCRYPT: 'false'
+            ])
+
+            String actualValue = plugin.getEncrypt('myenv')
+
+            assertThat(expectedValue, is(actualValue))
+        }
+    }
+
+    public class GetKmsKeyId {
+        @Test
+        void shouldReturnS3BackendKmsKeyIdValue() {
+            def plugin = new S3BackendPlugin()
+            String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
+
+            configureJenkins(env: [S3_BACKEND_KMS_KEY_ID: expectedArn])
+
+            String actualArn = plugin.getKmsKeyId('myenv')
+
+            assertThat(actualArn, is(expectedArn))
+        }
+
+        @Test
+        void shouldReturnEnvironmentSpecificS3BackendKmsKeyIdValue() {
+            def plugin = new S3BackendPlugin()
+            String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
+
+            configureJenkins(env: [MYENV_S3_BACKEND_KMS_KEY_ID: expectedArn])
+
+            String actualArn = plugin.getKmsKeyId('myenv')
+
+            assertThat(actualArn, is(expectedArn))
+        }
+
+        @Test
+        void shouldReturnEnvironmentSpecificS3BackendKmsKeyIdValueCaseInsensitive() {
+            def plugin = new S3BackendPlugin()
+            String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
+
+            configureJenkins(env: [myenv_S3_BACKEND_KMS_KEY_ID: expectedArn])
+
+            String actualArn = plugin.getKmsKeyId('myenv')
+
+            assertThat(actualArn, is(expectedArn))
+        }
+
+        @Test
+        void shouldPreferS3BackendKmsKeyIdOverEnvironmentSpecificValue() {
+            def plugin = new S3BackendPlugin()
+            String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
+
+            configureJenkins(env: [
+                S3_BACKEND_KMS_KEY_ID: expectedArn,
+                MYENV_S3_BACKEND_KMS_KEY_ID: 'arn:aws:kms:us-east-1:000000000000:key/e665286a-12bc-471f-97fa-38c3eb412074'
+            ])
+
+            String actualArn = plugin.getKmsKeyId('myenv')
+
+            assertThat(actualArn, is(expectedArn))
+        }
+    }
 }
