@@ -159,8 +159,7 @@ class Customizations {
 5. Import your shared library and pass your Customization class to the [Jenkinsfile.init()](./src/Jenkinsfile.groovy#L67-L74) method.  Like terraform-pipeline, it's a good practice to strictly control your customization library versions.
 ```
 // Jenkinsfile
-@Library(['terraform-pipeline@v5.1
-', 'terraform-pipeline-customizations@v1.0']) _
+@Library(['terraform-pipeline@v5.1', 'terraform-pipeline-customizations@v1.0']) _
 
 Jenkinsfile.init(this, Customizations)
 ...
