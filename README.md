@@ -16,7 +16,7 @@ A reusable pipeline template to apply terraform configuration serially across mu
 1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  It's recommended that you always use the latest version.
 ```
 // Jenkinsfile
-@Library(['terraform-pipeline@v5.0']) _
+@Library(['terraform-pipeline@v5.1']) _
 ```
 2.  Provide terraform-pipeline with a reference to the Jenkinsfile context, so it can do all of it's magic under the hood.
 ```
@@ -56,7 +56,7 @@ validate.then(deployQa)
 7.  From beginning to end, your Jenkinsfile should roughly look like this:
 
 ```
-@Library(['terraform-pipeline@v5.0']) _
+@Library(['terraform-pipeline@v5.1']) _
 
 Jenkinsfile.init(this)
 
@@ -159,7 +159,7 @@ class Customizations {
 5. Import your shared library and pass your Customization class to the [Jenkinsfile.init()](./src/Jenkinsfile.groovy#L67-L74) method.  Like terraform-pipeline, it's a good practice to strictly control your customization library versions.
 ```
 // Jenkinsfile
-@Library(['terraform-pipeline@v5.0', 'terraform-pipeline-customizations@v1.0']) _
+@Library(['terraform-pipeline@v5.1', 'terraform-pipeline-customizations@v1.0']) _
 
 Jenkinsfile.init(this, Customizations)
 ...

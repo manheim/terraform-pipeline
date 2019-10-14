@@ -37,6 +37,14 @@ Hardcoding these values into your terraform code would prevent you from reusing 
     * An `S3_BACKEND_DYNAMODB_TABLE` environment
     * An `${environment.toUpperCase()}_S3_BACKEND_DYNAMODB_TABLE` environment
     * An `${environment}_S3_BACKEND_DYNAMODB_TABLE` environment
+* (Optional) Enable server side encryption of the state file, with `-backend-config=encrypt=<value>` by setting any of the following:
+    * An `S3_BACKEND_ENCRYPT` environment
+    * An `${environment.toUpperCase()}_S3_BACKEND_ENCRYPT` environment
+    * An `${environment}_S3_BACKEND_ENCRYPT` environment
+* (Optional) Enable SSE-KMS of the state file, with `-backend-config=kms_key_id=<value>` by setting any of the following:
+    * An `S3_BACKEND_KMS_KEY_ID` environment
+    * An `${environment.toUpperCase()}_S3_BACKEND_KMS_KEY_ID` environment
+    * An `${environment}_S3_BACKEND_KMS_KEY_ID` environment
 
 Each environment state will automatically be given a unique path to an S3 object, in the form `-backend-config=key=terraform/<GitOrg>/<GitRepo>/<environment>`.  If you wish to use a different key, you can specify a custom environment-specific key by setting an `S3BackendPlugin.keyPattern` Closure. Eg:
 

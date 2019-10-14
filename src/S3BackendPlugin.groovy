@@ -17,6 +17,9 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
         configs['bucket'] = getBucket(environment)
         configs['region'] = getRegion(environment)
         configs['dynamodb_table'] = getDynamodbTable(environment)
+        configs['encrypt'] = getEncrypt(environment)
+        configs['kms_key_id'] = getKmsKeyId(environment)
+
 
         configs.each { entry ->
             if (entry.value?.trim()) {
@@ -98,5 +101,33 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
         }
 
         return table
+    }
+
+    public String getEncrypt(String environment) {
+        String encrypt = Jenkinsfile.instance.getEnv()["S3_BACKEND_ENCRYPT"]
+
+        if (encrypt == null) {
+            encrypt = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_ENCRYPT"]
+        }
+
+        if (encrypt == null) {
+            encrypt = Jenkinsfile.instance.getEnv()["${environment}_S3_BACKEND_ENCRYPT"]
+        }
+
+        return encrypt
+    }
+
+    public String getKmsKeyId(String environment) {
+        String arn = Jenkinsfile.instance.getEnv()["S3_BACKEND_KMS_KEY_ID"]
+
+        if (arn == null) {
+            arn = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_KMS_KEY_ID"]
+        }
+
+        if (arn == null) {
+            arn = Jenkinsfile.instance.getEnv()["${environment}_S3_BACKEND_KMS_KEY_ID"]
+        }
+
+        return arn
     }
 }

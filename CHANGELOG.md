@@ -1,5 +1,10 @@
 # Unreleased
 
+# v5.1
+
+* [Issue #156](https://github.com/manheim/terraform-pipeline/issues/156) Remove and ignore the build directory
+* [Issue #160](https://github.com/manheim/terraform-pipeline/issues/160) S3BackendPlugin - allow encryption of S3 state
+
 # v5.0
 
 * [Issue #132](https://github.com/manheim/terraform-pipeline/issues/132) OpenSource this project.

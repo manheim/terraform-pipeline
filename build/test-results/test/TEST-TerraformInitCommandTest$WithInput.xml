@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TerraformInitCommandTest$WithInput" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:10" hostname="kmanning-laptop" time="0.026">
-  <properties/>
-  <testcase name="setsInputFlagToFalseWhenFalse" classname="TerraformInitCommandTest$WithInput" time="0.024"/>
-  <testcase name="skipsInputFlagWhenTrue" classname="TerraformInitCommandTest$WithInput" time="0.002"/>
-  <testcase name="defaultsToFalse" classname="TerraformInitCommandTest$WithInput" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

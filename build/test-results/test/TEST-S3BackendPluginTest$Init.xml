@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="S3BackendPluginTest$Init" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-08-28T19:36:10" hostname="kmanning-laptop" time="0.007">
-  <properties/>
-  <testcase name="addsS3BackendPluginToListOfPlugins" classname="S3BackendPluginTest$Init" time="0.007"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
