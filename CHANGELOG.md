@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #168](https://github.com/manheim/terraform-pipeline/issues/168) Fix typo in Jenkinsfile
+
 # v5.1
 
 * [Issue #156](https://github.com/manheim/terraform-pipeline/issues/156) Remove and ignore the build directory
