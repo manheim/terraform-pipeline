@@ -29,7 +29,7 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
     }
 
     public void build() {
-        Jenkinsflie.build(pipelineConfiguration())
+        Jenkinsfile.build(pipelineConfiguration())
     }
 
     @Override
@@ -44,7 +44,7 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
         }
     }
 
-    private Closure pipelineConfiguration() {
+    protected Closure pipelineConfiguration() {
         applyPlugins()
 
         return {
