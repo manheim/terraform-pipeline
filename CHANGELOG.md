@@ -3,6 +3,7 @@
 # v5.2
 
 * [Issue #168](https://github.com/manheim/terraform-pipeline/issues/168) Fix typo in Jenkinsfile
+* [Issue #171](https://github.com/manheim/terraform-pipeline/issues/171) Fix gradlew, so unit tests can run
 
 # v5.1
 
