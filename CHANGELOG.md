@@ -1,5 +1,7 @@
 # Unreleased
 
+# v5.2
+
 * [Issue #168](https://github.com/manheim/terraform-pipeline/issues/168) Fix typo in Jenkinsfile
 
 # v5.1
