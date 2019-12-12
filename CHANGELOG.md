@@ -1,6 +1,7 @@
 # Unreleased
 
 * Added the [TfvarsFilesPlugin](./docs/TfvarsFilesPlugin.md) to support adding var files to plan and apply commands.
+* [Issue #109](https://github.com/manheim/terraform-pipeline/issues/109) Support Terraform 0.12
 
 # v5.2
 

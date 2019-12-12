@@ -64,6 +64,18 @@ class TerraformInitCommandTest {
             assertThat(actualCommand, containsString(" -backend-config=foo"))
             assertThat(actualCommand, containsString(" -backend-config=bar"))
         }
+
+        @Test
+        void disableBackendOnlyAddsBackendFalse() {
+            def command = new TerraformInitCommand().withBackendConfig("foo")
+                                                    .withBackendConfig("bar")
+                                                    .withoutBackend()
+            def actualCommand = command.toString()
+
+            assertThat(actualCommand, not(containsString("-backend-config=foo")))
+            assertThat(actualCommand, not(containsString("-backend-config=bar")))
+            assertThat(actualCommand, containsString("-backend=false"))
+        }
     }
 
     public class WithDirectory {
