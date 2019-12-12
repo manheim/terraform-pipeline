@@ -1,5 +1,7 @@
 # Unreleased
 
+* Added the [TfvarsFilesPlugin](./docs/TfvarsFilesPlugin.md) to support adding var files to plan and apply commands.
+
 # v5.2
 
 * [Issue #168](https://github.com/manheim/terraform-pipeline/issues/168) Fix typo in Jenkinsfile

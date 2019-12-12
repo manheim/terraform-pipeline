@@ -4,6 +4,7 @@ class TerraformPlanCommand {
     private String command = "plan"
     String environment
     private prefixes = []
+    private arguments = []
     private static plugins = []
     private appliedPlugins = []
     private String directory
@@ -27,6 +28,11 @@ class TerraformPlanCommand {
         return this
     }
 
+    public TerraformPlanCommand withArgument(String argument) {
+        this.arguments << argument
+        return this
+    }
+
     public String toString() {
         applyPluginsOnce()
 
@@ -37,6 +43,7 @@ class TerraformPlanCommand {
         if (!input) {
             pieces << "-input=false"
         }
+        pieces += arguments
         if (directory) {
             pieces << directory
         }
