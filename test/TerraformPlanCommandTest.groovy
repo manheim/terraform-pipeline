@@ -67,6 +67,26 @@ class TerraformPlanCommandTest {
         }
     }
 
+    public class WithArgument {
+        @Test
+        void addsArgument() {
+            def command = new TerraformPlanCommand().withArgument('foo')
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString(" foo"))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformPlanCommand().withArgument('foo').withArgument('bar')
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString(" foo"))
+            assertThat(actualCommand, containsString(" bar"))
+        }
+    }
+
+
     public class Plugins {
         @After
         void resetPlugins() {
