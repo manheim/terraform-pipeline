@@ -99,7 +99,7 @@ class TfvarsFilesPluginTest {
         }
 
         @Test
-        void doesNotAddArgIfFileExists() {
+        void doesNotAddArgIfFileDoesntExist() {
             fileWillNotExist()
             initPlugin()
 
@@ -133,7 +133,7 @@ class TfvarsFilesPluginTest {
             }
 
             @Test
-            void doesNotAddArgIfFileExists() {
+            void doesNotAddArgIfFileDoesntExists() {
                 fileWillNotExist()
                 initPlugin()
 
