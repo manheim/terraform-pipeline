@@ -99,6 +99,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [FileParametersPlugin](./docs/FileParametersPlugin.md): Use properties files to inject environment-specific variables.
 * [ParameterStoreBuildWrapperPlugin](./docs/ParameterStoreBuildWrapperPlugin.md): Inject environment-specific variables using `withAwsParameterStore`.
 * [ParameterStoreExecPlugin](./docs/ParameterStoreExecPlugin.md): Inject environment-specific variables using parameter-store-exec.
+* [TfvarsFilesPlugin](./docs/TfvarsFilesPlugin.md): Add environment specific tfvars files to your plan and apply commands.
 ### IAM Role Management
 * [AwssumePlugin](./docs/AwssumePlugin.md): Use the awssume gem to assume different IAM roles.
 * [WithAwsPlugin](./docs/WithAwsPlugin.md): Use `withAws` to assume different IAM roles.
