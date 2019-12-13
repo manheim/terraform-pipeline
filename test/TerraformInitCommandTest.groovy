@@ -66,7 +66,7 @@ class TerraformInitCommandTest {
         }
 
         @Test
-        void disableBackendOnlyAddsBackendFalse() {
+        void withoutBackendOnlyAddsBackendFalse() {
             def command = new TerraformInitCommand().withBackendConfig("foo")
                                                     .withBackendConfig("bar")
                                                     .withoutBackend()
