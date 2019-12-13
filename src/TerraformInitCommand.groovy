@@ -12,7 +12,7 @@ class TerraformInitCommand {
     private static plugins = DEFAULT_PLUGINS.clone()
     private appliedPlugins = []
 
-    private TerraformInitCommand() {
+    TerraformInitCommand() {
         //We need this because some plugins expect a non-null value here.
         this('')
     }
