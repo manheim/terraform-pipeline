@@ -1,14 +1,21 @@
 class TerraformInitCommand {
+    private static final DEFAULT_PLUGINS = []
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "init"
     String environment
     private prefixes = []
     private backendConfigs = []
+    private boolean doBackend = true
     private String directory
 
-    private static plugins = []
+    private static plugins = DEFAULT_PLUGINS.clone()
     private appliedPlugins = []
+
+    TerraformInitCommand() {
+        //We need this because some plugins expect a non-null value here.
+        this('')
+    }
 
     public TerraformInitCommand(String environment) {
         this.environment = environment
@@ -34,6 +41,11 @@ class TerraformInitCommand {
         return this
     }
 
+    public TerraformInitCommand withoutBackend() {
+        this.doBackend = false
+        return this
+    }
+
     public String toString() {
         applyPluginsOnce()
 
@@ -44,8 +56,12 @@ class TerraformInitCommand {
         if (!input) {
             pieces << "-input=false"
         }
-        backendConfigs.each { config ->
-            pieces << "-backend-config=${config}"
+        if(doBackend) {
+            backendConfigs.each { config ->
+                pieces << "-backend-config=${config}"
+            }
+        } else {
+            pieces << "-backend=false"
         }
         if (directory) {
             pieces << directory
@@ -71,12 +87,16 @@ class TerraformInitCommand {
         return new TerraformInitCommand(environment)
     }
 
+    public static TerraformInitCommand instance() {
+        return new TerraformInitCommand().withoutBackend()
+    }
+
     public static getPlugins() {
         return plugins
     }
 
     public static resetPlugins() {
-        this.plugins = []
+        this.plugins = DEFAULT_PLUGINS.clone()
         // This is awkward - what about the applied plugins...?
     }
 }
