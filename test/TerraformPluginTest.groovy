@@ -4,7 +4,11 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.*
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPluginTest {
@@ -75,6 +79,36 @@ class TerraformPluginTest {
             TerraformPlugin.withVersion('0.12.3')
             def command = TerraformValidateCommand.instance()
             assertThat(command.toString(), not(containsString(' -check-variables=false')))
+        }
+    }
+
+    class InitCommandForValidate {
+        @Test
+        void createsCommandWithNoBackend() {
+            def initCommand = new TerraformPlugin().initCommandForValidate()
+
+            assertThat(initCommand.toString(), containsString('-backend=false'))
+        }
+    }
+
+    class ValidateStageModifications {
+        @Before
+        void setup() {
+            setupForFileDoesNotExist()
+        }
+
+        void lessThan_0_12_0_DoesNotCallTerraformInit() {
+            // This is not a unit test
+        }
+
+        @Test
+        void equalTo_0_12_0_CallsTerraformInit() {
+            // This is not a unit test
+        }
+
+        @Test
+        void greaterThan_0_12_0_CallsTerraformInit() {
+            // This is not a unit test
         }
     }
 }

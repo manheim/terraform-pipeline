@@ -1,11 +1,12 @@
 class TerraformValidateStage implements Stage {
-    private static final DEFAULT_PLUGINS = []
+    private static final DEFAULT_PLUGINS = [new TerraformPlugin()]
     private Jenkinsfile jenkinsfile
     private Map<String,Closure> decorations
 
     private static plugins = DEFAULT_PLUGINS.clone()
 
     public static final String ALL = 'all'
+    public static final String VALIDATE = 'validate'
 
     public TerraformValidateStage() {
         this.jenkinsfile = Jenkinsfile.instance
@@ -25,16 +26,15 @@ class TerraformValidateStage implements Stage {
 
         def validateCommand = TerraformValidateCommand.instance()
 
-        def initCommand = TerraformInitCommand.instance()
-
         return {
             node {
                 applyDecorations(ALL) {
                     stage("validate") {
                         deleteDir()
                         checkout(scm)
-                        sh initCommand.toString()
-                        sh validateCommand.toString()
+                        applyDecorations(VALIDATE) {
+                            sh validateCommand.toString()
+                        }
                     }
                 }
             }

@@ -17,7 +17,7 @@
  * See apply(TerraformValidateCommand) for an over-documented example
  * before strating on your own.
  */
-class TerraformPlugin implements TerraformValidateCommandPlugin {
+class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValidateStagePlugin {
 
     static SemanticVersion version
     static final String DEFAULT_VERSION = '0.11.0'
@@ -53,6 +53,29 @@ class TerraformPlugin implements TerraformValidateCommandPlugin {
         // If < 0.12.0 add -check-variables=false
         if(version.compareTo(new SemanticVersion('0.12.0')) < 0) {
             command.withArgument('-check-variables=false')
+        }
+    }
+
+    @Override
+    void apply(TerraformValidateStage validateStage) {
+        validateStage.decorate(TerraformValidateStage.VALIDATE, modifyValidateStage())
+    }
+
+    public TerraformInitCommand initCommandForValidate() {
+        return TerraformInitCommand.instanceFor('validate').withoutBackend()
+    }
+
+    public Closure modifyValidateStage() {
+        return { closure ->
+            detectVersion()
+
+            // If >= 0.12.0 add `terraform init` before validating
+            if(version.compareTo(new SemanticVersion('0.12.0')) >= 0) {
+                def initCommand = initCommandForValidate()
+                sh initCommand.toString()
+            }
+
+            closure()
         }
     }
 }
