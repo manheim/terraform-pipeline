@@ -3,7 +3,7 @@ class TerraformValidateCommand {
     private String command = "validate"
     private arguments = []
     private prefixes = []
-    private static plugins = []
+    private static globalPlugins = []
     private appliedPlugins = []
     private String directory
 
@@ -42,7 +42,7 @@ class TerraformValidateCommand {
     }
 
     private applyPluginsOnce() {
-        def remainingPlugins = plugins - appliedPlugins
+        def remainingPlugins = globalPlugins - appliedPlugins
 
         for(TerraformValidateCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
@@ -51,7 +51,7 @@ class TerraformValidateCommand {
     }
 
     public static addPlugin(TerraformValidateCommandPlugin plugin) {
-        plugins << plugin
+        this.globalPlugins << plugin
     }
 
     public static TerraformValidateCommand instance() {
@@ -59,10 +59,10 @@ class TerraformValidateCommand {
     }
 
     public static getPlugins() {
-        return plugins
+        return this.globalPlugins
     }
 
     public static resetPlugins() {
-        this.plugins = []
+        this.globalPlugins = []
     }
 }

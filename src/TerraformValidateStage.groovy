@@ -3,7 +3,7 @@ class TerraformValidateStage implements Stage {
     private Jenkinsfile jenkinsfile
     private Map<String,Closure> decorations
 
-    private static plugins = DEFAULT_PLUGINS.clone()
+    private static globalPlugins = DEFAULT_PLUGINS.clone()
 
     public static final String ALL = 'all'
     public static final String VALIDATE = 'validate'
@@ -73,20 +73,20 @@ class TerraformValidateStage implements Stage {
     }
 
     public static addPlugin(plugin) {
-        plugins << plugin
+        this.globalPlugins << plugin
     }
 
     public void applyPlugins() {
-        for(plugin in plugins) {
+        for(plugin in globalPlugins) {
             plugin.apply(this)
         }
     }
 
     public static getPlugins() {
-        return plugins
+        return this.globalPlugins
     }
 
     public static void resetPlugins() {
-        this.plugins = DEFAULT_PLUGINS.clone()
+        this.globalPlugins = DEFAULT_PLUGINS.clone()
     }
 }
