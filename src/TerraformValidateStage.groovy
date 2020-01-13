@@ -28,10 +28,11 @@ class TerraformValidateStage implements Stage {
 
         return {
             node {
+                deleteDir()
+                checkout(scm)
+
                 applyDecorations(ALL) {
                     stage("validate") {
-                        deleteDir()
-                        checkout(scm)
                         applyDecorations(VALIDATE) {
                             sh validateCommand.toString()
                         }
