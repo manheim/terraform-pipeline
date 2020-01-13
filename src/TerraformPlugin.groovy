@@ -22,6 +22,13 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
     static SemanticVersion version
     static final String DEFAULT_VERSION = '0.11.0'
 
+    public static init() {
+        def plugin = new TerraformPlugin()
+
+        TerraformValidateCommand.addPlugin(plugin)
+        TerraformValidateStage.addPlugin(plugin)
+    }
+
     static SemanticVersion detectVersion() {
         if(version == null) {
             def jf = Jenkinsfile.instance.original
