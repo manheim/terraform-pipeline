@@ -8,8 +8,7 @@ class TerraformInitCommand {
     private boolean doBackend = true
     private String directory
 
-    private static final DEFAULT_PLUGINS = []
-    private static globalPlugins = DEFAULT_PLUGINS.clone()
+    private static globalPlugins = []
     private appliedPlugins = []
 
     public TerraformInitCommand(String environment) {
@@ -87,7 +86,7 @@ class TerraformInitCommand {
     }
 
     public static resetPlugins() {
-        globalPlugins = DEFAULT_PLUGINS.clone()
+        globalPlugins = []
         // This is awkward - what about the applied plugins...?
     }
 }
