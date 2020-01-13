@@ -66,21 +66,17 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
     @Override
     void apply(TerraformValidateStage validateStage) {
-        validateStage.decorate(TerraformValidateStage.VALIDATE, modifyValidateStage())
+        validateStage.decorate(TerraformValidateStage.VALIDATE, modifyValidateStage(validateStage))
     }
 
-    public TerraformInitCommand initCommandForValidate() {
-        return TerraformInitCommand.instanceFor('validate').withoutBackend()
-    }
-
-    public Closure modifyValidateStage() {
+    public Closure modifyValidateStage(validateStage) {
         return { closure ->
             detectVersion()
 
             // If >= 0.12.0 add `terraform init` before validating
             if(version.compareTo(new SemanticVersion('0.12.0')) >= 0) {
-                def initCommand = initCommandForValidate()
-                sh initCommand.toString()
+                def version12 = new TerraformPluginVersion12()
+                version12.apply(validateStage)
             }
 
             closure()
