@@ -66,7 +66,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
     @Override
     void apply(TerraformValidateStage validateStage) {
-        validateStage.decorate(TerraformValidateStage.VALIDATE, modifyValidateStage(validateStage))
+        validateStage.decorate(TerraformValidateStage.ALL, modifyValidateStage(validateStage))
     }
 
     public Closure modifyValidateStage(validateStage) {
