@@ -8,47 +8,49 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPluginTest {
 
-    @Before
-    void mocksAndResets() {
-        Jenkinsfile.instance.original = new Expando()
-        TerraformPlugin.version = null
-    }
-
-    void setupForFileExists() {
-        Jenkinsfile.instance.original.fileExists = { file -> true}
-        Jenkinsfile.instance.original.readFile = { file -> '0.12.0-foobar'}
-    }
-
-    void setupForFileDoesNotExist() {
-        Jenkinsfile.instance.original.fileExists = { file -> false}
-    }
-
     class VersionDetection {
+        @After
+        void resetVersion() {
+            TerraformPlugin.resetVersion()
+        }
 
         @Test
         void usesDefaultIfNoFilePresent() {
-            setupForFileDoesNotExist()
-            TerraformPlugin.detectVersion()
-            assertEquals(TerraformPlugin.DEFAULT_VERSION, TerraformPlugin.version.version)
+            def plugin = spy(new TerraformPlugin())
+            doReturn(false).when(plugin).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
+
+            def foundVersion = plugin.detectVersion()
+
+            assertEquals(TerraformPlugin.DEFAULT_VERSION, foundVersion.version)
         }
 
         @Test
         void usesFileIfPresent() {
-            setupForFileExists()
-            TerraformPlugin.detectVersion()
-            assertEquals('0.12.0-foobar', TerraformPlugin.version.version)
+            def expectedVersion =  '0.12.0-foobar'
+            def plugin = spy(new TerraformPlugin())
+            doReturn(true).when(plugin).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
+            doReturn(expectedVersion).when(plugin).readFile(TerraformPlugin.TERRAFORM_VERSION_FILE)
+
+            def foundVersion = plugin.detectVersion()
+
+            assertEquals(expectedVersion, foundVersion.version)
         }
     }
 
     class WithVersion {
+        @After
+        void resetVersion() {
+            TerraformPlugin.resetVersion()
+        }
+
         @Test
         void usesVersionEvenIfFileExists() {
-            setupForFileExists()
             TerraformPlugin.withVersion('2.0.0')
             assertEquals('2.0.0', TerraformPlugin.version.version)
         }

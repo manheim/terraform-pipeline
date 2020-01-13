@@ -21,6 +21,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
     static SemanticVersion version
     static final String DEFAULT_VERSION = '0.11.0'
+    public static TERRAFORM_VERSION_FILE = '.terraform-version'
 
     public static init() {
         def plugin = new TerraformPlugin()
@@ -29,19 +30,32 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         TerraformValidateStage.addPlugin(plugin)
     }
 
-    static SemanticVersion detectVersion() {
+    public SemanticVersion detectVersion() {
         if(version == null) {
-            def jf = Jenkinsfile.instance.original
-            if (jf.fileExists('.terraform-version')) {
-                version = new SemanticVersion((jf.readFile('.terraform-version') as String).trim())
+            if (fileExists(TERRAFORM_VERSION_FILE)) {
+                version = new SemanticVersion(readFile(TERRAFORM_VERSION_FILE))
             } else {
                 version = new SemanticVersion(DEFAULT_VERSION)
             }
         }
+
+        return version
     }
 
     static void withVersion(String version) {
         this.version = new SemanticVersion(version)
+    }
+
+    static  void resetVersion() {
+        this.version = null
+    }
+
+    public boolean fileExists(String filename) {
+        return Jenkinsfile.instance.original.fileExists(filename)
+    }
+
+    public String readFile(String filename) {
+        return (Jenkinsfile.instance.original.readFile(TERRAFORM_VERSION_FILE) as String).trim()
     }
 
     @Override
