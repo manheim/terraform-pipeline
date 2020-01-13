@@ -68,6 +68,8 @@ class Jenkinsfile {
         this.original = original
         this.docker   = original.docker
 
+        TerraformPlugin.init()
+
         if (customizations != null) {
             customizations.init()
         }
