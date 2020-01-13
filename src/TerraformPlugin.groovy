@@ -52,7 +52,8 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
         // If < 0.12.0 add -check-variables=false
         if(version.compareTo(new SemanticVersion('0.12.0')) < 0) {
-            command.withArgument('-check-variables=false')
+            def version11 = new TerraformPluginVersion11()
+            version11.apply(command)
         }
     }
 
