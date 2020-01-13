@@ -15,6 +15,6 @@ class TerraformPluginVersion12 implements TerraformValidateStagePlugin {
     }
 
     public static TerraformInitCommand initCommandForValidate() {
-        return  new TerraformInitCommand().withoutBackend()
+        return TerraformInitCommand.instanceFor('validate').withoutBackend()
     }
 }
