@@ -42,6 +42,14 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return version
     }
 
+    public TerraformPluginVersion strategyFor(String version) {
+        if(new SemanticVersion(version).compareTo(new SemanticVersion('0.12.0')) >= 0) {
+            return new TerraformPluginVersion12()
+        }
+
+        return new TerraformPluginVersion11()
+    }
+
     static void withVersion(String version) {
         this.version = new SemanticVersion(version)
     }
@@ -63,7 +71,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         // This must be at the top of every apply() call.  This is
         // the best way to ensure that Jenkinsfile.instance.original is
         // properly set so that we can detect the terraform-version.
-        detectVersion()
+        def version = detectVersion()
 
         // Due to CPS shenanigans you can't use Groovy magic and do
         // version < new SemanticVersion('1.2.3').  This becomes
@@ -71,11 +79,8 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         // both less than and greater than and false-ey values when
         // equal.
 
-        // If < 0.12.0 add -check-variables=false
-        if(version.compareTo(new SemanticVersion('0.12.0')) < 0) {
-            def version11 = new TerraformPluginVersion11()
-            version11.apply(command)
-        }
+        def strategy = strategyFor(version.version)
+        strategy.apply(command)
     }
 
     @Override
@@ -85,13 +90,10 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
     public Closure modifyValidateStage(validateStage) {
         return { closure ->
-            detectVersion()
+            def version = detectVersion()
 
-            // If >= 0.12.0 add `terraform init` before validating
-            if(version.compareTo(new SemanticVersion('0.12.0')) >= 0) {
-                def version12 = new TerraformPluginVersion12()
-                version12.apply(validateStage)
-            }
+            def strategy = strategyFor(version.version)
+            strategy.apply(validateStage)
 
             closure()
         }

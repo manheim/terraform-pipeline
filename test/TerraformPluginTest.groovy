@@ -55,4 +55,39 @@ class TerraformPluginTest {
             assertEquals('2.0.0', TerraformPlugin.version.version)
         }
     }
+
+    class Strategyfor {
+        @After
+        void resetVersion() {
+            TerraformPlugin.resetVersion()
+        }
+
+        @Test
+        void returnsVersion11ForLessThan0_12_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('0.11.3')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion11.class))
+        }
+
+        @Test
+        void returnsVersion12For0_12_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('0.12.0')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion12.class))
+        }
+
+        @Test
+        void returnsVersion12ForMoreThan0_12_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('0.12.3')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion12.class))
+        }
+
+    }
 }
