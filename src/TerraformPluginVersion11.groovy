@@ -1,4 +1,4 @@
-class TerraformPluginVersion11 implements TerraformValidateCommandPlugin {
+class TerraformPluginVersion11 extends TerraformPluginVersion {
 
     @Override
     public void apply(TerraformValidateCommand command) {

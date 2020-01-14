@@ -1,4 +1,4 @@
-class TerraformPluginVersion12 implements TerraformValidateStagePlugin {
+class TerraformPluginVersion12 extends TerraformPluginVersion {
 
     @Override
     public void apply(TerraformValidateStage validateStage) {
