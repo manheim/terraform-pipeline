@@ -1,10 +1,9 @@
 class TerraformValidateCommand {
-    private static final DEFAULT_PLUGINS = [new TerraformPlugin()]
     private String terraformBinary = "terraform"
     private String command = "validate"
     private arguments = []
     private prefixes = []
-    private static plugins = DEFAULT_PLUGINS.clone()
+    private static globalPlugins = []
     private appliedPlugins = []
     private String directory
 
@@ -43,7 +42,7 @@ class TerraformValidateCommand {
     }
 
     private applyPluginsOnce() {
-        def remainingPlugins = plugins - appliedPlugins
+        def remainingPlugins = globalPlugins - appliedPlugins
 
         for(TerraformValidateCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
@@ -52,7 +51,7 @@ class TerraformValidateCommand {
     }
 
     public static addPlugin(TerraformValidateCommandPlugin plugin) {
-        plugins << plugin
+        this.globalPlugins << plugin
     }
 
     public static TerraformValidateCommand instance() {
@@ -60,10 +59,10 @@ class TerraformValidateCommand {
     }
 
     public static getPlugins() {
-        return plugins
+        return this.globalPlugins
     }
 
     public static resetPlugins() {
-        this.plugins = DEFAULT_PLUGINS.clone()
+        this.globalPlugins = []
     }
 }

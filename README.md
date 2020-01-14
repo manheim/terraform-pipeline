@@ -2,30 +2,15 @@
 A reusable pipeline template to apply terraform configuration serially across multiple environments.
 
 # Requirements and Assumptions
-1.  You are using at least terraform 0.9.x (must support `-backend=false`)
-2.  You have a separate terraform project that can be run with the following commands:
+1.  You have a separate terraform project that can be run with the following commands:
     1.  `terraform init`
     2.  `terraform plan`
     3.  `terraform apply`
-3.  After running a terraform plan, your pipeline will pause.  A human must review and confirm the plan before `terraform apply` is run.  See: [ConfirmApplyPlugin](#confirmapplyplugin).
-4.  When running your pipeline on a branch, only the `terraform init` and `terraform plan` commands will be run across all of your environments.  `terraform apply` is only made available on the master branch. See: [ConditionalApplyPlugin](#conditionalapplyplugin).
-5.  If your environments might create conflicting resources, a TF_VAR_environment variable is automatically available to your project and can be used to namespace your resources and avoid conflicts. See: [DefaultEnvironmentPlugin](#defaultenvironmentplugin).
-6.  Import terraform-pipeline as a Jenkinsfile library to your Jenkins instance.
+2.  After running a terraform plan, your pipeline will pause.  A human must review and confirm the plan before `terraform apply` is run.  See: [ConfirmApplyPlugin](#confirmapplyplugin).
+3.  When running your pipeline on a branch, only the `terraform init` and `terraform plan` commands will be run across all of your environments.  `terraform apply` is only made available on the master branch. See: [ConditionalApplyPlugin](#conditionalapplyplugin).
+4.  If your environments might create conflicting resources, a TF_VAR_environment variable is automatically available to your project and can be used to namespace your resources and avoid conflicts. See: [DefaultEnvironmentPlugin](#defaultenvironmentplugin).
+5.  Import terraform-pipeline as a Jenkinsfile library to your Jenkins instance.
 ![Importing Pipeline Library](./images/import-terraform-pipeline.png)
-
-# Version Support
-As of terraform 0.12 several breaking changes were made.  To address these _and future_ changes, the [TerraformPlugin](./docs/TerraformPlugin.md) provides a hooking point to addressing these differences.  If you need to make a PR to support 0.13 or greater, your changes will go into this plugin.
-
-The plugin will detect a `.terraform-version` file in the root of your repo and use it's contents as the version to check against.  If you do not use that file, you will need to declare your version in the Jenkinsfile as follows:
-
-```
-// Jenkinsfile
-
-Jenkinsfile.init(this)
-TerraformPlugin.withVersion('0.12.17')
-```
-
-The default version assigned by the library is `0.11.0`. This preserves all behavior prior to the introduction of this default plugin.
 
 # How to Use
 1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  It's recommended that you always use the latest version.
@@ -45,7 +30,6 @@ Jenkinsfile.init(this)
 ...
 def validate = new TerraformValidateStage()
 ```
-
 4.  Create deployment Stages for each of the environments that you would normally deploy to.  This example creates terraform resources for qa, uat, and prod environments.  The number and names of your environments can differ from this example.  Choose the environments and environment names that reflect your own development process to go from Code to Customer.
 ```
 // Jenkinsfile
@@ -107,7 +91,7 @@ validate.then(deployQa)
 The example above gives you a bare-bones pipeline, and there may be Jenkinsfile features that you'd like to take advantage of.  Some of these features have been pre-defined as Plugins for this library.  Pre-defined plugins can be enabled by simply calling their static `init()` method.
 
 ### Default Plugins
-* [TerraformPlugin](./docs/TerraformPlugin.md): Terraform version detection and branching behavior across versions.
+* [TerraformPlugin](./docs/TerraformPlugin.md): apply version-specific terraform behavior based on the version of terraform in use.
 * [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md): pause and review the plan, before applying any changes.
 * [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on master branch.
 * [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md): automatically set `TF_VAR_environment` variable.
@@ -303,6 +287,20 @@ This will generate a new Declarative Pipeline, using your custom template.
 Restart from Stage will now display more sensible names.  __Note:__ This is in __NO__ way dynamic.  If you reorder the Stages in your Jenkinsfile, you'll need to reorder the Stage names in your custom template.  This is an unfortunate side-effect of the strict syntax of Declarative Pipelines.
 
 ![Restart From Stage](./images/restart-from-stage.png)
+
+# Terraform Version Support
+Some versions of terraform have made changes that affect a pipeline's workflow, eg: backend changes between v0.11 and v.12.  [TerraformPlugin](./docs/TerraformPlugin.md) provides a hooking point to addressing these, and future, differences.
+
+By default, the plugin will detect a `.terraform-version` file in the root of your repo and adjust the terraform workflow accordingly.  Alternatively, you can declare your terraform version explicitly in code:
+
+```
+// Jenkinsfile
+
+Jenkinsfile.init(this)
+TerraformPlugin.withVersion('0.12.17')
+```
+
+If no `.terraform-version` file is found, and no explicit version is provided, the default version assigned by the library is `0.11.0`. This preserves all behavior prior to the introduction of this default plugin.
 
 # How to Contribute
 

@@ -4,77 +4,90 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.*
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPluginTest {
 
-    @Before
-    void mocksAndResets() {
-        Jenkinsfile.instance.original = new Expando()
-        TerraformPlugin.version = null
-    }
-
-    void setupForFileExists() {
-        Jenkinsfile.instance.original.fileExists = { file -> true}
-        Jenkinsfile.instance.original.readFile = { file -> '0.12.0-foobar'}
-    }
-
-    void setupForFileDoesNotExist() {
-        Jenkinsfile.instance.original.fileExists = { file -> false}
-    }
-
     class VersionDetection {
+        @After
+        void resetVersion() {
+            TerraformPlugin.resetVersion()
+        }
 
         @Test
         void usesDefaultIfNoFilePresent() {
-            setupForFileDoesNotExist()
-            TerraformPlugin.detectVersion()
-            assertEquals(TerraformPlugin.DEFAULT_VERSION, TerraformPlugin.version.version)
+            def plugin = spy(new TerraformPlugin())
+            doReturn(false).when(plugin).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
+
+            def foundVersion = plugin.detectVersion()
+
+            assertEquals(TerraformPlugin.DEFAULT_VERSION, foundVersion.version)
         }
 
         @Test
         void usesFileIfPresent() {
-            setupForFileExists()
-            TerraformPlugin.detectVersion()
-            assertEquals('0.12.0-foobar', TerraformPlugin.version.version)
+            def expectedVersion =  '0.12.0-foobar'
+            def plugin = spy(new TerraformPlugin())
+            doReturn(true).when(plugin).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
+            doReturn(expectedVersion).when(plugin).readFile(TerraformPlugin.TERRAFORM_VERSION_FILE)
+
+            def foundVersion = plugin.detectVersion()
+
+            assertEquals(expectedVersion, foundVersion.version)
         }
     }
 
     class WithVersion {
+        @After
+        void resetVersion() {
+            TerraformPlugin.resetVersion()
+        }
+
         @Test
         void usesVersionEvenIfFileExists() {
-            setupForFileExists()
             TerraformPlugin.withVersion('2.0.0')
             assertEquals('2.0.0', TerraformPlugin.version.version)
         }
     }
 
-    class ValidateCommandModifications {
-        @Before
-        void setup() {
-            setupForFileDoesNotExist()
+    class Strategyfor {
+        @After
+        void resetVersion() {
+            TerraformPlugin.resetVersion()
         }
 
         @Test
-        void lessThan_0_12_0_HasCheckVariablesFalse() {
-            TerraformPlugin.withVersion('0.11.14')
-            def command = TerraformValidateCommand.instance()
-            assertThat(command.toString(), containsString(' -check-variables=false'))
+        void returnsVersion11ForLessThan0_12_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('0.11.3')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion11.class))
         }
 
         @Test
-        void equalTo_0_12_0_DoesNotHaveCheckVariables() {
-            TerraformPlugin.withVersion('0.12.0')
-            def command = TerraformValidateCommand.instance()
-            assertThat(command.toString(), not(containsString(' -check-variables=false')))
+        void returnsVersion12For0_12_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('0.12.0')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion12.class))
         }
 
         @Test
-        void greaterThan_0_12_0_DoesNotHaveCheckVaraibles() {
-            TerraformPlugin.withVersion('0.12.3')
-            def command = TerraformValidateCommand.instance()
-            assertThat(command.toString(), not(containsString(' -check-variables=false')))
+        void returnsVersion12ForMoreThan0_12_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('0.12.3')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion12.class))
         }
+
     }
 }

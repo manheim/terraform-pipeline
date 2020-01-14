@@ -1,5 +1,4 @@
 class TerraformInitCommand {
-    private static final DEFAULT_PLUGINS = []
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "init"
@@ -9,13 +8,8 @@ class TerraformInitCommand {
     private boolean doBackend = true
     private String directory
 
-    private static plugins = DEFAULT_PLUGINS.clone()
+    private static globalPlugins = []
     private appliedPlugins = []
-
-    TerraformInitCommand() {
-        //We need this because some plugins expect a non-null value here.
-        this('')
-    }
 
     public TerraformInitCommand(String environment) {
         this.environment = environment
@@ -71,7 +65,7 @@ class TerraformInitCommand {
     }
 
     private applyPluginsOnce() {
-        def remainingPlugins = plugins - appliedPlugins
+        def remainingPlugins = globalPlugins - appliedPlugins
 
         for(TerraformInitCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
@@ -80,23 +74,19 @@ class TerraformInitCommand {
     }
 
     public static void addPlugin(TerraformInitCommandPlugin plugin) {
-        plugins << plugin
+        this.globalPlugins << plugin
     }
 
     public static TerraformInitCommand instanceFor(String environment) {
         return new TerraformInitCommand(environment)
     }
 
-    public static TerraformInitCommand instance() {
-        return new TerraformInitCommand().withoutBackend()
-    }
-
     public static getPlugins() {
-        return plugins
+        return this.globalPlugins
     }
 
     public static resetPlugins() {
-        this.plugins = DEFAULT_PLUGINS.clone()
+        globalPlugins = []
         // This is awkward - what about the applied plugins...?
     }
 }

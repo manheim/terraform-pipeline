@@ -2,18 +2,22 @@ import java.util.Comparator;
 
 class SemanticVersion implements Comparable<SemanticVersion> {
 
-    private String version
+    private String versionString
     private List<String> components
 
-    SemanticVersion(String version) {
-        this.version = version
-        this.components = version.tokenize(/._/)
+    SemanticVersion(String versionString) {
+        this.versionString = versionString
+        this.components = versionString.tokenize(/._/)
     }
 
     String getVersion() {
-        this.version
+        this.versionString
     }
-    
+
+    String toString() {
+        return "SemanticVersion: ${versionString}"
+    }
+
     @Override
     int compareTo(SemanticVersion other) {
         for(i in 0..<Math.max(this.components.size(), other.components.size())) {
