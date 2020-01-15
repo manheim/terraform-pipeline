@@ -1,4 +1,4 @@
-## [AwssumePlugin](./src/AwssumePlugin.groovy)
+## [AwssumePlugin](../src/AwssumePlugin.groovy)
 
 Enable this plugin to wrap your terraform commands with the [awssume](https://github.com/manheim/awssume) gem, allowing you to assume roles across accounts.
 
