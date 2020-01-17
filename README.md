@@ -91,6 +91,7 @@ validate.then(deployQa)
 The example above gives you a bare-bones pipeline, and there may be Jenkinsfile features that you'd like to take advantage of.  Some of these features have been pre-defined as Plugins for this library.  Pre-defined plugins can be enabled by simply calling their static `init()` method.
 
 ### Default Plugins
+* [TerraformPlugin](./docs/TerraformPlugin.md): apply version-specific terraform behavior based on the version of terraform in use.
 * [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md): pause and review the plan, before applying any changes.
 * [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on master branch.
 * [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md): automatically set `TF_VAR_environment` variable.
@@ -99,6 +100,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [FileParametersPlugin](./docs/FileParametersPlugin.md): Use properties files to inject environment-specific variables.
 * [ParameterStoreBuildWrapperPlugin](./docs/ParameterStoreBuildWrapperPlugin.md): Inject environment-specific variables using `withAwsParameterStore`.
 * [ParameterStoreExecPlugin](./docs/ParameterStoreExecPlugin.md): Inject environment-specific variables using parameter-store-exec.
+* [TfvarsFilesPlugin](./docs/TfvarsFilesPlugin.md): Add environment specific tfvars files to your plan and apply commands.
 ### IAM Role Management
 * [AwssumePlugin](./docs/AwssumePlugin.md): Use the awssume gem to assume different IAM roles.
 * [WithAwsPlugin](./docs/WithAwsPlugin.md): Use `withAws` to assume different IAM roles.
@@ -285,6 +287,20 @@ This will generate a new Declarative Pipeline, using your custom template.
 Restart from Stage will now display more sensible names.  __Note:__ This is in __NO__ way dynamic.  If you reorder the Stages in your Jenkinsfile, you'll need to reorder the Stage names in your custom template.  This is an unfortunate side-effect of the strict syntax of Declarative Pipelines.
 
 ![Restart From Stage](./images/restart-from-stage.png)
+
+# Terraform Version Support
+Some versions of terraform have made changes that affect a pipeline's workflow, eg: backend changes between v0.11 and v.12.  [TerraformPlugin](./docs/TerraformPlugin.md) provides a hooking point to addressing these, and future, differences.
+
+By default, the plugin will detect a `.terraform-version` file in the root of your repo and adjust the terraform workflow accordingly.  Alternatively, you can declare your terraform version explicitly in code:
+
+```
+// Jenkinsfile
+
+Jenkinsfile.init(this)
+TerraformPlugin.withVersion('0.12.17')
+```
+
+If no `.terraform-version` file is found, and no explicit version is provided, the default version assigned by the library is `0.11.0`. This preserves all behavior prior to the introduction of this default plugin.
 
 # How to Contribute
 

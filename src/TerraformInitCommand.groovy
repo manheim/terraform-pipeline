@@ -5,9 +5,10 @@ class TerraformInitCommand {
     String environment
     private prefixes = []
     private backendConfigs = []
+    private boolean doBackend = true
     private String directory
 
-    private static plugins = []
+    private static globalPlugins = []
     private appliedPlugins = []
 
     public TerraformInitCommand(String environment) {
@@ -34,6 +35,11 @@ class TerraformInitCommand {
         return this
     }
 
+    public TerraformInitCommand withoutBackend() {
+        this.doBackend = false
+        return this
+    }
+
     public String toString() {
         applyPluginsOnce()
 
@@ -44,8 +50,12 @@ class TerraformInitCommand {
         if (!input) {
             pieces << "-input=false"
         }
-        backendConfigs.each { config ->
-            pieces << "-backend-config=${config}"
+        if(doBackend) {
+            backendConfigs.each { config ->
+                pieces << "-backend-config=${config}"
+            }
+        } else {
+            pieces << "-backend=false"
         }
         if (directory) {
             pieces << directory
@@ -55,7 +65,7 @@ class TerraformInitCommand {
     }
 
     private applyPluginsOnce() {
-        def remainingPlugins = plugins - appliedPlugins
+        def remainingPlugins = globalPlugins - appliedPlugins
 
         for(TerraformInitCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
@@ -64,7 +74,7 @@ class TerraformInitCommand {
     }
 
     public static void addPlugin(TerraformInitCommandPlugin plugin) {
-        plugins << plugin
+        this.globalPlugins << plugin
     }
 
     public static TerraformInitCommand instanceFor(String environment) {
@@ -72,11 +82,11 @@ class TerraformInitCommand {
     }
 
     public static getPlugins() {
-        return plugins
+        return this.globalPlugins
     }
 
     public static resetPlugins() {
-        this.plugins = []
+        globalPlugins = []
         // This is awkward - what about the applied plugins...?
     }
 }

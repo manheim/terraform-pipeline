@@ -68,6 +68,8 @@ class Jenkinsfile {
         this.original = original
         this.docker   = original.docker
 
+        initializeDefaultPlugins()
+
         if (customizations != null) {
             customizations.init()
         }
@@ -75,12 +77,11 @@ class Jenkinsfile {
 
     // Deprecate this, env should come from original
     def static void init(original, env, Class customizations=null) {
-        this.original = original
-        this.docker   = original.docker
+        init(original, customizations)
+    }
 
-        if (customizations != null) {
-            customizations.init()
-        }
+    def static void initializeDefaultPlugins() {
+        TerraformPlugin.init()
     }
 
     def static String getNodeName() {

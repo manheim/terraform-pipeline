@@ -1,5 +1,11 @@
 # Unreleased
 
+# v5.3
+
+* [Issue #178](https://github.com/manheim/terraform-pipeline/issues/178) Fix broken link to source code in AwssumePlugin  docs
+* Added the [TfvarsFilesPlugin](./docs/TfvarsFilesPlugin.md) to support adding var files to plan and apply commands.
+* [Issue #109](https://github.com/manheim/terraform-pipeline/issues/109) Support Terraform 0.12
+
 # v5.2
 
 * [Issue #168](https://github.com/manheim/terraform-pipeline/issues/168) Fix typo in Jenkinsfile

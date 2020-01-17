@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
-class ConditionApplyPluginTest {
+class ConditionalApplyPluginTest {
     @After
     public void reset() {
         Jenkinsfile.instance = null

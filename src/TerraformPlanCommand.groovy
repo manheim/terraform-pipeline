@@ -1,10 +1,12 @@
 class TerraformPlanCommand {
+    private static final DEFAULT_PLUGINS = []
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "plan"
     String environment
     private prefixes = []
-    private static plugins = []
+    private arguments = []
+    private static plugins = DEFAULT_PLUGINS.clone()
     private appliedPlugins = []
     private String directory
 
@@ -27,6 +29,11 @@ class TerraformPlanCommand {
         return this
     }
 
+    public TerraformPlanCommand withArgument(String argument) {
+        this.arguments << argument
+        return this
+    }
+
     public String toString() {
         applyPluginsOnce()
 
@@ -37,6 +44,7 @@ class TerraformPlanCommand {
         if (!input) {
             pieces << "-input=false"
         }
+        pieces += arguments
         if (directory) {
             pieces << directory
         }
@@ -67,6 +75,6 @@ class TerraformPlanCommand {
     }
 
     public static resetPlugins() {
-        this.plugins = []
+        this.plugins = DEFAULT_PLUGINS.clone()
     }
 }
