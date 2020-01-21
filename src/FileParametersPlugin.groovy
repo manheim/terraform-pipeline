@@ -42,6 +42,6 @@ class FileParametersPlugin implements TerraformEnvironmentStagePlugin {
     }
 
     public getEnv() {
-        return Jenkinsfile.instance.getEnv()
+        return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getEnv() : [:]
     }
 }
