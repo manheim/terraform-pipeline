@@ -34,7 +34,7 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
         Closure backendKeyPattern = keyPattern
 
         if (backendKeyPattern == null)  {
-            String repoSlug = Jenkinsfile.instance.getStandardizedRepoSlug()
+            String repoSlug = getStandardizedRepoSlug()
             backendKeyPattern = { String env -> "terraform/${repoSlug}/${env}" }
         }
 
@@ -42,15 +42,16 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
     }
 
     public String getBucket(String environment) {
-        String bucket = Jenkinsfile.instance.getEnv()["S3_BACKEND_BUCKET"]
+        def env = getEnv()
+        String bucket = env["S3_BACKEND_BUCKET"]
 
         if (bucket == null) {
             println("No S3_BACKEND_BUCKET found - checking for environment-specific bucket")
-            bucket = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_BUCKET"]
+            bucket = env["${environment.toUpperCase()}_S3_BACKEND_BUCKET"]
         }
 
         if (bucket == null) {
-            bucket = Jenkinsfile.instance.getEnv()["${environment}_S3_BACKEND_BUCKET"]
+            bucket = env["${environment}_S3_BACKEND_BUCKET"]
         }
 
         if (bucket == null) {
@@ -61,19 +62,20 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
     }
 
     public String getRegion(String environment) {
-        String region = Jenkinsfile.instance.getEnv()['S3_BACKEND_REGION']
+        def env = getEnv()
+        String region = env['S3_BACKEND_REGION']
 
         if (region == null) {
            println("No S3_BACKEND_REGION found - checking for environment-specific region")
-           region = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_REGION"]
+           region = env["${environment.toUpperCase()}_S3_BACKEND_REGION"]
         }
 
         if (region == null) {
-           region = Jenkinsfile.instance.getEnv()["${environment}_S3_BACKEND_REGION"]
+           region = env["${environment}_S3_BACKEND_REGION"]
         }
 
         if (region == null) {
-            region = Jenkinsfile.instance.getEnv()['DEFAULT_S3_BACKEND_REGION']
+            region = env['DEFAULT_S3_BACKEND_REGION']
             if (region != null) {
                 println("WARNING: DEFAULT_S3_BACKEND_REGION is deprecated, please use S3_BACKEND_REGION or ${environment.toUpperCase()}_S3_BACKEND_REGION")
             }
@@ -83,18 +85,19 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
     }
 
     public String getDynamodbTable(String environment) {
-        String table = Jenkinsfile.instance.getEnv()["S3_BACKEND_DYNAMODB_TABLE"]
+        def env = getEnv()
+        String table = env["S3_BACKEND_DYNAMODB_TABLE"]
 
         if (table == null) {
-            table = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_DYNAMODB_TABLE"]
+            table = env["${environment.toUpperCase()}_S3_BACKEND_DYNAMODB_TABLE"]
         }
 
         if (table == null) {
-            table = Jenkinsfile.instance.getEnv()["${environment}_S3_BACKEND_DYNAMODB_TABLE"]
+            table = env["${environment}_S3_BACKEND_DYNAMODB_TABLE"]
         }
 
         if (table == null) {
-            table = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_DYNAMO_TABLE_LOCK"]
+            table = env["${environment.toUpperCase()}_S3_BACKEND_DYNAMO_TABLE_LOCK"]
             if (table != null) {
                 println("${environment.toUpperCase()}_S3_BACKEND_DYNAMO_TABLE_LOCK is deprecated - please use ${environment.toUpperCase()}_S3_BACKEND_DYNAMODB_TABLE instead")
             }
@@ -104,30 +107,40 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
     }
 
     public String getEncrypt(String environment) {
-        String encrypt = Jenkinsfile.instance.getEnv()["S3_BACKEND_ENCRYPT"]
+        def env = getEnv()
+        String encrypt = env["S3_BACKEND_ENCRYPT"]
 
         if (encrypt == null) {
-            encrypt = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_ENCRYPT"]
+            encrypt = env["${environment.toUpperCase()}_S3_BACKEND_ENCRYPT"]
         }
 
         if (encrypt == null) {
-            encrypt = Jenkinsfile.instance.getEnv()["${environment}_S3_BACKEND_ENCRYPT"]
+            encrypt = env["${environment}_S3_BACKEND_ENCRYPT"]
         }
 
         return encrypt
     }
 
     public String getKmsKeyId(String environment) {
-        String arn = Jenkinsfile.instance.getEnv()["S3_BACKEND_KMS_KEY_ID"]
+        def env = getEnv()
+        String arn = env["S3_BACKEND_KMS_KEY_ID"]
 
         if (arn == null) {
-            arn = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_S3_BACKEND_KMS_KEY_ID"]
+            arn = env["${environment.toUpperCase()}_S3_BACKEND_KMS_KEY_ID"]
         }
 
         if (arn == null) {
-            arn = Jenkinsfile.instance.getEnv()["${environment}_S3_BACKEND_KMS_KEY_ID"]
+            arn = env["${environment}_S3_BACKEND_KMS_KEY_ID"]
         }
 
         return arn
+    }
+
+    public getEnv() {
+        return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getEnv() : [:]
+    }
+
+    public getStandardizedRepoSlug() {
+        return Jenkinsfile.instance.getStandardizedRepoSlug()
     }
 }
