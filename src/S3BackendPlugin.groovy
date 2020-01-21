@@ -141,6 +141,6 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
     }
 
     public getStandardizedRepoSlug() {
-        return Jenkinsfile.instance.getStandardizedRepoSlug()
+        return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getStandardizedRepoSlug() : null
     }
 }
