@@ -1,0 +1,4 @@
+language: groovy
+jdk:
+  - openjdk9
+script: ./gradlew check --info
