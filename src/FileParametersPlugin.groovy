@@ -38,6 +38,10 @@ class FileParametersPlugin implements TerraformEnvironmentStagePlugin {
     }
 
     public String interpolate(String value) {
-        return new StreamingTemplateEngine().createTemplate(value).make([env: Jenkinsfile.instance.getEnv()]).toString()
+        return new StreamingTemplateEngine().createTemplate(value).make([env: getEnv()]).toString()
+    }
+
+    public getEnv() {
+        return Jenkinsfile.instance.getEnv()
     }
 }
