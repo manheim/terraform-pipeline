@@ -33,7 +33,7 @@ class CrqPlugin implements TerraformEnvironmentStagePlugin {
             if (crqEnvironment) {
                 def config = [
                     environment: environment,
-                    app: Jenkinsfile.instance.getRepoName(),
+                    app: getRepoName(),
                     crqEnvironment: crqEnvironment
                 ]
 
@@ -83,4 +83,7 @@ class CrqPlugin implements TerraformEnvironmentStagePlugin {
         return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getEnv() : [:]
     }
 
+    public String getRepoName() {
+        return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getRepoName() : null
+    }
 }
