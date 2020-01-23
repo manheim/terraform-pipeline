@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #87](https://github.com/manheim/terraform-pipeline/issues/87) Add travis CI support to the project
+
 # v5.3
 
 * [Issue #178](https://github.com/manheim/terraform-pipeline/issues/178) Fix broken link to source code in AwssumePlugin  docs

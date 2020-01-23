@@ -12,17 +12,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(HierarchicalContextRunner.class)
 class CrqPluginTest {
-    @After
-    void resetJenkins() {
-        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     public class Init {
         @After
         void resetPlugins() {
@@ -42,9 +31,9 @@ class CrqPluginTest {
         public class withCrqEnvironment {
             @Test
             public void shouldExecutePipeline() {
-                configureJenkins(env: ['CRQ_ENVIRONMENT': 'MyCrqEnv'], repoSlug: 'Org/Repo')
-
-                def plugin = new CrqPlugin()
+                def plugin = spy(new CrqPlugin())
+                when(plugin.getEnv()).thenReturn(['CRQ_ENVIRONMENT': 'MyCrqEnv'])
+                //when(plugin.getrepoSlug: 'Org/Repo'))
                 Closure crqClosure = plugin.addCrq('myEnv')
                 Closure pipeline = mock(Closure.class)
 
@@ -79,10 +68,9 @@ class CrqPluginTest {
     public class GetCrqEnviroment {
         @Test
         void returnsCrqEnvirommentIfPresent() {
-            def plugin = new CrqPlugin()
             String expectedCrqEnvironment = 'someEnvironment'
-
-            configureJenkins(env: ['CRQ_ENVIRONMENT': expectedCrqEnvironment])
+            CrqPlugin plugin = spy(new CrqPlugin())
+            when(plugin.getEnv()).thenReturn(['CRQ_ENVIRONMENT': expectedCrqEnvironment])
 
             String actualCrqEnvironment = plugin.getCrqEnvironment('myenv')
 
@@ -91,10 +79,9 @@ class CrqPluginTest {
 
         @Test
         void returnsEnvironmentSpecificCrqEnvirommentIfPresent() {
-            def plugin = new CrqPlugin()
             String expectedCrqEnvironment = 'someEnvironment'
-
-            configureJenkins(env: ['MYENV_CRQ_ENVIRONMENT': expectedCrqEnvironment])
+            CrqPlugin plugin = spy(new CrqPlugin())
+            when(plugin.getEnv()).thenReturn(['MYENV_CRQ_ENVIRONMENT': expectedCrqEnvironment])
 
             String actualCrqEnvironment = plugin.getCrqEnvironment('myenv')
 
@@ -106,11 +93,11 @@ class CrqPluginTest {
             // The UseCase:
             //     Set PROD_CRQ_ENVIRONMENT as a global variable, to make multiple pipeline's prod behave the same way
             //     Set CRQ_ENVIRONMENT in a specific app's prod environment (eg: parameterstore), to override the global value
-            def plugin = new CrqPlugin()
+            CrqPlugin plugin = spy(new CrqPlugin())
             String nonPrefixedCrq = 'nonPrefixed'
             String prefixedCrq = 'prefixed'
 
-            configureJenkins(env: [
+            when(plugin.getEnv()).thenReturn([
                 'CRQ_ENVIRONMENT': nonPrefixedCrq,
                 'MYENV_CRQ_ENVIRONMENT': prefixedCrq
             ])
