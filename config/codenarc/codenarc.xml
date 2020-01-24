@@ -23,13 +23,7 @@
     <ruleset-ref path='rulesets/basic.xml'>
         <exclude name='EmptyClass'/>
     </ruleset-ref>
-        <!--<exclude name='ExplicitHashSetInstantiation'/>-->
-        <!--<exclude name='ExplicitCallToAndMethod'/>-->
-        <!--<exclude name='ExplicitCallToOrMethod'/>-->
-    <!--</ruleset-ref>-->
-    <!---
     <ruleset-ref path='rulesets/braces.xml'/>
-    -->
     <!--
     <ruleset-ref path='rulesets/imports.xml'>
         <exclude name="ImportFromSunPackages"/>
