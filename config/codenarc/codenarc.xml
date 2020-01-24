@@ -24,12 +24,8 @@
         <exclude name='EmptyClass'/>
     </ruleset-ref>
     <ruleset-ref path='rulesets/braces.xml'/>
+    <ruleset-ref path='rulesets/imports.xml'/>
     <!--
-    <ruleset-ref path='rulesets/imports.xml'>
-        <exclude name="ImportFromSunPackages"/>
-        <exclude name="MisorderedStaticImports"/>
-        <exclude name="NoWildcardImports"/>
-    </ruleset-ref>
     <ruleset-ref path='rulesets/naming.xml'>
         <rule-config name='ClassName'>
             <property name='regex' value='^[A-Z][\$a-zA-Z0-9]*$'/>

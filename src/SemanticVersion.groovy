@@ -1,5 +1,3 @@
-import java.util.Comparator;
-
 class SemanticVersion implements Comparable<SemanticVersion> {
 
     private String versionString
