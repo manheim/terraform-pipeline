@@ -16,9 +16,13 @@ class SemanticVersionTest {
 
     @Test
     void sortsCorrectly() {
-        List<SemanticVersion> unsorted = SORTED.clone().collect({v -> new SemanticVersion(v)})
-        Collections.shuffle(unsorted)
-        def result = unsorted.sort().collect({sv -> sv.version})
+        List<SemanticVersion> versions = SORTED.clone().collect {v -> new SemanticVersion(v)}
+        // Randomize
+        Collections.shuffle(versions)
+        // Then sort
+        versions.sort()
+
+        def result = versions.collect {sv -> sv.version}
         assertEquals(SORTED,result)
     }
 

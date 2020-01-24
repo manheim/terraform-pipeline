@@ -15,7 +15,7 @@ class BuildStageTest {
         void buildsWithoutError() {
             BuildStage stage = spy(new BuildStage())
 
-            doReturn({ -> }).when(stage).pipelineConfiguration()
+            doReturn { -> }.when(stage).pipelineConfiguration()
 
             stage.build()
         }

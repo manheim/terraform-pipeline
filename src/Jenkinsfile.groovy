@@ -44,7 +44,7 @@ class Jenkinsfile {
 
     def Map parseScmUrl(String scmUrl) {
         def matcher = scmUrl =~ /.*(?:\/\/|\@)[^\/:]+[\/:]([^\/]+)\/([^\/.]+)(.git)?/
-        def Map results = new HashMap<String,String>()
+        def Map results = [:]
         results.put("organization", matcher[0][1])
         results.put("repo", matcher[0][2])
         return results

@@ -9,7 +9,7 @@ class TerraformValidateStage implements Stage {
 
     public TerraformValidateStage() {
         this.jenkinsfile = Jenkinsfile.instance
-        this.decorations = new HashMap<String,Closure>()
+        this.decorations = [:]
     }
 
     public Stage then(Stage nextStage) {

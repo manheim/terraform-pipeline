@@ -18,7 +18,7 @@ class TerraformEnvironmentStage implements Stage {
     TerraformEnvironmentStage(String environment) {
         this.environment = environment
         this.jenkinsfile = Jenkinsfile.instance
-        this.decorations = new HashMap<String,Closure>()
+        this.decorations = [:]
     }
 
     public Stage then(Stage nextStages) {
