@@ -60,6 +60,16 @@ class TerraformEnvironmentStageTest {
 
         @Test
         void doesNotAddPluginToOtherInstances() {
+            def modifiedStage = new TerraformEnvironmentStage('modified')
+            def unmodifiedStage = new TerraformEnvironmentStage('unmodified')
+
+            def pluginsBefore = unmodifiedStage.getAllPlugins()
+
+            modifiedStage.withEnv('somekey', 'somevalue')
+
+            def pluginsAfter = unmodifiedStage.getAllPlugins()
+
+            assertEquals(pluginsBefore, pluginsAfter)
 
         }
 

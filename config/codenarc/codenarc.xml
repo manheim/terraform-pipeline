@@ -20,7 +20,9 @@
         <exclude name='GStringExpressionWithinString'/>
         <exclude name='GetterMethodCouldBeProperty'/>
     </ruleset-ref>
-    <!--<ruleset-ref path='rulesets/basic.xml'>-->
+    <ruleset-ref path='rulesets/basic.xml'>
+        <exclude name='EmptyClass'/>
+    </ruleset-ref>
         <!--<exclude name='ExplicitHashSetInstantiation'/>-->
         <!--<exclude name='ExplicitCallToAndMethod'/>-->
         <!--<exclude name='ExplicitCallToOrMethod'/>-->
