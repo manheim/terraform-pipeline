@@ -1,11 +1,10 @@
-import org.junit.*
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.doReturn
+
+import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
-import static org.mockito.Mockito.verify
-import static org.mockito.Mockito.when
-import static org.mockito.Mockito.spy
-import static org.mockito.Mockito.doReturn
 
 @RunWith(HierarchicalContextRunner.class)
 class BuildStageTest {

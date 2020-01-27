@@ -1,11 +1,12 @@
-import static org.junit.Assert.*
+import static org.mockito.Mockito.inOrder
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.times
+import static org.mockito.Mockito.verify
 
-import org.junit.*
+import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 import org.mockito.InOrder
-import static org.mockito.Mockito.*
-import static org.hamcrest.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class BuildGraphTest {

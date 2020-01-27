@@ -1,15 +1,13 @@
-import org.junit.*
+import static org.hamcrest.Matchers.instanceOf
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.doReturn;
+
+import org.junit.After
+import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
-
-import static org.hamcrest.Matchers.*
-import static org.junit.Assert.*
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPluginTest {

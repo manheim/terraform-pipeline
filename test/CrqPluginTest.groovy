@@ -1,14 +1,16 @@
-import static org.junit.Assert.*
+import static org.hamcrest.Matchers.hasItem
+import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.is
+import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.when
 
-import org.junit.*
+import org.junit.After
+import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Matchers.*
-import static org.hamcrest.Matchers.*
-import static org.mockito.Mockito.*;
 
 @RunWith(HierarchicalContextRunner.class)
 class CrqPluginTest {

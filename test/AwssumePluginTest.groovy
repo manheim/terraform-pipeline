@@ -1,11 +1,17 @@
-import static org.junit.Assert.*
-
-import org.junit.*
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import static org.hamcrest.Matchers.containsString
+import static org.hamcrest.Matchers.hasItem
+import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.not
+import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
-import static org.hamcrest.Matchers.*
+
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class AwssumePluginTest {
