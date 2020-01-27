@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.spy;
 
-
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith

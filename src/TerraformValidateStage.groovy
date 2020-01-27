@@ -60,7 +60,7 @@ class TerraformValidateStage implements Stage {
             }
         }
 
-        decorations.put(stageName,newDecoration)
+        decorations.put(stageName, newDecoration)
     }
 
     private void applyDecorationsAround(String stageName, Closure stageClosure) {
@@ -76,7 +76,7 @@ class TerraformValidateStage implements Stage {
     }
 
     public void applyPlugins() {
-        for(plugin in globalPlugins) {
+        for (plugin in globalPlugins) {
             plugin.apply(this)
         }
     }

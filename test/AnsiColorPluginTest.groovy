@@ -7,7 +7,6 @@ import org.junit.After
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
-
 @RunWith(HierarchicalContextRunner.class)
 class AnsiColorPluginTest {
     public class Init {

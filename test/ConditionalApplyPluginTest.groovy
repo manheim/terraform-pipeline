@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
-
 @RunWith(HierarchicalContextRunner.class)
 class ConditionalApplyPluginTest {
     @After

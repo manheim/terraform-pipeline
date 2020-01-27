@@ -24,7 +24,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void automationRepoSpecifiedSuccessfullyCallApply(){
+        void automationRepoSpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
@@ -36,7 +36,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void automationRepoAndAppRepoSpecifiedSuccessfullyCallApply(){
+        void automationRepoAndAppRepoSpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
@@ -49,7 +49,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void automationRepoAndAppRepoWithChangeDirectorySpecifiedSuccessfullyCallApply(){
+        void automationRepoAndAppRepoWithChangeDirectorySpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
@@ -63,7 +63,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void noAutomationRepoSpecifiedSuccessfullyCallApply(){
+        void noAutomationRepoSpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 

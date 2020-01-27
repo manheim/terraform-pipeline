@@ -43,7 +43,6 @@ class TfvarsFilesPluginTest {
         TfvarsFilesPlugin.directory = '.'
     }
 
-
     class Init {
         @After
         void resetPlugins() {

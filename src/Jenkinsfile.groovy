@@ -122,7 +122,6 @@ class Jenkinsfile {
         }
 
         throw new RuntimeException("Your pipeline has ${stages.size()} stages - the maximum supported by default is 7.  Define a custom pipeline template and assign it to Jenkinsfile.pipelineTemplate to create your pipeline.")
-
     }
 
     public getEnv() {

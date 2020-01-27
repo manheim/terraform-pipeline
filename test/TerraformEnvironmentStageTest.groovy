@@ -74,7 +74,6 @@ class TerraformEnvironmentStageTest {
             def pluginsAfter = unmodifiedStage.getAllPlugins()
 
             assertEquals(pluginsBefore, pluginsAfter)
-
         }
 
         @Test

@@ -88,7 +88,6 @@ class TerraformPlanCommandTest {
         }
     }
 
-
     public class Plugins {
         @After
         void resetPlugins() {

@@ -25,6 +25,11 @@
     </ruleset-ref>
     <ruleset-ref path='rulesets/braces.xml'/>
     <ruleset-ref path='rulesets/imports.xml'/>
+    <ruleset-ref path='rulesets/formatting.xml'>
+        <exclude name='ClassJavadoc'/>
+        <exclude name='LineLength'/>
+        <exclude name='SpaceAroundMapEntryColon'/>
+    </ruleset-ref>
     <!--
     <ruleset-ref path='rulesets/naming.xml'>
         <rule-config name='ClassName'>

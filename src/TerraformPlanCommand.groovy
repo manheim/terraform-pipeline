@@ -55,7 +55,7 @@ class TerraformPlanCommand {
     private applyPluginsOnce() {
         def remainingPlugins = plugins - appliedPlugins
 
-        for(TerraformPlanCommandPlugin plugin in remainingPlugins) {
+        for (TerraformPlanCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
             appliedPlugins << plugin
         }
