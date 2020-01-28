@@ -20,7 +20,6 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
         configs['encrypt'] = getEncrypt(environment)
         configs['kms_key_id'] = getKmsKeyId(environment)
 
-
         configs.each { entry ->
             if (entry.value?.trim()) {
                 command.withBackendConfig("${entry.key}=${entry.value}")
@@ -66,12 +65,12 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
         String region = env['S3_BACKEND_REGION']
 
         if (region == null) {
-           println("No S3_BACKEND_REGION found - checking for environment-specific region")
-           region = env["${environment.toUpperCase()}_S3_BACKEND_REGION"]
+            println("No S3_BACKEND_REGION found - checking for environment-specific region")
+            region = env["${environment.toUpperCase()}_S3_BACKEND_REGION"]
         }
 
         if (region == null) {
-           region = env["${environment}_S3_BACKEND_REGION"]
+            region = env["${environment}_S3_BACKEND_REGION"]
         }
 
         if (region == null) {

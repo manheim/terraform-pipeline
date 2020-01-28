@@ -1,14 +1,12 @@
-import static org.junit.Assert.*
-
-import org.junit.*
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
-import Jenkinsfile
-
+import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
-import static org.hamcrest.Matchers.*
 
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class JenkinsfileTest {

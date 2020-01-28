@@ -1,9 +1,15 @@
-import static org.junit.Assert.*
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.hasItem
+import static org.hamcrest.Matchers.hasSize
+import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.notNullValue
+import static org.junit.Assert.assertThat
 
-import org.junit.*
+import org.junit.After
+import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
-import static org.hamcrest.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class CredentialsPluginTest {
