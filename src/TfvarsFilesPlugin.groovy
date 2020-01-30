@@ -19,7 +19,7 @@ class TfvarsFilesPlugin implements TerraformPlanCommandPlugin, TerraformApplyCom
     @Override
     void apply(TerraformApplyCommand command) {
         def environmentVarFile = "${directory}/${command.environment}.tfvars"
-        if (originalContext.fileExists(environmentVarFile)) {
+        if(originalContext.fileExists(environmentVarFile)) {
             command.withArgument("-var-file=${environmentVarFile}")
         } else {
             originalContext.echo "${environmentVarFile} does not exist."
@@ -29,7 +29,7 @@ class TfvarsFilesPlugin implements TerraformPlanCommandPlugin, TerraformApplyCom
     @Override
     void apply(TerraformPlanCommand command) {
         def environmentVarFile = "${directory}/${command.environment}.tfvars"
-        if (originalContext.fileExists(environmentVarFile)) {
+        if(originalContext.fileExists(environmentVarFile)) {
             command.withArgument("-var-file=${environmentVarFile}")
         } else {
             originalContext.echo "${environmentVarFile} does not exist."

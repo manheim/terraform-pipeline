@@ -1,10 +1,9 @@
-import static org.hamcrest.Matchers.hasItem
-import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertThat
+import static org.junit.Assert.*
 
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
+import static org.hamcrest.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class DefaultEnvironmentPluginTest {

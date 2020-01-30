@@ -1,6 +1,6 @@
-import static TerraformEnvironmentStage.ALL
-
 import groovy.text.StreamingTemplateEngine
+
+import static TerraformEnvironmentStage.ALL
 
 class FileParametersPlugin implements TerraformEnvironmentStagePlugin {
     public static void init() {

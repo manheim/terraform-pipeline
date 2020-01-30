@@ -5,7 +5,7 @@ public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformE
     private static String dockerImage
     private static String dockerOptions
 
-    AgentNodePlugin() { }
+    AgentNodePlugin() {}
 
     public static void init() {
         def plugin = new AgentNodePlugin()
@@ -37,7 +37,7 @@ public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformE
     public Closure addAgent() {
         return { closure ->
             if (dockerImage) {
-                docker.image(this.dockerImage).inside(this.dockerOptions) {
+                docker.image(this.dockerImage).inside(this.dockerOptions){
                     closure()
                 }
             } else {

@@ -23,7 +23,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
     }
 
     public SemanticVersion detectVersion() {
-        if (version == null) {
+        if(version == null) {
             if (fileExists(TERRAFORM_VERSION_FILE)) {
                 version = new SemanticVersion(readFile(TERRAFORM_VERSION_FILE))
             } else {
@@ -35,7 +35,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
     }
 
     public TerraformPluginVersion strategyFor(String version) {
-        if (new SemanticVersion(version) >= new SemanticVersion('0.12.0')) {
+        if(new SemanticVersion(version).compareTo(new SemanticVersion('0.12.0')) >= 0) {
             return new TerraformPluginVersion12()
         }
 

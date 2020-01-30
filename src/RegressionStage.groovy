@@ -1,7 +1,7 @@
 class RegressionStage implements Stage {
 
     public String testCommand
-    public List automationRepoList = []
+    public List automationRepoList = new ArrayList<String>()
     private String testCommandDirectory
 
     private Closure existingDecorations
