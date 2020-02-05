@@ -31,8 +31,7 @@ class TerraformValidateCommand {
         pieces = pieces + prefixes
         pieces << terraformBinary
         pieces << command
-        for(String argument in arguments)
-        {
+        for (String argument in arguments) {
             pieces << argument
         }
         if (directory) {
@@ -44,7 +43,7 @@ class TerraformValidateCommand {
     private applyPluginsOnce() {
         def remainingPlugins = globalPlugins - appliedPlugins
 
-        for(TerraformValidateCommandPlugin plugin in remainingPlugins) {
+        for (TerraformValidateCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
             appliedPlugins << plugin
         }

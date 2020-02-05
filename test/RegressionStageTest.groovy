@@ -1,10 +1,11 @@
-import org.junit.*
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
-
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
+
+import org.junit.After
+import org.junit.Test
+import org.junit.runner.RunWith
+import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class RegressionStageTest {
@@ -23,7 +24,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void automationRepoSpecifiedSuccessfullyCallApply(){
+        void automationRepoSpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
@@ -35,7 +36,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void automationRepoAndAppRepoSpecifiedSuccessfullyCallApply(){
+        void automationRepoAndAppRepoSpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
@@ -48,7 +49,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void automationRepoAndAppRepoWithChangeDirectorySpecifiedSuccessfullyCallApply(){
+        void automationRepoAndAppRepoWithChangeDirectorySpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
@@ -62,7 +63,7 @@ class RegressionStageTest {
         }
 
         @Test
-        void noAutomationRepoSpecifiedSuccessfullyCallApply(){
+        void noAutomationRepoSpecifiedSuccessfullyCallApply() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 

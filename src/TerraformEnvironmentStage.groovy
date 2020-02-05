@@ -18,7 +18,7 @@ class TerraformEnvironmentStage implements Stage {
     TerraformEnvironmentStage(String environment) {
         this.environment = environment
         this.jenkinsfile = Jenkinsfile.instance
-        this.decorations = new HashMap<String,Closure>()
+        this.decorations = [:]
     }
 
     public Stage then(Stage nextStages) {
@@ -106,7 +106,7 @@ class TerraformEnvironmentStage implements Stage {
             }
         }
 
-        decorations.put(stageName,newDecoration)
+        decorations.put(stageName, newDecoration)
     }
 
     private void applyDecorationsAround(String stageName, Closure stageClosure) {
@@ -127,7 +127,7 @@ class TerraformEnvironmentStage implements Stage {
 
     public void applyPlugins() {
         // Apply both global and local plugins, in the correct order
-        for(plugin in getAllPlugins()) {
+        for (plugin in getAllPlugins()) {
             plugin.apply(this)
         }
     }

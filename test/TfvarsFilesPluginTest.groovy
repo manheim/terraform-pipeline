@@ -1,15 +1,14 @@
-import de.bechte.junit.runners.context.HierarchicalContextRunner
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not
 import static org.junit.Assert.assertThat
+
+import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.After
+import org.junit.Test
+import org.junit.runner.RunWith
 
 @RunWith(HierarchicalContextRunner.class)
 class TfvarsFilesPluginTest {
@@ -43,7 +42,6 @@ class TfvarsFilesPluginTest {
         TerraformApplyCommand.resetPlugins()
         TfvarsFilesPlugin.directory = '.'
     }
-
 
     class Init {
         @After
