@@ -50,7 +50,7 @@ class TerraformInitCommand {
         if (!input) {
             pieces << "-input=false"
         }
-        if(doBackend) {
+        if (doBackend) {
             backendConfigs.each { config ->
                 pieces << "-backend-config=${config}"
             }
@@ -67,7 +67,7 @@ class TerraformInitCommand {
     private applyPluginsOnce() {
         def remainingPlugins = globalPlugins - appliedPlugins
 
-        for(TerraformInitCommandPlugin plugin in remainingPlugins) {
+        for (TerraformInitCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
             appliedPlugins << plugin
         }

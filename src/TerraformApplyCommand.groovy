@@ -54,7 +54,7 @@ class TerraformApplyCommand {
     private applyPluginsOnce() {
         def remainingPlugins = plugins - appliedPlugins
 
-        for(TerraformApplyCommandPlugin plugin in remainingPlugins) {
+        for (TerraformApplyCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
             appliedPlugins << plugin
         }
