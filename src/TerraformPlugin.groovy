@@ -11,7 +11,7 @@
  */
 class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValidateStagePlugin {
 
-    static SemanticVersion version
+    static String version
     static final String DEFAULT_VERSION = '0.11.0'
     public static TERRAFORM_VERSION_FILE = '.terraform-version'
 
@@ -22,12 +22,12 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         TerraformValidateStage.addPlugin(plugin)
     }
 
-    public SemanticVersion detectVersion() {
+    public String detectVersion() {
         if (version == null) {
             if (fileExists(TERRAFORM_VERSION_FILE)) {
-                version = new SemanticVersion(readFile(TERRAFORM_VERSION_FILE))
+                version = readFile(TERRAFORM_VERSION_FILE)
             } else {
-                version = new SemanticVersion(DEFAULT_VERSION)
+                version = DEFAULT_VERSION
             }
         }
 
@@ -45,8 +45,8 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return new TerraformPluginVersion11()
     }
 
-    static void withVersion(String version) {
-        this.version = new SemanticVersion(version)
+    static void withVersion(String userVersion) {
+        this.version = userVersion
     }
 
     static  void resetVersion() {
@@ -65,7 +65,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
     void apply(TerraformValidateCommand command) {
         def version = detectVersion()
 
-        def strategy = strategyFor(version.version)
+        def strategy = strategyFor(version)
         strategy.apply(command)
     }
 
@@ -78,7 +78,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return { closure ->
             def version = detectVersion()
 
-            def strategy = strategyFor(version.version)
+            def strategy = strategyFor(version)
             strategy.apply(validateStage)
 
             closure()

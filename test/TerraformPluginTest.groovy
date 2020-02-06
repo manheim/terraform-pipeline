@@ -25,7 +25,7 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(TerraformPlugin.DEFAULT_VERSION, foundVersion.version)
+            assertEquals(TerraformPlugin.DEFAULT_VERSION, foundVersion)
         }
 
         @Test
@@ -37,7 +37,7 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(expectedVersion, foundVersion.version)
+            assertEquals(expectedVersion, foundVersion)
         }
     }
 
@@ -50,7 +50,7 @@ class TerraformPluginTest {
         @Test
         void usesVersionEvenIfFileExists() {
             TerraformPlugin.withVersion('2.0.0')
-            assertEquals('2.0.0', TerraformPlugin.version.version)
+            assertEquals('2.0.0', TerraformPlugin.version)
         }
     }
 
