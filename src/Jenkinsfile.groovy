@@ -88,7 +88,7 @@ class Jenkinsfile {
         return defaultNodeName ?: instance.getEnv().DEFAULT_NODE_NAME
     }
 
-    public static void build(Closure closure) {
+    public static build(Closure closure) {
         closure.delegate = this.instance
         closure.call()
     }

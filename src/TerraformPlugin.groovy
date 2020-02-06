@@ -34,6 +34,25 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return version
     }
 
+    public static String checkVersion() {
+        return Jenkinsfile.build(pipelineConfiguration())
+    }
+
+    private static Closure pipelineConfiguration() {
+        def closure = {
+            node {
+                deleteDir()
+                checkout(scm)
+                def plugin = new TerraformPlugin()
+
+                return plugin.detectVersion()
+            }
+        }
+
+        closure.resolveStrategy = Closure.DELEGATE_ONLY
+        return closure
+    }
+
     public TerraformPluginVersion strategyFor(String version) {
         // if (new SemanticVersion(version) >= new SemanticVersion('0.12.0')) should be used
         // here.  Unit tests pass with the above, but running Jenkinsfile in a pipeline context
