@@ -2,6 +2,7 @@
 
 * [Issue #87](https://github.com/manheim/terraform-pipeline/issues/87) Add travis CI support to the project
 * [Issue #186](https://github.com/manheim/terraform-pipeline/issues/186) Add convenience method to detect the version of terraform
+* [Issue #185](https://github.com/manheim/terraform-pipeline/issues/185) Fix defect: filename parameter is not used in TerraformPlugin.readFile
 
 # v5.3
 
