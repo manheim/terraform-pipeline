@@ -1,8 +1,8 @@
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
-import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy
 
 import org.junit.After
 import org.junit.Test
@@ -87,5 +87,24 @@ class TerraformPluginTest {
             assertThat(foundStrategy, instanceOf(TerraformPluginVersion12.class))
         }
 
+    }
+
+    class ReadFile {
+        @Test
+        void returnsTheContentsOfTheGivenFile() {
+            def expectedFilename = 'someFilename'
+            def expectedContent = 'someContent'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.readFile = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return  expectedContent
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def foundContent = plugin.readFile(expectedFilename)
+
+            assertEquals(expectedContent, foundContent)
+        }
     }
 }
