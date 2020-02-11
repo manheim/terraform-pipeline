@@ -73,7 +73,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
     }
 
     public boolean fileExists(String filename) {
-        return Jenkinsfile.instance.original.fileExists(filename)
+        return getJenkinsOriginal().fileExists(filename)
     }
 
     public String readFile(String filename) {

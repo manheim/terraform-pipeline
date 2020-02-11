@@ -1,6 +1,8 @@
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy
 
@@ -122,6 +124,40 @@ class TerraformPluginTest {
             def foundContent = plugin.readFile(expectedFilename)
 
             assertEquals(expectedContent, foundContent)
+        }
+    }
+
+    class FileExists {
+        @Test
+        void returnsTrueIfFileExistsInWorkspace() {
+            def expectedFilename = 'someFile'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.fileExists = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return true
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def isFound = plugin.fileExists(expectedFilename)
+
+            assertTrue(isFound)
+        }
+
+        @Test
+        void returnsFalseIfFileDoesNotExistInWorkspace() {
+            def expectedFilename = 'someFile'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.fileExists = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return false
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def isFound = plugin.fileExists(expectedFilename)
+
+            assertFalse(isFound)
         }
     }
 }
