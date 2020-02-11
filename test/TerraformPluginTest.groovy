@@ -106,5 +106,22 @@ class TerraformPluginTest {
 
             assertEquals(expectedContent, foundContent)
         }
+
+        @Test
+        void trimsWhitespaceFromTheFileContent() {
+            def expectedFilename = 'someFilename'
+            def expectedContent = 'someContent'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.readFile = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return "  ${expectedContent}   "
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def foundContent = plugin.readFile(expectedFilename)
+
+            assertEquals(expectedContent, foundContent)
+        }
     }
 }
