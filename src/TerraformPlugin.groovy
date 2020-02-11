@@ -77,7 +77,11 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
     }
 
     public String readFile(String filename) {
-        return (Jenkinsfile.instance.original.readFile(TERRAFORM_VERSION_FILE) as String).trim()
+        return (getJenkinsOriginal().readFile(filename) as String).trim()
+    }
+
+    public getJenkinsOriginal() {
+        return  Jenkinsfile.instance.original
     }
 
     @Override
