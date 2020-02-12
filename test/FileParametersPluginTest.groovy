@@ -1,11 +1,14 @@
-import static org.junit.Assert.*
+import static org.hamcrest.Matchers.hasItem
+import static org.hamcrest.Matchers.instanceOf
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 
-import org.junit.*
+import org.junit.After
+import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
-import static org.hamcrest.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class FileParametersPluginTest {
@@ -25,16 +28,6 @@ class FileParametersPluginTest {
     }
 
     public class GetVariables {
-        @After
-        public void resetJenkinsfile() {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-        }
-
-        private configureJenkinsfile(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-        }
-
         @Test
         void returnsAValueForEachLine() {
             List expectedValues = [ "VAR1=VALUE1", "VAR2=VALUE2" ]
@@ -70,10 +63,11 @@ class FileParametersPluginTest {
 
         @Test
         void interpolatesReferencesToOtherEnvironmentVariables() {
-            configureJenkinsfile(env: [ OTHER_VARIABLE: 'VALUE1' ])
             String fileContents = 'SOME_VARIABLE=${env.OTHER_VARIABLE}'
 
-            FileParametersPlugin plugin = new FileParametersPlugin()
+            FileParametersPlugin plugin = spy(new FileParametersPlugin())
+            when(plugin.getEnv()).thenReturn([ OTHER_VARIABLE: 'VALUE1'])
+
             List actualValues = plugin.getVariables(fileContents)
 
             assertEquals(["SOME_VARIABLE=VALUE1"], actualValues)

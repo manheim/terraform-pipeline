@@ -1,6 +1,6 @@
-import groovy.text.StreamingTemplateEngine
-
 import static TerraformEnvironmentStage.ALL
+
+import groovy.text.StreamingTemplateEngine
 
 class FileParametersPlugin implements TerraformEnvironmentStagePlugin {
     public static void init() {
@@ -38,6 +38,10 @@ class FileParametersPlugin implements TerraformEnvironmentStagePlugin {
     }
 
     public String interpolate(String value) {
-        return new StreamingTemplateEngine().createTemplate(value).make([env: Jenkinsfile.instance.getEnv()]).toString()
+        return new StreamingTemplateEngine().createTemplate(value).make([env: getEnv()]).toString()
+    }
+
+    public getEnv() {
+        return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getEnv() : [:]
     }
 }

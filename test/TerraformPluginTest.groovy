@@ -1,15 +1,18 @@
-import org.junit.*
+import static org.hamcrest.Matchers.instanceOf
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.times
+import static org.mockito.Mockito.verify
+
+import org.junit.After
+import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
-
-import static org.hamcrest.Matchers.*
-import static org.junit.Assert.*
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Matchers.*
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPluginTest {
@@ -27,7 +30,7 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(TerraformPlugin.DEFAULT_VERSION, foundVersion.version)
+            assertEquals(TerraformPlugin.DEFAULT_VERSION, foundVersion)
         }
 
         @Test
@@ -39,7 +42,7 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(expectedVersion, foundVersion.version)
+            assertEquals(expectedVersion, foundVersion)
         }
     }
 
@@ -52,7 +55,7 @@ class TerraformPluginTest {
         @Test
         void usesVersionEvenIfFileExists() {
             TerraformPlugin.withVersion('2.0.0')
-            assertEquals('2.0.0', TerraformPlugin.version.version)
+            assertEquals('2.0.0', TerraformPlugin.version)
         }
     }
 
@@ -89,5 +92,137 @@ class TerraformPluginTest {
             assertThat(foundStrategy, instanceOf(TerraformPluginVersion12.class))
         }
 
+    }
+
+    class ReadFile {
+        @Test
+        void returnsTheContentsOfTheGivenFile() {
+            def expectedFilename = 'someFilename'
+            def expectedContent = 'someContent'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.readFile = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return  expectedContent
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def foundContent = plugin.readFile(expectedFilename)
+
+            assertEquals(expectedContent, foundContent)
+        }
+
+        @Test
+        void trimsWhitespaceFromTheFileContent() {
+            def expectedFilename = 'someFilename'
+            def expectedContent = 'someContent'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.readFile = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return "  ${expectedContent}   "
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def foundContent = plugin.readFile(expectedFilename)
+
+            assertEquals(expectedContent, foundContent)
+        }
+    }
+
+    class FileExists {
+        @Test
+        void returnsTrueIfFileExistsInWorkspace() {
+            def expectedFilename = 'someFile'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.fileExists = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return true
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def isFound = plugin.fileExists(expectedFilename)
+
+            assertTrue(isFound)
+        }
+
+        @Test
+        void returnsFalseIfFileDoesNotExistInWorkspace() {
+            def expectedFilename = 'someFile'
+            def jenkinsOriginal = new Expando()
+            jenkinsOriginal.fileExists = { String filename ->
+                assertEquals(expectedFilename, filename)
+                return false
+            }
+            def plugin = spy(new TerraformPlugin())
+            doReturn(jenkinsOriginal).when(plugin).getJenkinsOriginal()
+
+            def isFound = plugin.fileExists(expectedFilename)
+
+            assertFalse(isFound)
+        }
+    }
+
+    class ApplyTerraformValidateCommand {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformValidateCommand() {
+            def validateCommand = mock(TerraformValidateCommand.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn('someVersion').when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor('someVersion')
+
+            plugin.apply(validateCommand)
+
+            verify(strategy, times(1)).apply(validateCommand)
+        }
+    }
+
+    class ApplyTerraformValidateStage {
+        @Test
+        void shouldDecorateTheGivenStage() {
+            def validateStage = mock(TerraformValidateStage.class)
+            def expectedDecoration = mock(Closure.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn(expectedDecoration).when(plugin).modifyValidateStage(validateStage)
+
+            plugin.apply(validateStage)
+
+            verify(validateStage, times(1)).decorate(TerraformValidateStage.ALL, expectedDecoration)
+        }
+    }
+
+    class ModifyTerraformValidateStage {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformValidateStage() {
+            def expectedVersion = 'someVersion'
+            def validateStage = mock(TerraformValidateStage.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn(expectedVersion).when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor(expectedVersion)
+
+            def closure = plugin.modifyValidateStage(validateStage)
+            closure.call { -> }
+
+            verify(strategy, times(1)).apply(validateStage)
+        }
+
+        @Test
+        void shouldCallTheSubsequentClosureWhenDone() {
+            def version = 'someVersion'
+            def validateStage = mock(TerraformValidateStage.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn(version).when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor(version)
+            def subsequentClosure = mock(Closure.class)
+
+            def closure = plugin.modifyValidateStage(validateStage)
+            closure.call(subsequentClosure)
+
+            verify(subsequentClosure, times(1)).call()
+        }
     }
 }

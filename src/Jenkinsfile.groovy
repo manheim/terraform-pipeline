@@ -44,7 +44,7 @@ class Jenkinsfile {
 
     def Map parseScmUrl(String scmUrl) {
         def matcher = scmUrl =~ /.*(?:\/\/|\@)[^\/:]+[\/:]([^\/]+)\/([^\/.]+)(.git)?/
-        def Map results = new HashMap<String,String>()
+        def Map results = [:]
         results.put("organization", matcher[0][1])
         results.put("repo", matcher[0][2])
         return results
@@ -88,7 +88,7 @@ class Jenkinsfile {
         return defaultNodeName ?: instance.getEnv().DEFAULT_NODE_NAME
     }
 
-    public static void build(Closure closure) {
+    public static build(Closure closure) {
         closure.delegate = this.instance
         closure.call()
     }
@@ -122,7 +122,6 @@ class Jenkinsfile {
         }
 
         throw new RuntimeException("Your pipeline has ${stages.size()} stages - the maximum supported by default is 7.  Define a custom pipeline template and assign it to Jenkinsfile.pipelineTemplate to create your pipeline.")
-
     }
 
     public getEnv() {

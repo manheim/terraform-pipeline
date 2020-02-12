@@ -16,10 +16,11 @@ class CrqPlugin implements TerraformEnvironmentStagePlugin {
     }
 
     public String getCrqEnvironment(String environment) {
-        String crqEnvironment = Jenkinsfile.instance.getEnv()['CRQ_ENVIRONMENT']
+        def env = getEnv()
+        String crqEnvironment = env['CRQ_ENVIRONMENT']
 
         if (crqEnvironment == null) {
-            crqEnvironment = Jenkinsfile.instance.getEnv()["${environment.toUpperCase()}_CRQ_ENVIRONMENT"]
+            crqEnvironment = env["${environment.toUpperCase()}_CRQ_ENVIRONMENT"]
         }
 
         return crqEnvironment
@@ -32,7 +33,7 @@ class CrqPlugin implements TerraformEnvironmentStagePlugin {
             if (crqEnvironment) {
                 def config = [
                     environment: environment,
-                    app: Jenkinsfile.instance.getRepoName(),
+                    app: getRepoName(),
                     crqEnvironment: crqEnvironment
                 ]
 
@@ -78,4 +79,11 @@ class CrqPlugin implements TerraformEnvironmentStagePlugin {
         return "manheim_remedy error `cat ChangeID.txt | sed 's/ChangeID=//g'` \"${reason}\""
     }
 
+    public getEnv() {
+        return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getEnv() : [:]
+    }
+
+    public String getRepoName() {
+        return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getRepoName() : null
+    }
 }

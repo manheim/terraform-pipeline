@@ -1,11 +1,15 @@
-import static org.junit.Assert.*
-
-import org.junit.*
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import static org.hamcrest.Matchers.hasItem
+import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.is
+import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
-import static org.hamcrest.Matchers.*
+
+import org.junit.After
+import org.junit.Test
+import org.junit.runner.RunWith
+import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class WithAwsPluginTest {
@@ -139,5 +143,4 @@ class WithAwsPluginTest {
         }
     }
 }
-
 

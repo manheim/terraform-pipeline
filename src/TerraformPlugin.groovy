@@ -11,7 +11,7 @@
  */
 class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValidateStagePlugin {
 
-    static SemanticVersion version
+    static String version
     static final String DEFAULT_VERSION = '0.11.0'
     public static TERRAFORM_VERSION_FILE = '.terraform-version'
 
@@ -22,28 +22,50 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         TerraformValidateStage.addPlugin(plugin)
     }
 
-    public SemanticVersion detectVersion() {
-        if(version == null) {
+    public String detectVersion() {
+        if (version == null) {
             if (fileExists(TERRAFORM_VERSION_FILE)) {
-                version = new SemanticVersion(readFile(TERRAFORM_VERSION_FILE))
+                version = readFile(TERRAFORM_VERSION_FILE)
             } else {
-                version = new SemanticVersion(DEFAULT_VERSION)
+                version = DEFAULT_VERSION
             }
         }
 
         return version
     }
 
+    public static String checkVersion() {
+        return Jenkinsfile.build(pipelineConfiguration())
+    }
+
+    private static Closure pipelineConfiguration() {
+        def closure = {
+            node {
+                deleteDir()
+                checkout(scm)
+                def plugin = new TerraformPlugin()
+
+                return plugin.detectVersion()
+            }
+        }
+
+        closure.resolveStrategy = Closure.DELEGATE_ONLY
+        return closure
+    }
+
     public TerraformPluginVersion strategyFor(String version) {
-        if(new SemanticVersion(version).compareTo(new SemanticVersion('0.12.0')) >= 0) {
+        // if (new SemanticVersion(version) >= new SemanticVersion('0.12.0')) should be used
+        // here.  Unit tests pass with the above, but running Jenkinsfile in a pipeline context
+        // does not.  Debug statements show that the above will return 0 when it should return 'true'.
+        if ((new SemanticVersion(version) <=> new SemanticVersion('0.12.0')) >= 0) {
             return new TerraformPluginVersion12()
         }
 
         return new TerraformPluginVersion11()
     }
 
-    static void withVersion(String version) {
-        this.version = new SemanticVersion(version)
+    static void withVersion(String userVersion) {
+        this.version = userVersion
     }
 
     static  void resetVersion() {
@@ -51,18 +73,23 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
     }
 
     public boolean fileExists(String filename) {
-        return Jenkinsfile.instance.original.fileExists(filename)
+        return getJenkinsOriginal().fileExists(filename)
     }
 
     public String readFile(String filename) {
-        return (Jenkinsfile.instance.original.readFile(TERRAFORM_VERSION_FILE) as String).trim()
+        def content = (getJenkinsOriginal().readFile(filename) as String)
+        return content.trim()
+    }
+
+    public getJenkinsOriginal() {
+        return  Jenkinsfile.instance.original
     }
 
     @Override
     void apply(TerraformValidateCommand command) {
         def version = detectVersion()
 
-        def strategy = strategyFor(version.version)
+        def strategy = strategyFor(version)
         strategy.apply(command)
     }
 
@@ -75,7 +102,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return { closure ->
             def version = detectVersion()
 
-            def strategy = strategyFor(version.version)
+            def strategy = strategyFor(version)
             strategy.apply(validateStage)
 
             closure()
