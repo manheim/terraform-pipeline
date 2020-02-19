@@ -1,9 +1,15 @@
 class TfvarsFilesPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin {
 
     static String directory = "."
+    static List<String> globalFiles = []
 
     static withDirectory(String directory) {
         TfvarsFilesPlugin.directory = directory
+        return this
+    }
+
+    static withGlobalVarFile(String fileName) {
+        TfvarsFilesPlugin.globalFiles << fileName
         return this
     }
 
@@ -18,21 +24,25 @@ class TfvarsFilesPlugin implements TerraformPlanCommandPlugin, TerraformApplyCom
 
     @Override
     void apply(TerraformApplyCommand command) {
-        def environmentVarFile = "${directory}/${command.environment}.tfvars"
-        if (originalContext.fileExists(environmentVarFile)) {
-            command.withArgument("-var-file=${environmentVarFile}")
-        } else {
-            originalContext.echo "${environmentVarFile} does not exist."
-        }
+        applyToCommand(command)
     }
 
     @Override
     void apply(TerraformPlanCommand command) {
-        def environmentVarFile = "${directory}/${command.environment}.tfvars"
-        if (originalContext.fileExists(environmentVarFile)) {
-            command.withArgument("-var-file=${environmentVarFile}")
-        } else {
-            originalContext.echo "${environmentVarFile} does not exist."
+        applyToCommand(command)
+    }
+
+    void applyToCommand(command) {
+        def files = globalFiles.collect { file ->
+            return "${directory}/${file}"
+        } + "${directory}/${command.environment}.tfvars"
+
+        files.each { file ->
+            if (originalContext.fileExists(file)) {
+                command.withArgument("-var-file=${file}")
+            } else {
+                originalContext.echo "${file} does not exist."
+            }
         }
     }
 }

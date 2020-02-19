@@ -2,7 +2,7 @@
 
 This plugin allows you to add `-var-file=${environment}.tfvars` to your plan
 and apply commands.  It supports being configured for a directory relative to
-to the git root. 
+to the git root and global files being applied to every plan and apply command.
 
 For the following repository:
 
@@ -14,8 +14,12 @@ For the following repository:
 └── tfvars
     ├── qa.tfvars
     ├── uat.tfvars
-    └── prod.tfvars
+    ├── prod.tfvars
+    └── global.tfvars
 ```
+This Jenkinsfile setup will include a `-var-file` argument for both
+`qa.tfvars` and `global.tfvars` on the QA plan and apply commands.  Similarly,
+the UAT commands will include `uat.tfvars` and `global.tfvars`.
 
 ```
 // Jenkinsfile
@@ -23,7 +27,9 @@ For the following repository:
 
 Jenkinsfile.init(this)
 
-TfvarsFilesPlugin.withDirectory('./tfvars').init()
+TfvarsFilesPlugin.withDirectory('./tfvars')
+                 .withGlobalVarFile('global.tfvars'
+                 .init()
 
 def validate = new TerraformValidateStage()
 
