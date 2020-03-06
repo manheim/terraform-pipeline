@@ -19,6 +19,19 @@ class TerraformEnvironmentStageTest {
         TerraformEnvironmentStage.resetPlugins()
     }
 
+    public class Then {
+
+        @Test
+        void nextStageisCalled() {
+            def stage  = new TerraformEnvironmentStage('foo')
+            def stage2 = new TerraformEnvironmentStage('foo2')
+
+            def result = stage.then(stage2)
+
+            assertThat(result, isA(BuildGraph.class))
+        }
+    }
+
     public class AddedPlugins {
         @Test
         void willHaveApplyCalled() {
