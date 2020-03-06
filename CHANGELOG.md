@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #198](https://github.com/manheim/terraform-pipeline/issues/198) Fix using only TerraformEnvironmentStages
+
 # v5.4
 
 * [Issue #87](https://github.com/manheim/terraform-pipeline/issues/87) Add travis CI support to the project
