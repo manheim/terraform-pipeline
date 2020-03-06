@@ -21,7 +21,7 @@ class TerraformEnvironmentStage implements Stage {
         this.decorations = [:]
     }
 
-    public Stage then(Stage nextStages) {
+    public Stage then(Stage nextStage) {
         return new BuildGraph(this).then(nextStage)
     }
 
