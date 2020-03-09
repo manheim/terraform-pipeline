@@ -28,7 +28,7 @@ the UAT commands will include `uat.tfvars` and `global.tfvars`.
 Jenkinsfile.init(this)
 
 TfvarsFilesPlugin.withDirectory('./tfvars')
-                 .withGlobalVarFile('global.tfvars'
+                 .withGlobalVarFile('global.tfvars')
                  .init()
 
 def validate = new TerraformValidateStage()
