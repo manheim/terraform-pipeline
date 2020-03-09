@@ -75,11 +75,6 @@ class Jenkinsfile {
         }
     }
 
-    // Deprecate this, env should come from original
-    def static void init(original, env, Class customizations=null) {
-        init(original, customizations)
-    }
-
     def static void initializeDefaultPlugins() {
         TerraformPlugin.init()
     }
