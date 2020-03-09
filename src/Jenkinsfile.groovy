@@ -65,6 +65,15 @@ class Jenkinsfile {
     }
 
     def static void init(original, Class customizations=null) {
+        sharedInit(original, customizations)
+    }
+
+    // Deprecate this, env should come from original
+    def static void init(original, env, Class customizations=null) {
+        sharedInit(original, customizations)
+    }
+
+    def static private void sharedInit(original, Class customizations=null) {
         this.original = original
         this.docker   = original.docker
 
@@ -73,11 +82,6 @@ class Jenkinsfile {
         if (customizations != null) {
             customizations.init()
         }
-    }
-
-    // Deprecate this, env should come from original
-    def static void init(original, env, Class customizations=null) {
-        init(original, customizations)
     }
 
     def static void initializeDefaultPlugins() {
