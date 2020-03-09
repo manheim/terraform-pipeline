@@ -19,10 +19,6 @@ class Jenkinsfile {
         }
     }
 
-    def invokeMethod(String name, args) {
-        original.invokeMethod(name, args)
-    }
-
     def String getStandardizedRepoSlug() {
         if (repoSlug != null) {
             return repoSlug
