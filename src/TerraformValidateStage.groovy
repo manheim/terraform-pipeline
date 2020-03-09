@@ -26,7 +26,7 @@ class TerraformValidateStage implements Stage {
         def validateCommand = TerraformValidateCommand.instance()
 
         return {
-            node {
+            node(jenkinsfile.getNodeName()) {
                 deleteDir()
                 checkout(scm)
 
