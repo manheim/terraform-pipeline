@@ -90,6 +90,7 @@ class TerraformEnvironmentStage implements Stage {
 
     private void applyDecorations(String stageName, Closure stageClosure) {
         def stageDecorations = decorations.get(stageName) ?: { stage -> stage() }
+        stageDecorations.delegate = stageClosure.owner.delegate
         stageDecorations(stageClosure)
     }
 
