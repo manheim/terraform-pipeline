@@ -1,6 +1,7 @@
 # Unreleased
 
 * [Issue #198](https://github.com/manheim/terraform-pipeline/issues/198) Fix using only TerraformEnvironmentStages
+* [Issue #196](https://github.com/manheim/terraform-pipeline/issues/196) Fix defect - Excessive nested closures in Jenkinsfile.init.  Drop support for deprecated `Jenkinsfile.init(this,env)`
 
 # v5.4
 
