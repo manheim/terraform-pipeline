@@ -84,8 +84,7 @@ class Jenkinsfile {
     }
 
     public static build(Closure closure) {
-        closure.delegate = this.instance
-        closure.call()
+        original.ApplyJenkinsfileClosure(closure)
     }
 
     public static void build(List<Stage> stages) {
