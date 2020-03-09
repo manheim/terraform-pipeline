@@ -55,7 +55,7 @@ class TerraformEnvironmentStage implements Stage {
 
         def String environment = this.environment
         return { ->
-            node {
+            node(jenkinsfile.getNodeName()) {
                 deleteDir()
                 checkout(scm)
 
