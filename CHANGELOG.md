@@ -1,6 +1,7 @@
 # Unreleased
 
 * [Issue #194](https://github.com/manheim/terraform-pipeline/issues/194) Add support global tfvars files.
+* [Issue #198](https://github.com/manheim/terraform-pipeline/issues/198) Fix using only TerraformEnvironmentStages
 
 # v5.4
 
