@@ -3,6 +3,7 @@ class RegressionStage implements Stage {
     public String testCommand
     public List automationRepoList = []
     private String testCommandDirectory
+    private Jenkinsfile jenkinsfile
 
     private Closure existingDecorations
 
@@ -14,6 +15,7 @@ class RegressionStage implements Stage {
 
     public RegressionStage(String testCommand) {
         this.testCommand = testCommand
+        this.jenkinsfile = Jenkinsfile.instance
     }
 
     public RegressionStage withScm(String automationRepo) {
@@ -38,7 +40,7 @@ class RegressionStage implements Stage {
         applyPlugins()
 
         return {
-            node {
+            node(jenkinsfile.getNodeName()) {
                 stage("test") {
                     applyDecorations(delegate) {
                         if (automationRepoList.isEmpty()) {
