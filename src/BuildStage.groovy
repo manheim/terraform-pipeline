@@ -7,6 +7,7 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
 
     private String artifactIncludePattern
     private Closure existingDecorations
+    private Jenkinsfile jenkinsfile
 
     private static plugins = []
 
@@ -16,6 +17,7 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
 
     public BuildStage(String buildCommand) {
         this.buildCommand = buildCommand
+        this.jenkinsfile = Jenkinsfile.instance
     }
 
     public BuildStage saveArtifact(String artifactIncludePattern) {
@@ -48,7 +50,7 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
         applyPlugins()
 
         return {
-            node {
+            node(jenkinsfile.getNodeName()) {
                 stage("build") {
                     applyDecorations(delegate) {
                         checkout(scm)
