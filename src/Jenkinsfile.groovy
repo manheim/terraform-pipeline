@@ -7,18 +7,6 @@ class Jenkinsfile {
     public static declarative = false
     public static pipelineTemplate
 
-    def node(Closure closure) {
-        closure.delegate = original
-        String label = getNodeName()
-        if (label != null) {
-            echo "Using node: ${label}"
-            original.node(label, closure)
-        } else {
-            echo "defaultNodeName and DEFAULT_NODE_NAME environment variable are null"
-            original.node(closure)
-        }
-    }
-
     def String getStandardizedRepoSlug() {
         if (repoSlug != null) {
             return repoSlug
