@@ -40,7 +40,6 @@ class StageDecorationsTest {
         void applyHandlesMultipleNestedClosures() {
             def testSpy = spy(new TestSpy())
 
-            def inlinedClosure = { -> testSpy.inlinedClosureCalled() }
             def outerClosure = { nestedClosure -> nestedClosure(); testSpy.outerClosureCalled() }
             def middleClosure = { nestedClosure -> nestedClosure(); testSpy.middleClosureCalled() }
             def innerClosure = { nestedClosure -> nestedClosure(); testSpy.innerClosureCalled() }
@@ -51,7 +50,7 @@ class StageDecorationsTest {
             decorations.add(outerClosure)
 
             decorations.apply {
-                inlinedClosure()
+                testSpy.inlinedClosureCalled()
             }
 
             verify(testSpy, times(1)).outerClosureCalled()
@@ -103,7 +102,6 @@ class StageDecorationsTest {
             def testSpy = spy(new TestSpy())
             def group = 'somegroup'
 
-            def inlinedClosure = { -> testSpy.inlinedClosureCalled() }
             def outerClosure = { nestedClosure -> nestedClosure(); testSpy.outerClosureCalled() }
             def middleClosure = { nestedClosure -> nestedClosure(); testSpy.middleClosureCalled() }
             def innerClosure = { nestedClosure -> nestedClosure(); testSpy.innerClosureCalled() }
@@ -114,7 +112,7 @@ class StageDecorationsTest {
             decorations.add(group, outerClosure)
 
             decorations.apply(group) {
-                inlinedClosure()
+                testSpy.inlinedClosureCalled()
             }
 
             verify(testSpy, times(1)).outerClosureCalled()
