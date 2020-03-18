@@ -1,7 +1,7 @@
 class TerraformEnvironmentStage implements Stage {
     private Jenkinsfile jenkinsfile
     private String environment
-    private Map<String,Closure> decorations
+    private StageDecorations decorations
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
     private TerraformApplyCommand applyCommand
@@ -18,10 +18,10 @@ class TerraformEnvironmentStage implements Stage {
     TerraformEnvironmentStage(String environment) {
         this.environment = environment
         this.jenkinsfile = Jenkinsfile.instance
-        this.decorations = [:]
+        this.decorations = new StageDecorations()
     }
 
-    public Stage then(Stage nextStages) {
+    public Stage then(Stage nextStage) {
         return new BuildGraph(this).then(nextStage)
     }
 
@@ -55,29 +55,29 @@ class TerraformEnvironmentStage implements Stage {
 
         def String environment = this.environment
         return { ->
-            node {
+            node(jenkinsfile.getNodeName()) {
                 deleteDir()
                 checkout(scm)
 
-                applyDecorations(ALL) {
+                decorations.apply(ALL) {
                     stage("${PLAN}-${environment}") {
-                        applyDecorations(PLAN) {
+                        decorations.apply(PLAN) {
                             sh initCommand.toString()
                             sh planCommand.toString()
                         }
                     }
 
-                    applyDecorationsAround(CONFIRM) {
+                    decorations.apply("Around-${CONFIRM}") {
                         stage("${CONFIRM}-${environment}") {
-                            applyDecorations(CONFIRM) {
+                            decorations.apply(CONFIRM) {
                                 echo "Approved"
                             }
                         }
                     }
 
-                    applyDecorationsAround(APPLY) {
+                    decorations.apply("Around-${APPLY}") {
                         stage("${APPLY}-${environment}") {
-                            applyDecorations(APPLY) {
+                            decorations.apply(APPLY) {
                                 sh initCommand.toString()
                                 sh applyCommand.toString()
                             }
@@ -88,33 +88,12 @@ class TerraformEnvironmentStage implements Stage {
         }
     }
 
-    private void applyDecorations(String stageName, Closure stageClosure) {
-        def stageDecorations = decorations.get(stageName) ?: { stage -> stage() }
-        stageDecorations.delegate = jenkinsfile
-        stageDecorations(stageClosure)
-    }
-
     public decorate(String stageName, Closure decoration) {
-        def existingDecorations = decorations.get(stageName) ?: { stage -> stage() }
-        def newDecoration = { stage ->
-            decoration.delegate = delegate
-            decoration.resolveStrategy = Closure.DELEGATE_FIRST
-            decoration() {
-                stage.delegate = delegate
-                existingDecorations.delegate = delegate
-                existingDecorations(stage)
-            }
-        }
-
-        decorations.put(stageName, newDecoration)
-    }
-
-    private void applyDecorationsAround(String stageName, Closure stageClosure) {
-        applyDecorations("Around-${stageName}", stageClosure)
+        decorations.add(stageName, decoration)
     }
 
     public decorateAround(String stageName, Closure decoration) {
-        decorate("Around-${stageName}", decoration)
+        decorations.add("Around-${stageName}", decoration)
     }
 
     public String toString() {

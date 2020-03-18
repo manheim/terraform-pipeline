@@ -6,7 +6,8 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
     public String buildCommand
 
     private String artifactIncludePattern
-    private Closure existingDecorations
+    private StageDecorations decorations
+    private Jenkinsfile jenkinsfile
 
     private static plugins = []
 
@@ -16,6 +17,8 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
 
     public BuildStage(String buildCommand) {
         this.buildCommand = buildCommand
+        this.jenkinsfile = Jenkinsfile.instance
+        this.decorations = new StageDecorations()
     }
 
     public BuildStage saveArtifact(String artifactIncludePattern) {
@@ -44,13 +47,17 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
         }
     }
 
+    public void decorate(Closure decoration) {
+        decorations.add(decoration)
+    }
+
     protected Closure pipelineConfiguration() {
         applyPlugins()
 
         return {
-            node {
+            node(jenkinsfile.getNodeName()) {
                 stage("build") {
-                    applyDecorations(delegate) {
+                    decorations.apply {
                         checkout(scm)
                         sh buildCommand
                         if (artifactIncludePattern != null) {
@@ -59,16 +66,6 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
                     }
                 }
             }
-        }
-    }
-
-    private void applyDecorations(delegate, Closure stageClosure) {
-        if (existingDecorations != null) {
-            existingDecorations.delegate = delegate
-            existingDecorations(stageClosure)
-        } else {
-            stageClosure.delegate = delegate
-            stageClosure()
         }
     }
 
@@ -87,24 +84,6 @@ class BuildStage implements Stage, TerraformEnvironmentStagePlugin {
     public void applyPlugins() {
         for (plugin in plugins) {
             plugin.apply(this)
-        }
-    }
-
-    public void decorate(Closure decoration) {
-        if (existingDecorations == null) {
-            existingDecorations = decoration
-            existingDecorations.resolveStrategy = Closure.DELEGATE_FIRST
-        } else {
-            def newDecoration = { stage ->
-                decoration.delegate = delegate
-                decoration.resolveStrategy = Closure.DELEGATE_FIRST
-                decoration() {
-                    stage.delegate = delegate
-                    existingDecorations.delegate = delegate
-                    existingDecorations(stage)
-                }
-            }
-            existingDecorations = newDecoration
         }
     }
 }

@@ -37,6 +37,10 @@ class TfvarsFilesPluginTest {
         TfvarsFilesPlugin.withDirectory(directory).init()
     }
 
+    static void initWithGlobalFile(String file) {
+        TfvarsFilesPlugin.withGlobalVarFile(file).init()
+    }
+
     static void reset() {
         TerraformPlanCommand.resetPlugins()
         TerraformApplyCommand.resetPlugins()
@@ -106,6 +110,30 @@ class TfvarsFilesPluginTest {
         }
 
         @Test
+        void addsGlobalFileIfFileExists() {
+            fileWillExist()
+            initWithGlobalFile("globals.tfvars")
+            def command = TerraformApplyCommand.instanceFor('test')
+            assertThat(command.toString(), containsString('-var-file=./globals.tfvars'))
+        }
+
+        @Test
+        void doesNotAddGlobalFileIfFileDoesntExist() {
+            fileWillNotExist()
+            initWithGlobalFile("globals.tfvars")
+            def command = TerraformApplyCommand.instanceFor('test')
+            assertThat(command.toString(), not(containsString('-var-file=./globals.tfvars')))
+        }
+
+        @Test
+        void globalRespectsDirectorySetting() {
+            fileWillExist()
+            TfvarsFilesPlugin.withDirectory("./resources").withGlobalVarFile('globals.tfvars').init()
+            def command = TerraformApplyCommand.instanceFor('test')
+            assertThat(command.toString(), containsString('-var-file=./resources/globals.tfvars'))
+        }
+
+        @Test
         void respectsDirectorySetting() {
             fileWillExist()
             initWithDir('./resources')
@@ -113,40 +141,64 @@ class TfvarsFilesPluginTest {
             def command = TerraformApplyCommand.instanceFor('test')
             assertThat(command.toString(), containsString('-var-file=./resources/test.tfvars'))
         }
+    }
 
-        class PlanCommand {
+    class PlanCommand {
 
-            @After
-            void resetPlugins() {
-                reset()
-            }
+        @After
+        void resetPlugins() {
+            reset()
+        }
 
-            @Test
-            void returnsArgumentIfFileExists() {
-                fileWillExist()
-                initPlugin()
+        @Test
+        void returnsArgumentIfFileExists() {
+            fileWillExist()
+            initPlugin()
 
-                def command = TerraformPlanCommand.instanceFor('test')
-                assertThat(command.toString(), containsString('-var-file=./test.tfvars'))
-            }
+            def command = TerraformPlanCommand.instanceFor('test')
+            assertThat(command.toString(), containsString('-var-file=./test.tfvars'))
+        }
 
-            @Test
-            void doesNotAddArgIfFileDoesntExists() {
-                fileWillNotExist()
-                initPlugin()
+        @Test
+        void doesNotAddArgIfFileDoesntExists() {
+            fileWillNotExist()
+            initPlugin()
 
-                def command = TerraformPlanCommand.instanceFor('test')
-                assertThat(command.toString(), not(containsString('-var-file')))
-            }
+            def command = TerraformPlanCommand.instanceFor('test')
+            assertThat(command.toString(), not(containsString('-var-file')))
+        }
 
-            @Test
-            void respectsDirectorySetting() {
-                fileWillExist()
-                initWithDir('./resources')
+        @Test
+        void addsGlobalFileIfFileExists() {
+            fileWillExist()
+            initWithGlobalFile("globals.tfvars")
+            def command = TerraformPlanCommand.instanceFor('test')
+            assertThat(command.toString(), containsString('-var-file=./globals.tfvars'))
+        }
 
-                def command = TerraformPlanCommand.instanceFor('test')
-                assertThat(command.toString(), containsString('-var-file=./resources/test.tfvars'))
-            }
+        @Test
+        void doesNotAddGlobalFileIfFileDoesntExist() {
+            fileWillNotExist()
+            initWithGlobalFile("globals.tfvars")
+            def command = TerraformPlanCommand.instanceFor('test')
+            assertThat(command.toString(), not(containsString('-var-file=./globals.tfvars')))
+        }
+
+        @Test
+        void globalRespectsDirectorySetting() {
+            fileWillExist()
+            TfvarsFilesPlugin.withDirectory("./resources").withGlobalVarFile('globals.tfvars').init()
+            def command = TerraformPlanCommand.instanceFor('test')
+            assertThat(command.toString(), containsString('-var-file=./resources/globals.tfvars'))
+        }
+
+        @Test
+        void respectsDirectorySetting() {
+            fileWillExist()
+            initWithDir('./resources')
+
+            def command = TerraformPlanCommand.instanceFor('test')
+            assertThat(command.toString(), containsString('-var-file=./resources/test.tfvars'))
         }
     }
 }

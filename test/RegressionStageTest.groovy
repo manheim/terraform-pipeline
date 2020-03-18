@@ -15,10 +15,13 @@ class RegressionStageTest {
         void reset() {
             TerraformEnvironmentStage.resetPlugins()
             Jenkinsfile.instance = mock(Jenkinsfile.class)
+            Jenkinsfile.original = null
         }
 
         private configureJenkins(Map config = [:]) {
             Jenkinsfile.instance = mock(Jenkinsfile.class)
+            Jenkinsfile.original = new Expando()
+            Jenkinsfile.original.ApplyJenkinsfileClosure = { closure -> }
             when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
             when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
         }

@@ -7,22 +7,6 @@ class Jenkinsfile {
     public static declarative = false
     public static pipelineTemplate
 
-    def node(Closure closure) {
-        closure.delegate = original
-        String label = getNodeName()
-        if (label != null) {
-            echo "Using node: ${label}"
-            original.node(label, closure)
-        } else {
-            echo "defaultNodeName and DEFAULT_NODE_NAME environment variable are null"
-            original.node(closure)
-        }
-    }
-
-    def invokeMethod(String name, args) {
-        original.invokeMethod(name, args)
-    }
-
     def String getStandardizedRepoSlug() {
         if (repoSlug != null) {
             return repoSlug
@@ -75,11 +59,6 @@ class Jenkinsfile {
         }
     }
 
-    // Deprecate this, env should come from original
-    def static void init(original, env, Class customizations=null) {
-        init(original, customizations)
-    }
-
     def static void initializeDefaultPlugins() {
         TerraformPlugin.init()
     }
@@ -89,8 +68,7 @@ class Jenkinsfile {
     }
 
     public static build(Closure closure) {
-        closure.delegate = this.instance
-        closure.call()
+        original.ApplyJenkinsfileClosure(closure)
     }
 
     public static void build(List<Stage> stages) {
