@@ -5,7 +5,7 @@ class RegressionStage implements Stage {
     private String testCommandDirectory
     private Jenkinsfile jenkinsfile
 
-    private Closure existingDecorations
+    private StageDecorations decorations
 
     private static plugins = []
 
@@ -16,6 +16,7 @@ class RegressionStage implements Stage {
     public RegressionStage(String testCommand) {
         this.testCommand = testCommand
         this.jenkinsfile = Jenkinsfile.instance
+        this.decorations = new StageDecorations()
     }
 
     public RegressionStage withScm(String automationRepo) {
@@ -42,7 +43,7 @@ class RegressionStage implements Stage {
         return {
             node(jenkinsfile.getNodeName()) {
                 stage("test") {
-                    applyDecorations(delegate) {
+                    decorations.apply {
                         if (automationRepoList.isEmpty()) {
                             checkout scm
                             sh testCommand
@@ -71,14 +72,8 @@ class RegressionStage implements Stage {
         }
     }
 
-    private void applyDecorations(delegate, Closure stageClosure) {
-        if (existingDecorations != null) {
-            existingDecorations.delegate = delegate
-            existingDecorations(stageClosure)
-        } else {
-            stageClosure.delegate = delegate
-            stageClosure()
-        }
+    public void decorate(Closure decoration) {
+        decorations.add(decoration)
     }
 
     public static getPlugins() {
@@ -99,21 +94,4 @@ class RegressionStage implements Stage {
         }
     }
 
-    public void decorate(Closure decoration) {
-        if (existingDecorations == null) {
-            existingDecorations = decoration
-            existingDecorations.resolveStrategy = Closure.DELEGATE_FIRST
-        } else {
-            def newDecoration = { stage ->
-                decoration.delegate = delegate
-                decoration.resolveStrategy = Closure.DELEGATE_FIRST
-                decoration() {
-                    stage.delegate = delegate
-                    existingDecorations.delegate = delegate
-                    existingDecorations(stage)
-                }
-            }
-            existingDecorations = newDecoration
-        }
-    }
 }
