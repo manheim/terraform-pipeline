@@ -24,7 +24,7 @@ class StageDecorationsTest {
         @Test
         void applyAddedDecorationsAroundInnerClosure() {
             def testSpy = spy(new TestSpy())
-            def decoration = spy { nestedClosure -> nestedClosure() }
+            def decoration = { nestedClosure -> nestedClosure() }
 
             def decorations = new StageDecorations()
             decorations.add(decoration)
@@ -85,7 +85,7 @@ class StageDecorationsTest {
         @Test
         void applyAddedDecorationsAroundInnerClosure() {
             def testSpy = spy(new TestSpy())
-            def decoration = spy { nestedClosure -> nestedClosure() }
+            def decoration = { nestedClosure -> nestedClosure() }
             def group = 'somegroup'
 
             def decorations = new StageDecorations()
