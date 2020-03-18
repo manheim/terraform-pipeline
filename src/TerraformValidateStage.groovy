@@ -1,6 +1,6 @@
 class TerraformValidateStage implements Stage {
     private Jenkinsfile jenkinsfile
-    private Map<String,Closure> decorations
+    private StageDecorations decorations
 
     private static globalPlugins = []
 
@@ -9,7 +9,7 @@ class TerraformValidateStage implements Stage {
 
     public TerraformValidateStage() {
         this.jenkinsfile = Jenkinsfile.instance
-        this.decorations = [:]
+        this.decorations = new StageDecorations()
     }
 
     public Stage then(Stage nextStage) {
@@ -30,9 +30,9 @@ class TerraformValidateStage implements Stage {
                 deleteDir()
                 checkout(scm)
 
-                applyDecorations(ALL) {
+                decorations.apply(ALL) {
                     stage("validate") {
-                        applyDecorations(VALIDATE) {
+                        decorations.apply(VALIDATE) {
                             sh validateCommand.toString()
                         }
                     }
@@ -41,34 +41,8 @@ class TerraformValidateStage implements Stage {
         }
     }
 
-    private void applyDecorations(String stageName, Closure stageClosure) {
-        def stageDecorations = decorations.get(stageName) ?: { stage -> stage() }
-        stageDecorations.delegate = jenkinsfile
-        stageDecorations(stageClosure)
-    }
-
     public decorate(String stageName, Closure decoration) {
-        def existingDecorations = decorations.get(stageName) ?: { stage -> stage() }
-
-        def newDecoration = { stage ->
-            decoration.delegate = delegate
-            decoration.resolveStrategy = Closure.DELEGATE_FIRST
-            decoration() {
-                stage.delegate = delegate
-                existingDecorations.delegate = delegate
-                existingDecorations(stage)
-            }
-        }
-
-        decorations.put(stageName, newDecoration)
-    }
-
-    private void applyDecorationsAround(String stageName, Closure stageClosure) {
-        applyDecorations("Around-${stageName}", stageClosure)
-    }
-
-    public decorateAround(String stageName, Closure decoration) {
-        decorate("Around-${stageName}", decoration)
+        decorations.add(stageName, decoration)
     }
 
     public static addPlugin(plugin) {
