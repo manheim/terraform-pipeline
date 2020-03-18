@@ -36,14 +36,6 @@ class StageDecorationsTest {
             verify(testSpy, times(1)).foo()
         }
 
-        private class TestSpy {
-            public foo() { return }
-            public inlinedClosureCalled() { return }
-            public innerClosureCalled() { return }
-            public middleClosureCalled() { return }
-            public outerClosureCalled() { return }
-        }
-
         @Test
         void applyHandlesMultipleNestedClosures() {
             def testSpy = spy(new TestSpy())
@@ -66,6 +58,14 @@ class StageDecorationsTest {
             verify(testSpy, times(1)).middleClosureCalled()
             verify(testSpy, times(1)).innerClosureCalled()
             verify(testSpy, times(1)).inlinedClosureCalled()
+        }
+
+        private class TestSpy {
+            public foo() { return }
+            public inlinedClosureCalled() { return }
+            public innerClosureCalled() { return }
+            public middleClosureCalled() { return }
+            public outerClosureCalled() { return }
         }
     }
 
@@ -98,14 +98,6 @@ class StageDecorationsTest {
             verify(testSpy, times(1)).foo()
         }
 
-        private class TestSpy {
-            public foo() { return }
-            public inlinedClosureCalled() { return }
-            public innerClosureCalled() { return }
-            public middleClosureCalled() { return }
-            public outerClosureCalled() { return }
-        }
-
         @Test
         void applyHandlesMultipleNestedClosures() {
             def testSpy = spy(new TestSpy())
@@ -130,13 +122,17 @@ class StageDecorationsTest {
             verify(testSpy, times(1)).innerClosureCalled()
             verify(testSpy, times(1)).inlinedClosureCalled()
         }
+
+        private class TestSpy {
+            public foo() { return }
+            public inlinedClosureCalled() { return }
+            public innerClosureCalled() { return }
+            public middleClosureCalled() { return }
+            public outerClosureCalled() { return }
+        }
     }
 
     class WithAndWithoutGroups {
-        private class TestSpy {
-            public foo() { return }
-        }
-
         @Test
         void applyWithoutGroupDoesNotRunGroupdDecorations() {
             def withoutGroup = spy(new TestSpy())
@@ -175,5 +171,8 @@ class StageDecorationsTest {
             verify(withGroup, times(1)).foo()
         }
 
+        private class TestSpy {
+            public foo() { return }
+        }
     }
 }
