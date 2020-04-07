@@ -5,6 +5,10 @@ import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.notNullValue
 import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.any
 
 import org.junit.After
 import org.junit.Test
@@ -137,6 +141,18 @@ class CredentialsPluginTest {
             Map results = CredentialsPlugin.populateDefaults(credentialsId, passwordVariable: customPasswordVariable)
 
             assertThat(results['passwordVariable'], is(equalTo(customPasswordVariable)))
+        }
+    }
+
+    class Apply {
+        @Test
+        void decoratesTheBuildStage()  {
+            def buildStage = mock(BuildStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(buildStage)
+
+            verify(buildStage).decorate(any(Closure.class))
         }
     }
 }
