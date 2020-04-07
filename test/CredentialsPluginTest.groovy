@@ -22,6 +22,7 @@ class CredentialsPluginTest {
         void resetPlugins() {
             BuildStage.resetPlugins()
             RegressionStage.resetPlugins()
+            TerraformEnvironmentStage.resetPlugins()
             CredentialsPlugin.reset()
         }
 
@@ -39,6 +40,15 @@ class CredentialsPluginTest {
             CredentialsPlugin.init()
 
             Collection actualPlugins = RegressionStage.getPlugins()
+
+            assertThat(actualPlugins, hasItem(instanceOf(CredentialsPlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformEnvironmentStage() {
+            CredentialsPlugin.init()
+
+            Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
 
             assertThat(actualPlugins, hasItem(instanceOf(CredentialsPlugin.class)))
         }
@@ -173,6 +183,16 @@ class CredentialsPluginTest {
             plugin.apply(testStage)
 
             verify(testStage).decorate(any(Closure.class))
+        }
+
+        @Test
+        void decoratesTheTerraformEnvironmentStage()  {
+            def environment = mock(TerraformEnvironmentStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(environment)
+
+            verify(environment).decorate(any(Closure.class))
         }
     }
 }
