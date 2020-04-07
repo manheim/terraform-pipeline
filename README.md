@@ -98,7 +98,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on master branch.
 * [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md): automatically set `TF_VAR_environment` variable.
 ### Credentials and Configuration Management
-* [CredentialsPlugin](./docs/CredentialsPlugin.md): Inject Jenkins credentials into your BuildStage.
+* [CredentialsPlugin](./docs/CredentialsPlugin.md): Inject Jenkins credentials into your stages.
 * [FileParametersPlugin](./docs/FileParametersPlugin.md): Use properties files to inject environment-specific variables.
 * [ParameterStoreBuildWrapperPlugin](./docs/ParameterStoreBuildWrapperPlugin.md): Inject environment-specific variables using `withAwsParameterStore`.
 * [ParameterStoreExecPlugin](./docs/ParameterStoreExecPlugin.md): Inject environment-specific variables using parameter-store-exec.

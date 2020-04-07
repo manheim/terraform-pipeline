@@ -5,6 +5,10 @@ import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.notNullValue
 import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.any
 
 import org.junit.After
 import org.junit.Test
@@ -17,6 +21,9 @@ class CredentialsPluginTest {
         @After
         void resetPlugins() {
             BuildStage.resetPlugins()
+            RegressionStage.resetPlugins()
+            TerraformEnvironmentStage.resetPlugins()
+            TerraformValidateStage.resetPlugins()
             CredentialsPlugin.reset()
         }
 
@@ -25,6 +32,24 @@ class CredentialsPluginTest {
             CredentialsPlugin.init()
 
             Collection actualPlugins = BuildStage.getPlugins()
+
+            assertThat(actualPlugins, hasItem(instanceOf(CredentialsPlugin.class)))
+        }
+
+        @Test
+        void modifiesRegressionStage() {
+            CredentialsPlugin.init()
+
+            Collection actualPlugins = RegressionStage.getPlugins()
+
+            assertThat(actualPlugins, hasItem(instanceOf(CredentialsPlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformEnvironmentStage() {
+            CredentialsPlugin.init()
+
+            Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
 
             assertThat(actualPlugins, hasItem(instanceOf(CredentialsPlugin.class)))
         }
@@ -137,6 +162,48 @@ class CredentialsPluginTest {
             Map results = CredentialsPlugin.populateDefaults(credentialsId, passwordVariable: customPasswordVariable)
 
             assertThat(results['passwordVariable'], is(equalTo(customPasswordVariable)))
+        }
+    }
+
+    class Apply {
+        @Test
+        void decoratesTheBuildStage()  {
+            def buildStage = mock(BuildStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(buildStage)
+
+            verify(buildStage).decorate(any(Closure.class))
+        }
+
+        @Test
+        void decoratesTheRegressionStage()  {
+            def testStage = mock(RegressionStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(testStage)
+
+            verify(testStage).decorate(any(Closure.class))
+        }
+
+        @Test
+        void decoratesTheTerraformEnvironmentStage()  {
+            def environment = mock(TerraformEnvironmentStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(environment)
+
+            verify(environment).decorate(any(Closure.class))
+        }
+
+        @Test
+        void decoratesTheTerraformValidateStage()  {
+            def environment = mock(TerraformValidateStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(environment)
+
+            verify(environment).decorate(any(Closure.class))
         }
     }
 }

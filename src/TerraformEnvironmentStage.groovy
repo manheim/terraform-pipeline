@@ -88,6 +88,10 @@ class TerraformEnvironmentStage implements Stage {
         }
     }
 
+    public void decorate(Closure decoration) {
+        decorations.add(ALL, decoration)
+    }
+
     public decorate(String stageName, Closure decoration) {
         decorations.add(stageName, decoration)
     }
