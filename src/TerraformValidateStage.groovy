@@ -41,6 +41,10 @@ class TerraformValidateStage implements Stage {
         }
     }
 
+    public decorate(Closure decoration) {
+        decorations.add(ALL, decoration)
+    }
+
     public decorate(String stageName, Closure decoration) {
         decorations.add(stageName, decoration)
     }

@@ -23,6 +23,7 @@ class CredentialsPluginTest {
             BuildStage.resetPlugins()
             RegressionStage.resetPlugins()
             TerraformEnvironmentStage.resetPlugins()
+            TerraformValidateStage.resetPlugins()
             CredentialsPlugin.reset()
         }
 
@@ -188,6 +189,16 @@ class CredentialsPluginTest {
         @Test
         void decoratesTheTerraformEnvironmentStage()  {
             def environment = mock(TerraformEnvironmentStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(environment)
+
+            verify(environment).decorate(any(Closure.class))
+        }
+
+        @Test
+        void decoratesTheTerraformValidateStage()  {
+            def environment = mock(TerraformValidateStage.class)
             def plugin = spy(new CredentialsPlugin())
 
             plugin.apply(environment)
