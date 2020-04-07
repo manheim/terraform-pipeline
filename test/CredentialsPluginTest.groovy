@@ -21,6 +21,7 @@ class CredentialsPluginTest {
         @After
         void resetPlugins() {
             BuildStage.resetPlugins()
+            RegressionStage.resetPlugins()
             CredentialsPlugin.reset()
         }
 
@@ -29,6 +30,15 @@ class CredentialsPluginTest {
             CredentialsPlugin.init()
 
             Collection actualPlugins = BuildStage.getPlugins()
+
+            assertThat(actualPlugins, hasItem(instanceOf(CredentialsPlugin.class)))
+        }
+
+        @Test
+        void modifiesRegressionStage() {
+            CredentialsPlugin.init()
+
+            Collection actualPlugins = RegressionStage.getPlugins()
 
             assertThat(actualPlugins, hasItem(instanceOf(CredentialsPlugin.class)))
         }
@@ -153,6 +163,16 @@ class CredentialsPluginTest {
             plugin.apply(buildStage)
 
             verify(buildStage).decorate(any(Closure.class))
+        }
+
+        @Test
+        void decoratesTheRegressionStage()  {
+            def testStage = mock(RegressionStage.class)
+            def plugin = spy(new CredentialsPlugin())
+
+            plugin.apply(testStage)
+
+            verify(testStage).decorate(any(Closure.class))
         }
     }
 }

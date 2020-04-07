@@ -1,4 +1,4 @@
-class CredentialsPlugin implements BuildStagePlugin {
+class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin {
     private static globalBuildCredentials = []
     private buildCredentials = []
 
@@ -6,6 +6,7 @@ class CredentialsPlugin implements BuildStagePlugin {
         def plugin = new CredentialsPlugin()
 
         BuildStage.addPlugin(plugin)
+        RegressionStage.addPlugin(plugin)
     }
 
     public CredentialsPlugin() {
@@ -22,6 +23,11 @@ class CredentialsPlugin implements BuildStagePlugin {
     @Override
     public void apply(BuildStage buildStage) {
         buildStage.decorate(addBuildCredentials())
+    }
+
+    @Override
+    public void apply(RegressionStage regressionStage) {
+        regressionStage.decorate(addBuildCredentials())
     }
 
     private addBuildCredentials() {
