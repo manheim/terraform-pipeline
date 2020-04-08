@@ -23,8 +23,11 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
     String pathForEnvironment(String environment) {
         String organization = Jenkinsfile.instance.getOrganization()
         String repoName = Jenkinsfile.instance.getRepoName()
+        def options = [ environment: environment,
+                        repoName: repoName,
+                        organization: organization ]
 
-        return "/${organization}/${repoName}/${environment}/"
+        return "/${options['organization']}/${options['repoName']}/${options['environment']}/"
     }
 
     public static Closure addParameterStoreBuildWrapper(Map options = []) {
