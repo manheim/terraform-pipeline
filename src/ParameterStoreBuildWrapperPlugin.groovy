@@ -2,8 +2,14 @@ import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
 
 class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugin {
+    private pathPattern
+
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new ParameterStoreBuildWrapperPlugin())
+    }
+
+    public ParameterStoreBuildWrapperPlugin() {
+        pathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
     }
 
     @Override
@@ -26,8 +32,6 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
         def patternOptions = [ environment: environment,
                                repoName: repoName,
                                organization: organization ]
-
-        def pathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
 
         return pathPattern(patternOptions)
     }
