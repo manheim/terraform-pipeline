@@ -2,14 +2,15 @@ import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
 
 class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugin {
-    private pathPattern
+    private static globalPathPattern
+    private static defaultPathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new ParameterStoreBuildWrapperPlugin())
     }
 
-    public ParameterStoreBuildWrapperPlugin() {
-        pathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
+    public static withPathPattern(Closure newPathPattern) {
+        globalPathPattern = newPathPattern
     }
 
     @Override
@@ -33,6 +34,8 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
                                repoName: repoName,
                                organization: organization ]
 
+        def pathPattern = globalPathPattern ?: defaultPathPattern
+
         return pathPattern(patternOptions)
     }
 
@@ -48,5 +51,9 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
                 closure()
             }
         }
+    }
+
+    public static reset() {
+        globalPathPattern = null
     }
 }

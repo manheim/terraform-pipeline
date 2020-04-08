@@ -31,6 +31,7 @@ class ParameterStoreBuildWrapperPluginTest {
         @After
         public void reset() {
             Jenkinsfile.instance = null
+            ParameterStoreBuildWrapperPlugin.reset()
         }
 
         private configureJenkins(Map config = [:]) {
@@ -51,7 +52,22 @@ class ParameterStoreBuildWrapperPluginTest {
             ParameterStoreBuildWrapperPlugin plugin = new ParameterStoreBuildWrapperPlugin()
 
             String actual = plugin.pathForEnvironment(environment)
-            assertEquals(actual, "/${organization}/${repoName}/${environment}/".toString())
+            assertEquals("/${organization}/${repoName}/${environment}/".toString(), actual)
+        }
+
+        @Test
+        void usesCustomPatternWhenProvided() {
+            String organization = "MyOrg"
+            String repoName = "MyRepo"
+            String environment = "qa"
+            Closure customPattern = { options -> "/foo/${options['organization']}/${options['environment']}/${options['repoName']}" }
+
+            configureJenkins(repoName: repoName, organization: organization)
+            ParameterStoreBuildWrapperPlugin.withPathPattern(customPattern)
+            ParameterStoreBuildWrapperPlugin plugin = new ParameterStoreBuildWrapperPlugin()
+
+            String actual = plugin.pathForEnvironment(environment)
+            assertEquals("/foo/${organization}/${environment}/${repoName}".toString(), actual)
         }
     }
 }
