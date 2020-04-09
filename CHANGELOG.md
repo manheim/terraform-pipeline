@@ -1,5 +1,7 @@
 # Unreleased
 
+# v5.6
+
 * [Issue #203](https://github.com/manheim/terraform-pipeline/issues/201) ParameterStoreBuildWrapperPlugin - allow path to be customized
 * [Issue #192](https://github.com/manheim/terraform-pipeline/issues/192) Apply CredentialsPlugins to all Stages, not just BuildStage
 
