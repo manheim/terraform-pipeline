@@ -1,4 +1,4 @@
-class CredentialsPlugin implements BuildStagePlugin {
+class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, TerraformEnvironmentStagePlugin, TerraformValidateStagePlugin {
     private static globalBuildCredentials = []
     private buildCredentials = []
 
@@ -6,6 +6,9 @@ class CredentialsPlugin implements BuildStagePlugin {
         def plugin = new CredentialsPlugin()
 
         BuildStage.addPlugin(plugin)
+        RegressionStage.addPlugin(plugin)
+        TerraformEnvironmentStage.addPlugin(plugin)
+        TerraformValidateStage.addPlugin(plugin)
     }
 
     public CredentialsPlugin() {
@@ -22,6 +25,21 @@ class CredentialsPlugin implements BuildStagePlugin {
     @Override
     public void apply(BuildStage buildStage) {
         buildStage.decorate(addBuildCredentials())
+    }
+
+    @Override
+    public void apply(RegressionStage regressionStage) {
+        regressionStage.decorate(addBuildCredentials())
+    }
+
+    @Override
+    public void apply(TerraformEnvironmentStage environmentStage) {
+        environmentStage.decorate(addBuildCredentials())
+    }
+
+    @Override
+    public void apply(TerraformValidateStage validateStage) {
+        validateStage.decorate(addBuildCredentials())
     }
 
     private addBuildCredentials() {

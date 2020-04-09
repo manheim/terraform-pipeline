@@ -32,3 +32,32 @@ validate.then(deployQA)
         .then(deployProd)
         .build()
 ```
+
+Optionally, you can override the default ParameterStore path with your own custom pattern.
+
+```
+// Jenkinsfile
+@Library(['terraform-pipeline@v5.0']) _
+
+Jenkinsfile.init(this)
+
+// Enable ParameterStoreBuildWrapperPlugin with a custom path pattern
+ParameterStoreBuildWrapperPlugin.withPathPattern { options -> "/${options['organization']}/${options['environment']}/${options['repoName']}" }
+                                .init()
+
+def validate = new TerraformValidateStage()
+
+// Inject all parameters in /<GitOrg>/qa/<GitRepo>
+def deployQA = new TerraformEnvironmentStage('qa')
+
+// Inject all parameters in /<GitOrg>/uat/<GitRepo>
+def deployUat = new TerraformEnvironmentStage('uat')
+
+// Inject all parameters in /<GitOrg>/prod/<GitRepo>
+def deployProd = new TerraformEnvironmentStage('prod')
+
+validate.then(deployQA)
+        .then(deployUat)
+        .then(deployProd)
+        .build()
+```
