@@ -2,8 +2,16 @@ import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
 
 class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugin {
+    private static globalPathPattern
+    private static defaultPathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
+
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new ParameterStoreBuildWrapperPlugin())
+    }
+
+    public static withPathPattern(Closure newPathPattern) {
+        globalPathPattern = newPathPattern
+        return this
     }
 
     @Override
@@ -23,8 +31,13 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
     String pathForEnvironment(String environment) {
         String organization = Jenkinsfile.instance.getOrganization()
         String repoName = Jenkinsfile.instance.getRepoName()
+        def patternOptions = [ environment: environment,
+                               repoName: repoName,
+                               organization: organization ]
 
-        return "/${organization}/${repoName}/${environment}/"
+        def pathPattern = globalPathPattern ?: defaultPathPattern
+
+        return pathPattern(patternOptions)
     }
 
     public static Closure addParameterStoreBuildWrapper(Map options = []) {
@@ -39,5 +52,9 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
                 closure()
             }
         }
+    }
+
+    public static reset() {
+        globalPathPattern = null
     }
 }
