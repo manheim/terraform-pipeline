@@ -11,6 +11,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
 
     public static withPathPattern(Closure newPathPattern) {
         globalPathPattern = newPathPattern
+        return this
     }
 
     @Override

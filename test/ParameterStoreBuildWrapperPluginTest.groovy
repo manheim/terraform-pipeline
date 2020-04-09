@@ -70,5 +70,19 @@ class ParameterStoreBuildWrapperPluginTest {
             assertEquals("/foo/${organization}/${environment}/${repoName}".toString(), actual)
         }
     }
+
+    class WithPathPattern {
+        @After
+        public void reset() {
+            ParameterStoreBuildWrapperPlugin.reset()
+        }
+
+        @Test
+        void isFluent() {
+            def result = ParameterStoreBuildWrapperPlugin.withPathPattern { options -> 'somePattern' }
+
+            assertEquals(ParameterStoreBuildWrapperPlugin.class, result)
+        }
+    }
 }
 
