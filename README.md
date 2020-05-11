@@ -92,6 +92,55 @@ validate.then(deployQa)
 
 The example above gives you a bare-bones pipeline, and there may be Jenkinsfile features that you'd like to take advantage of.  Some of these features have been pre-defined as Plugins for this library.  Pre-defined plugins can be enabled by simply calling their static `init()` method.
 
+Plugins primarily function by wrapping Jenkins DSL in blocks, such as `withEnv() {}` or `withAWS() {}`. This means that they nest inside each other. The order you initialize the plugins is maintained and translates to an inside to outside order.
+
+Of primary concern is using `TerraformEnvironmentStage.withGlobalEnv(String, String)` to define environment variables used by plugins. This convienence method actually instantiates an instance of the `EnvironmentVariablePlugin` under the covers.
+
+Take the following example:
+
+```
+TerraformEnvironmentStage.withGlobalEnv('AWS_ROLE_ARN', 'role::arn::here')
+
+WithAwsPlugin.init()
+```
+
+This will actually end up with a Jenkins Pipeline that looks like this:
+
+```
+{
+  /* Code that looks for iam role in env vars. */
+  if(iamRole != null) {
+    withAws(role: iamRole) {
+      withEnv("AWS_ROLE_ARN=role::arn::here") {
+        //Terraform commands
+      }
+    }
+  } else {
+    sh "echo no role found skipping withAWS)"
+    withEnv("AWS_ROLE_ARN=role::arn::here") {
+      //Terraform commands.
+    }
+  }
+}
+```
+
+Since `withEnv` was initialized first, it's nested closest to the terraform
+commands.
+
+As a general rule, initialize plugins that utilize environment variables before
+you set up those environment variables. If this offends your code aesthetic
+preferences, you can also just set environment variables directly on `env` at
+the top of your Jenkinsfile. Note that this will scope those environment
+variables globally, making them available outside of the
+`TerraformEnvironmentStage` steps of your pipeline.
+
+```
+env.AWS_ROLE_ARN = 'role::arn::here'
+
+withAwsPlugin.init()
+```
+
+
 ### Default Plugins
 * [TerraformPlugin](./docs/TerraformPlugin.md): apply version-specific terraform behavior based on the version of terraform in use.
 * [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md): pause and review the plan, before applying any changes.
