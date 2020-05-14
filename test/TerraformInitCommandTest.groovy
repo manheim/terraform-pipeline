@@ -89,6 +89,16 @@ class TerraformInitCommandTest {
         }
     }
 
+    public class WithSuffix {
+        @Test
+        void addsSuffixToCommand() {
+            def command = new TerraformInitCommand().withSuffix("\"")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("\""))
+        }
+    }
+
     public class Plugins {
         @After
         void resetPlugins() {
