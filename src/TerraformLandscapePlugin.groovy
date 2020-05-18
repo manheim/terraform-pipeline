@@ -7,7 +7,7 @@ class TerraformLandscapePlugin implements TerraformPlanCommandPlugin {
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        command.withArgument("| landscape")
+        command.withSuffix("| landscape")
     }
 
 }
