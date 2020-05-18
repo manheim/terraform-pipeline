@@ -109,7 +109,6 @@ class TerraformInitCommandTest {
         }
     }
 
-
     public class WithSuffix {
         @Test
         void addsSuffixToEndOfCommand() {
