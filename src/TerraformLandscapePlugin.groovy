@@ -7,7 +7,8 @@ class TerraformLandscapePlugin implements TerraformPlanCommandPlugin {
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        command.withSuffix(" 2>plan.err | landscape")
+        command.withPrefix("gem install --no-document --version 0.2.2 terraform_landscape")
+        command.withSuffix(" | landscape")
     }
 
 }
