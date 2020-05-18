@@ -7,7 +7,7 @@ class TerraformLandscapePlugin implements TerraformPlanCommandPlugin {
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        command.withPrefix("gem list installed | grep terraform_landscape")
+        command.withPrefix("gem list installed | grep terraform_landscape &&")
         command.withSuffix(" | landscape")
     }
 
