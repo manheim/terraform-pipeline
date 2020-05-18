@@ -5,6 +5,7 @@ class TerraformPlanCommand {
     private String command = "plan"
     String environment
     private prefixes = []
+    private suffixes = []
     private arguments = []
     private static plugins = DEFAULT_PLUGINS.clone()
     private appliedPlugins = []
@@ -21,6 +22,11 @@ class TerraformPlanCommand {
 
     public TerraformPlanCommand withPrefix(String prefix) {
         prefixes << prefix
+        return this
+    }
+
+    public TerraformPlanCommand withSuffix(String suffix) {
+        suffixes << suffix
         return this
     }
 
@@ -48,6 +54,7 @@ class TerraformPlanCommand {
         if (directory) {
             pieces << directory
         }
+        pieces << suffixes
 
         return pieces.join(' ')
     }
