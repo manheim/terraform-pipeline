@@ -5,13 +5,17 @@ Enable this plugin to improve Terraform's plan output commands with the [terrafo
 One-time setup:
 * Install the terraform-landscape gem on your Jenkins slaves.
 
+Requirements:
+* Enable AnsiColorPlugin for colors in Jenkins
+
 ```
 // Jenkinsfile
 @Library(['terraform-pipeline@v3.10']) _
 
 Jenkinsfile.init(this, env)
 
-TerraformLandscapePlugin.init() // Use the terraform-landscape gem to format plans
+AnsiColorPlugin.init()          // REQUIRED: Decorate your TerraformEnvironmentStages with the AnsiColor plugin
+TerraformLandscapePlugin.init() // Use the Terraform Landscape gem to format plan output
 
 def validate = new TerraformValidateStage()
 
