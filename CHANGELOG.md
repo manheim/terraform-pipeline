@@ -1,4 +1,5 @@
 # Unreleased
+* [Issue #210](https://github.com/manheim/terraform-pipeline/issues/210) Support Terraform Landscape Plugin - Terraform Plan reformatting
 
 # v5.6
 
