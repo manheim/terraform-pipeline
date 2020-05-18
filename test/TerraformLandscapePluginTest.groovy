@@ -42,7 +42,7 @@ class TerraformLandscapePluginTest {
             plugin.apply(command)
 
             String result = command.toString()
-            assertThat(result, containsString("2>plan.err | landscape | tee plan.out"))
+            assertThat(result, containsString("| landscape"))
         }
     }
 }
