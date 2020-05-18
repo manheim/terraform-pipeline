@@ -35,7 +35,7 @@ class TerraformLandscapePluginTest {
     public class Apply {
 
         @Test
-        void addsLandscapeSuffixToTerraformPlan() {
+        void addsLandscapeArgumentToTerraformPlan() {
             TerraformLandscapePlugin plugin = new TerraformLandscapePlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
 
