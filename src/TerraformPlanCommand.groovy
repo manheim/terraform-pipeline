@@ -54,7 +54,7 @@ class TerraformPlanCommand {
         if (directory) {
             pieces << directory
         }
-        pieces << suffixes
+        pieces += suffixes
 
         return pieces.join(' ')
     }
