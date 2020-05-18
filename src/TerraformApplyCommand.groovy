@@ -4,6 +4,7 @@ class TerraformApplyCommand {
     private String command = "apply"
     String environment
     private prefixes = []
+    private suffixes = []
     private args = []
     private static plugins = []
     private appliedPlugins = []
@@ -28,6 +29,11 @@ class TerraformApplyCommand {
         return this
     }
 
+    public TerraformApplyCommand withSuffix(String suffix) {
+        suffixes << suffix
+        return this
+    }
+
     public TerraformApplyCommand withDirectory(String directory) {
         this.directory = directory
         return this
@@ -47,6 +53,8 @@ class TerraformApplyCommand {
         if (directory) {
             pieces << directory
         }
+
+        pieces += suffixes
 
         return pieces.join(' ')
     }
