@@ -3,6 +3,7 @@ class TerraformValidateCommand {
     private String command = "validate"
     private arguments = []
     private prefixes = []
+    private suffixes = []
     private static globalPlugins = []
     private appliedPlugins = []
     private String directory
@@ -17,6 +18,11 @@ class TerraformValidateCommand {
 
     public TerraformValidateCommand withPrefix(String prefix) {
         prefixes << prefix
+        return this
+    }
+
+    public TerraformValidateCommand withSuffix(String suffix) {
+        suffixes << suffix
         return this
     }
 
@@ -37,6 +43,8 @@ class TerraformValidateCommand {
         if (directory) {
             pieces << directory
         }
+        pieces += suffixes
+
         return pieces.join(' ')
     }
 

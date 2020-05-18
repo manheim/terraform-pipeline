@@ -41,6 +41,35 @@ class TerraformValidateCommandTest {
         }
     }
 
+    public class WithSuffix {
+        @Test
+        void addsSuffixToEndOfCommand() {
+            def command = new TerraformValidateCommand().withSuffix("> /dev/null")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("> /dev/null"))
+        }
+
+        @Test
+        void addsSuffixAfterArgumentsAndDirectories() {
+            def command = new TerraformValidateCommand().withArgument('fakeArg')
+                                                        .withDirectory('fakeDirectory')
+                                                        .withSuffix("> /dev/null")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("> /dev/null"))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformValidateCommand().withSuffix("fooSuffix")
+                                                        .withSuffix("> /dev/null")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("fooSuffix > /dev/null"))
+        }
+    }
+
     public class Plugins {
         @After
         void resetPlugins() {

@@ -1,5 +1,8 @@
 # Unreleased
 
+* [Issue #221](https://github.com/manheim/terraform-pipeline/issues/221) Support suffixes for terraform commands
+* [Issue #222](https://github.com/manheim/terraform-pipeline/issues/222) TerraformInitCommand - withPrefix doesn't support multiple prefixes
+
 # v5.6
 
 * [Issue #203](https://github.com/manheim/terraform-pipeline/issues/201) ParameterStoreBuildWrapperPlugin - allow path to be customized
