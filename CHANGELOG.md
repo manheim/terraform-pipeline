@@ -1,6 +1,8 @@
 # Unreleased
-* [Issue #210](https://github.com/manheim/terraform-pipeline/issues/210) Support Terraform Landscape Plugin - Terraform Plan reformatting
 
+# v5.7
+
+* [Issue #210](https://github.com/manheim/terraform-pipeline/issues/210) Support Terraform Landscape Plugin - Terraform Plan reformatting
 * [Issue #221](https://github.com/manheim/terraform-pipeline/issues/221) Support suffixes for terraform commands
 * [Issue #222](https://github.com/manheim/terraform-pipeline/issues/222) TerraformInitCommand - withPrefix doesn't support multiple prefixes
 
