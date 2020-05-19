@@ -4,6 +4,7 @@ class TerraformInitCommand {
     private String command = "init"
     String environment
     private prefixes = []
+    private suffixes = []
     private backendConfigs = []
     private boolean doBackend = true
     private String directory
@@ -21,7 +22,12 @@ class TerraformInitCommand {
     }
 
     public TerraformInitCommand withPrefix(String prefix) {
-        prefixes = prefix
+        prefixes << prefix
+        return this
+    }
+
+    public TerraformInitCommand withSuffix(String suffix) {
+        suffixes << suffix
         return this
     }
 
@@ -44,7 +50,7 @@ class TerraformInitCommand {
         applyPluginsOnce()
 
         def pieces = []
-        pieces = pieces + prefixes
+        pieces += prefixes
         pieces << terraformBinary
         pieces << command
         if (!input) {
@@ -60,6 +66,8 @@ class TerraformInitCommand {
         if (directory) {
             pieces << directory
         }
+
+        pieces += suffixes
 
         return pieces.join(' ')
     }

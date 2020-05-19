@@ -114,6 +114,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [AnsiColorPlugin](./docs/AnsiColorPlugin.md): Enable ansi-color output.
 * [CrqPlugin](./docs/CrqPlugin.md): Use the manheim_remedier gem to open automated Change Requests.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
+* [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
 
 ## Write your own Plugin
 

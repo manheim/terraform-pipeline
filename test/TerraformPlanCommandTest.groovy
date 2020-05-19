@@ -69,6 +69,35 @@ class TerraformPlanCommandTest {
         }
     }
 
+    public class WithSuffix {
+        @Test
+        void addsSuffixToEndOfCommand() {
+            def command = new TerraformPlanCommand().withSuffix("> /dev/null")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("> /dev/null"))
+        }
+
+        @Test
+        void addsSuffixAfterArgumentsAndDirectories() {
+            def command = new TerraformPlanCommand().withArgument('fakeArg')
+                                                    .withDirectory('fakeDirectory')
+                                                    .withSuffix("> /dev/null")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("> /dev/null"))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformPlanCommand().withSuffix("fooSuffix")
+                                                    .withSuffix("> /dev/null")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("fooSuffix > /dev/null"))
+        }
+    }
+
     public class WithArgument {
         @Test
         void addsArgument() {

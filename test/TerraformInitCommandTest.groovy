@@ -1,4 +1,5 @@
 import static org.hamcrest.Matchers.containsString
+import static org.hamcrest.Matchers.startsWith
 import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.not
 import static org.junit.Assert.assertThat
@@ -86,6 +87,44 @@ class TerraformInitCommandTest {
 
             def actualCommand = command.toString()
             assertThat(actualCommand, endsWith(" foobar"))
+        }
+    }
+
+    public class WithPrefix {
+        @Test
+        void addsPrefixToBeginningOfCommand() {
+            def command = new TerraformInitCommand().withPrefix("somePrefix")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, startsWith("somePrefix"))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformInitCommand().withPrefix("fooPrefix")
+                                                    .withPrefix("barPrefix")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, startsWith("fooPrefix barPrefix"))
+        }
+    }
+
+    public class WithSuffix {
+        @Test
+        void addsSuffixToEndOfCommand() {
+            def command = new TerraformInitCommand().withSuffix("\"")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("\""))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformInitCommand().withSuffix("fooSuffix")
+                                                    .withSuffix("\"")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith("fooSuffix \""))
         }
     }
 
