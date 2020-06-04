@@ -1,6 +1,3 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
 class TerraformEnvironmentStage implements Stage {
     private Jenkinsfile jenkinsfile
     private String environment
@@ -178,5 +175,4 @@ class TerraformEnvironmentStage implements Stage {
         this.globalPlugins = DEFAULT_PLUGINS.clone()
         // This totally jacks with localPlugins
     }
-
 }
