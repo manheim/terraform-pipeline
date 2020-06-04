@@ -68,7 +68,9 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 String commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
 
                 echo "Creating comment in GitHub"
-                createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
+                withCredentials([$class: 'UsernamePasswordMultiBinding', credentialsId: 'man_releng', usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']) {
+                    createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
+                }
             }
         }
     }
