@@ -198,7 +198,7 @@ class TerraformEnvironmentStage implements Stage {
         //def bodyPath = "${tmpDir}/body.txt"
         //writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
-        echo "Creating comment in GitHub: ${data}"
+        //echo "Creating comment in GitHub: ${data}"
         def output = null
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
             echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
