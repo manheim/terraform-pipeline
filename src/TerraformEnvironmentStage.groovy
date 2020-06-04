@@ -188,7 +188,7 @@ class TerraformEnvironmentStage implements Stage {
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
         def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
-        output = sh(script: cmd, returnStdout: true).trim()
+        def output = sh(script: cmd, returnStdout: true).trim()
 
         def headers = readFile('comment.headers').trim()
         if (! headers.contains('HTTP/1.1 201 Created')) {
