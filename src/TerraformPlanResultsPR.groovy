@@ -100,4 +100,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
         return content.trim()
     }
 
+    public getJenkinsOriginal() {
+        return  Jenkinsfile.instance.original
+    }
+
 }
