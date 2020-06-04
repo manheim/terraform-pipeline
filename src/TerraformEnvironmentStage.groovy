@@ -182,7 +182,7 @@ class TerraformEnvironmentStage implements Stage {
     public static Closure createGithubCommentClosure(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'http://github.ove.local/api/v3/') {
         def closure = {
             def data = JsonOutput.toJson([body: commentBody])
-            def tmpDir = steps.pwd(tmp: true)
+            def tmpDir = pwd(tmp: true)
             def bodyPath = "${tmpDir}/body.txt"
             writeFile(file: bodyPath, text: data)
 
