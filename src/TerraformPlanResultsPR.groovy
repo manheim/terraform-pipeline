@@ -42,7 +42,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
     public static Closure addComment() {
         return { closure -> 
-            sh "echo HERE#########"
+            sh "echo BLAH"
             closure()
         }
     }
