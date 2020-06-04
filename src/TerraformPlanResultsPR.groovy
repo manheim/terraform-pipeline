@@ -3,8 +3,8 @@ import groovy.json.JsonSlurper
 
 class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
 
-    private landscape
-    private repoSlug
+    private static boolean landscape = false
+    private static String repoSlug = ""
 
     public static void init() {
         TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
@@ -12,12 +12,12 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
     }
 
     public static withLandscape(boolean landscape) {
-        this.landscape = landscape
+        TerraformPlanResultsPR.landscape = landscape
         return this
     }
 
     public static withRepoSlug(String repoSlug){
-        this.repoSlug = repoSlug
+        TerraformPlanResultsPR.repoSlug = repoSlug
         return this
     }
 
