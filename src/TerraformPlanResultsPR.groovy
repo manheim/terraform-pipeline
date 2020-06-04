@@ -41,22 +41,23 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     }
 
     public static Closure addComment() {
+        String repoHost = "ghe.coxautoinc.com"
+        String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
+        String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
+        
         return { closure -> 
             closure()
-            def repoHost = "ghe.coxautoinc.com" // reutils.repoHost(reutils.shellOutput('git config remote.origin.url'))
-            def branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
-            def build_url = Jenkinsfile.instance.getEnv().BUILD_URL
             sh "echo ${branch}"
             sh "echo ${build_url}"
 
             // comment on PR if this is a PR build
             if (branch.startsWith("PR-")) {
-                def prNum = branch.replace('PR-', '')
+                String prNum = branch.replace('PR-', '')
                 // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
-                def planOutput = ''
-                def planStderr = ''
+                String planOutput = ''
+                String planStderr = ''
 
-                String planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
+                planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
                 //if (fileExists('plan.err')) {
                 //    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
                 //}
