@@ -78,7 +78,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         sh "echo ${credsID}"
         sh "echo ${apiBaseUrl}"
 
-        echo("Creating comment in GitHub")
+        //echo("Creating comment in GitHub")
 
 
         //def maxlen = 65535
