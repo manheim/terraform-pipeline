@@ -195,25 +195,26 @@ class TerraformEnvironmentStage implements Stage {
         }
         def data = JsonOutput.toJson([body: commentBody])
         //def tmpDir = pwd(tmp: true)
-        //def bodyPath = "${tmpDir}/body.txt"
-        //writeFile(file: bodyPath, text: data)
+        def bodyPath = "body.txt"
+        writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
         //echo "Creating comment in GitHub: ${data}"
         def output = null
 
         //withCredentials([$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']) {
         //echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
-        def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d ${data} -H 'Content-Type: application/json' -D comment.headers ${url}"
-        output = sh(script: "ls", returnStdout: true).trim()
+        def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+        //output = sh(script: "ls", returnStdout: true).trim()
         //output = sh "${cmd}"
         //}
+        sh "${cmd}"
 
         def headers = readFile('comment.headers').trim()
         if (! headers.contains('HTTP/1.1 201 Created')) {
-            error("Creating GitHub comment failed: ${headers}\n${output}")
+            error("Creating GitHub comment failed: ${headers}\n")
         }
         // ok, success
-        def decoded = new JsonSlurper().parseText(output)
+        //def decoded = new JsonSlurper().parseText(output)
         //echo "Created comment ${decoded.id} - ${decoded.html_url}" 
         return
     }
