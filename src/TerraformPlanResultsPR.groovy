@@ -79,33 +79,45 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                         def i = 0
                         for (i = 0; i < textlen; i += maxlen) {
                             chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
-                            
-                            createGithubCommentClosure(prNum, chunk, repoSlug, 'man_releng', repoHost)
-                            //result()
-                            //textlen = commentBody.length()
 
-                            //def data = JsonOutput.toJson([body: chunk])
-                            //def tmpDir = steps.pwd(tmp: true)
-                            //def bodyPath = "${tmpDir}/body.txt"
-                            //writeFile(file: bodyPath, text: data)
+                            def data = JsonOutput.toJson([body: chunk])
+                            def tmpDir = steps.pwd(tmp: true)
+                            def bodyPath = "${tmpDir}/body.txt"
+                            writeFile(file: bodyPath, text: data)
 
-                            //def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
-                            //def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+                            def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
+                            def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
-                            //output = sh(script: cmd, returnStdout: true).trim()
+                            def output = sh(script: cmd, returnStdout: true).trim()
 
-                            //def headers = readFile('comment.headers').trim()
-                            //if (! headers.contains('HTTP/1.1 201 Created')) {
-                            //    error("Creating GitHub comment failed: ${headers}\n")
-                            //}
+                            def headers = readFile('comment.headers').trim()
+                            if (! headers.contains('HTTP/1.1 201 Created')) {
+                                error("Creating GitHub comment failed: ${headers}\n")
+                            }
                             // ok, success
-                            //def decoded = new JsonSlurper().parseText(output)
-                            //echo "Created comment ${decoded.id} - ${decoded.html_url}" 
+                            def decoded = new JsonSlurper().parseText(output)
+                            echo "Created comment ${decoded.id} - ${decoded.html_url}" 
                         }
                     }
                     else {
-                        createGithubCommentClosure(prNum, commentBody, repoSlug, 'man_releng', repoHost)
-                        //result()
+                        def data = JsonOutput.toJson([body: commentBody])
+                        def tmpDir = steps.pwd(tmp: true)
+                        def bodyPath = "${tmpDir}/body.txt"
+                        writeFile(file: bodyPath, text: data)
+
+                        def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
+                        def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+
+                        def output = sh(script: cmd, returnStdout: true).trim()
+
+                        def headers = readFile('comment.headers').trim()
+                        if (! headers.contains('HTTP/1.1 201 Created')) {
+                            error("Creating GitHub comment failed: ${headers}\n")
+                        }
+                        // ok, success
+                        def decoded = new JsonSlurper().parseText(output)
+                        echo "Created comment ${decoded.id} - ${decoded.html_url}" 
+                        
                     }
                 }
             }
