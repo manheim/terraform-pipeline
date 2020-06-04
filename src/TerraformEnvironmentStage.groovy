@@ -194,14 +194,17 @@ class TerraformEnvironmentStage implements Stage {
             return result
         }
         def data = JsonOutput.toJson([body: commentBody])
-        //def bodyPath = "${tmpDir}/body.txt"
+        def bodyPath = new File("body.txt")
+        bodyPath.write(data)
         //writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
         //echo "Creating comment in GitHub: ${data}"
         //def output = null
 
         //echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
-        def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d ${data} -H 'Content-Type: application/json' -D comment.headers ${url}"
+        def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
         return cmd
     }
+
+    public static void
 }
