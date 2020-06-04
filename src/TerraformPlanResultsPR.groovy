@@ -69,7 +69,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
                 sh "echo Creating comment in GitHub"
                 //createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
-                String res = test("fdas")
+                //String res = test("fdas")
             }
         }
     }

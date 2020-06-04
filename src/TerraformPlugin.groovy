@@ -78,6 +78,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
     public String readFile(String filename) {
         def content = (getJenkinsOriginal().readFile(filename) as String)
+        sh "echo READING FILE"
         return content.trim()
     }
 
@@ -85,10 +86,10 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return  Jenkinsfile.instance.original
     }
 
-    public String test(String test){
-        def content = "fdasfds "
-        return content.trim()
-    }
+    //public String test(String test){
+    //    def content = "fdasfds "
+    //    return content.trim()
+    //}
 
     @Override
     void apply(TerraformValidateCommand command) {
