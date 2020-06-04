@@ -80,8 +80,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                         for (i = 0; i < textlen; i += maxlen) {
                             chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
                             
-                            result = createGithubCommentClosure(prNum, chunk, repoSlug, 'man_releng', repoHost)
-                            result()
+                            createGithubCommentClosure(prNum, chunk, repoSlug, 'man_releng', repoHost)
+                            //result()
                             //textlen = commentBody.length()
 
                             //def data = JsonOutput.toJson([body: chunk])
@@ -104,8 +104,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                         }
                     }
                     else {
-                        result = createGithubCommentClosure(prNum, commentBody, repoSlug, 'man_releng', repoHost)
-                        result()
+                        createGithubCommentClosure(prNum, commentBody, repoSlug, 'man_releng', repoHost)
+                        //result()
                     }
                 }
             }
