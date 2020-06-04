@@ -74,7 +74,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     }
 
     public void echoCommand(String command) {
-        sh "echo ${command}"
+        def content = ""
+        return
     }
 
     public void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'https://ghe.coxautoinc.com/api/v3/') {
