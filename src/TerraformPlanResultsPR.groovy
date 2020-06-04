@@ -56,6 +56,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
                 String planOutput = ''
                 String planStderr = ''
+                String file_content = readFile('plan.out')
 
                 //planOutput = readFile('plan.out') //.replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
                 //if (fileExists('plan.err')) {
@@ -108,17 +109,17 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         return
     }
 
-    public boolean fileExists(String filename) {
-        return getJenkinsOriginal().fileExists(filename)
-    }
+    //public boolean fileExists(String filename) {
+    //    return getJenkinsOriginal().fileExists(filename)
+    //}
 
-    public String readFile(String filename) {
-        def content = (getJenkinsOriginal().readFile(filename) as String)
-        return content.trim()
-    }
+    //public String readFile(String filename) {
+    //    def content = (getJenkinsOriginal().readFile(filename) as String)
+    //    return content.trim()
+    //}
 
-    public getJenkinsOriginal() {
-        return  Jenkinsfile.instance.original
-    }
+    //public getJenkinsOriginal() {
+    //    return  Jenkinsfile.instance.original
+    //}
 
 }
