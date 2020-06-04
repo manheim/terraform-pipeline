@@ -1,8 +1,10 @@
-import com.manheim.releng.jenkins_pipeline_library.Utils
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 
 class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
 
     private landscape
+    private repoSlug
 
     public static void init() {
         TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
@@ -14,6 +16,11 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
         return this
     }
 
+    public static withRepoSlug(String repoSlug){
+        this.repoSlug = repoSlug
+        return this
+    }
+
     @Override
     public void apply(TerraformPlanCommand command) {
         if (landscape) {
@@ -22,8 +29,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
             command.withSuffix(" -out=tfplan -input=false 2>plan.err | tee plan.out")
         }
 
-        def repoHost = reutils.repoHost(reutils.shellOutput('git config remote.origin.url'))
-        def repoSlug = reutils.repoSlug(reutils.shellOutput('git config remote.origin.url'))
+        def repoHost = "ghe.coxautoinc.com" // reutils.repoHost(reutils.shellOutput('git config remote.origin.url'))
 
         // comment on PR if this is a PR build
           if (env.BRANCH_NAME.startsWith("PR-")) {
@@ -41,8 +47,46 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
               planOutput = planOutput + "\nSTDERR:\n" + planStderr
             }
             def commentBody = "Jenkins plan results ( ${env.BUILD_URL} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
-            reutils.createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
+
+            createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
           }
 
     }
+
+    public void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'https://ghe.coxautoinc.com/api/v3/') {
+        def maxlen = 65535
+        def textlen = commentBody.length()
+        def chunk = ""
+        if (textlen > maxlen) {
+            // GitHub can't handle comments of 65536 or longer; chunk
+            def result = null
+            def i = 0
+            for (i = 0; i < textlen; i += maxlen) {
+                chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
+                result = createGithubComment(issueNumber, chunk, repoSlug, credsID, apiBaseUrl)
+            }
+            return result
+        }
+        def data = JsonOutput.toJson([body: commentBody])
+        def tmpDir = steps.pwd(tmp: true)
+        def bodyPath = "${tmpDir}/body.txt"
+        steps.writeFile(file: bodyPath, text: data)
+        def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
+        steps.echo("Creating comment in GitHub: ${data}")
+        def output = null
+        steps.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
+            steps.echo("\tRetrieved GITHUB_TOKEN from credential ${credsID}")
+            def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+            output = steps.sh(script: cmd, returnStdout: true).trim()
+        }
+        def headers = steps.readFile('comment.headers').trim()
+        if (! headers.contains('HTTP/1.1 201 Created')) {
+            steps.error("Creating GitHub comment failed: ${headers}\n${output}")
+        }
+        // ok, success
+        def decoded = new JsonSlurper().parseText(output)
+        steps.echo("Created comment ${decoded.id} - ${decoded.html_url}")
+        return
+    }
+
 }

@@ -12,10 +12,13 @@ Requirements:
 
 ```
 @Library(['terraform-pipeline', 'terraform-pipeline-cai-plugins']) _
+
 Jenkinsfile.init(this)
-AnsiColorPlugin.init()                                      // REQUIRED: Decorate your TerraformEnvironmentStages with the AnsiColor plugin
-TerraformPlanResultsPR.withLandscape(true).init()           // Post the plan results in the comments of a PR (landscape_gem used = true)
-// OR TerraformPlanResultsPR.withLandscape(false).init()    // Post the plan results in the comments of a PR (landscape_gem used = false)
+
+AnsiColorPlugin.init()                                                               // REQUIRED: Decorate your TerraformEnvironmentStages with the AnsiColor plugin
+TerraformPlanResultsPR.withLandscape(true).withRepoSlug('reposlug').init()           // Post the plan results in the comments of a PR (landscape_gem used = true)
+// OR TerraformPlanResultsPR.withLandscape(false).withRepoSlug('reposlug').init()    // Post the plan results in the comments of a PR (landscape_gem used = false)
+
 def validate = new TerraformValidateStage()
 def deployQa = new TerraformEnvironmentStage('qa')
 def deployUat = new TerraformEnvironmentStage('uat')
