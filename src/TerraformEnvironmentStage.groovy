@@ -179,43 +179,46 @@ class TerraformEnvironmentStage implements Stage {
         // This totally jacks with localPlugins
     }
 
-    public void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'http://github.ove.local/api/v3/') {
-        def maxlen = 65535
-        def textlen = commentBody.length()
-        def chunk = ""
-        if (textlen > maxlen) {
-            // GitHub can't handle comments of 65536 or longer; chunk
-            def result = null
-            def i = 0
-            for (i = 0; i < textlen; i += maxlen) {
-                chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
-                result = createGithubComment(issueNumber, chunk, repoSlug, credsID, apiBaseUrl)
+    public static Closure createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'http://github.ove.local/api/v3/') {
+        def closure = {
+            def maxlen = 65535
+            def textlen = commentBody.length()
+            def chunk = ""
+            if (textlen > maxlen) {
+                // GitHub can't handle comments of 65536 or longer; chunk
+                def result = null
+                def i = 0
+                for (i = 0; i < textlen; i += maxlen) {
+                    chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
+                    result = createGithubComment(issueNumber, chunk, repoSlug, credsID, apiBaseUrl)
+                }
+                return result
             }
-            return result
-        }
-        def data = JsonOutput.toJson([body: commentBody])
-        //def tmpDir = pwd(tmp: true)
-        def bodyPath = "body.txt"
-        writeFile(file: bodyPath, text: data)
-        def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
-        //echo "Creating comment in GitHub: ${data}"
-        def output = null
+            def data = JsonOutput.toJson([body: commentBody])
+            //def tmpDir = pwd(tmp: true)
+            def bodyPath = "body.txt"
+            writeFile(file: bodyPath, text: data)
+            def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
+            //echo "Creating comment in GitHub: ${data}"
+            def output = null
 
-        //withCredentials([$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']) {
-        //echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
-        def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
-        //output = sh(script: "ls", returnStdout: true).trim()
-        //output = sh "${cmd}"
-        //}
-        sh "${cmd}"
+            //withCredentials([$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']) {
+            //echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
+            def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+            //output = sh(script: "ls", returnStdout: true).trim()
+            //output = sh "${cmd}"
+            //}
+            sh "${cmd}"
 
-        def headers = readFile('comment.headers').trim()
-        if (! headers.contains('HTTP/1.1 201 Created')) {
-            error("Creating GitHub comment failed: ${headers}\n")
+            def headers = readFile('comment.headers').trim()
+            if (! headers.contains('HTTP/1.1 201 Created')) {
+                error("Creating GitHub comment failed: ${headers}\n")
+            }
+            // ok, success
+            //def decoded = new JsonSlurper().parseText(output)
+            //echo "Created comment ${decoded.id} - ${decoded.html_url}" 
+            return
         }
-        // ok, success
-        //def decoded = new JsonSlurper().parseText(output)
-        //echo "Created comment ${decoded.id} - ${decoded.html_url}" 
-        return
+        return closure
     }
 }
