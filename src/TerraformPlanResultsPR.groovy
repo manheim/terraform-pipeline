@@ -69,11 +69,11 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 //createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
 
                 sh "echo ${prNum}"
-                sh "echo ${commentBody}"
-                sh "echo ${repoSlug}"
+                //sh "echo ${commentBody}"
+                //sh "echo ${repoSlug}"
                 //echo("Creating comment in GitHub")
 
-                //def maxlen = 65535
+                def maxlen = 65535
                 //def textlen = commentBody.length()
                 //def chunk = ""
                 //if (textlen > maxlen) {
