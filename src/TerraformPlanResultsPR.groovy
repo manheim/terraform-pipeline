@@ -27,7 +27,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
     @Override
     public void apply(TerraformEnvironmentStage environmentStage) {
-        environmentStage.decorate(PLAN, addComment())
+        environmentStage.decorate(CONFIRM, addComment())
     }
 
     @Override
