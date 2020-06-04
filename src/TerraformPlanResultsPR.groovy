@@ -45,6 +45,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
             closure()
             def repoHost = "ghe.coxautoinc.com" // reutils.repoHost(reutils.shellOutput('git config remote.origin.url'))
             def branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
+            def build_url = Jenkinsfile.instance.getEnv().BUILD_URL
             sh "echo ${branch}"
 
             // comment on PR if this is a PR build
@@ -54,15 +55,15 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 def planOutput = ''
                 def planStderr = ''
 
-                //planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
-                //if(fileExists('plan.err')) {
-                //    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
-                //}
+                planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
+                if(fileExists('plan.err')) {
+                    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
+                }
 
-                //if(planStderr != '') {
-                //    planOutput = planOutput + "\nSTDERR:\n" + planStderr
-                //}
-                //def commentBody = "Jenkins plan results ( ${branch.BUILD_URL} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
+                if(planStderr != '') {
+                    planOutput = planOutput + "\nSTDERR:\n" + planStderr
+                }
+                def commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
 
                 //createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
             }
