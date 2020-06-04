@@ -71,9 +71,10 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 echo "Creating comment in GitHub"
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'man_releng', usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
                     //def tmpDir = pwd(tmp: true)
+                    def cwd = pwd()
                     def bodyPath = "body.txt"
                     writeFile(file: bodyPath, text: '')
-                    cmd = createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
+                    cmd = createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/", cwd)
                     output = sh(script: cmd, returnStdout: true).trim()
 
                     def headers = readFile('comment.headers').trim()

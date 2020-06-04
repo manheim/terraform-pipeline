@@ -179,7 +179,7 @@ class TerraformEnvironmentStage implements Stage {
         // This totally jacks with localPlugins
     }
 
-    public static void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'http://github.ove.local/api/v3/') {
+    public static void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'http://github.ove.local/api/v3/', String cwd) {
         def maxlen = 65535
         def textlen = commentBody.length()
         def chunk = ""
@@ -195,7 +195,7 @@ class TerraformEnvironmentStage implements Stage {
         }
         def data = JsonOutput.toJson([body: commentBody])
         //sh "echo ${data}"
-        def bodyPath = new File("body.txt")
+        def bodyPath = new File("${cwd}/body.txt")
         bodyPath.write(data)
         //writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
