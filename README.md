@@ -115,6 +115,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [CrqPlugin](./docs/CrqPlugin.md): Use the manheim_remedier gem to open automated Change Requests.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
+* [TerraformPlanResultsPR](./docs/TerraformPlanResultsPR.md): Use this to post Terraform plan results in the comments of a PR.
 
 ## Write your own Plugin
 
