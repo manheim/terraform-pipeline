@@ -47,6 +47,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
             def branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
             def build_url = Jenkinsfile.instance.getEnv().BUILD_URL
             sh "echo ${branch}"
+            sh "echo ${build_url}"
 
             // comment on PR if this is a PR build
             if (branch.startsWith("PR-")) {
@@ -56,14 +57,14 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 def planStderr = ''
 
                 planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
-                if(fileExists('plan.err')) {
-                    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
-                }
+                //if (fileExists('plan.err')) {
+                //    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
+                //}
 
-                if(planStderr != '') {
-                    planOutput = planOutput + "\nSTDERR:\n" + planStderr
-                }
-                def commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
+                //if (planStderr != '') {
+                //    planOutput = planOutput + "\nSTDERR:\n" + planStderr
+               //}
+                //def commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
 
                 //createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
             }
