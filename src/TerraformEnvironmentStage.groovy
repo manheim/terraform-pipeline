@@ -200,7 +200,7 @@ class TerraformEnvironmentStage implements Stage {
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
         //echo "Creating comment in GitHub: ${data}"
         def output = null
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
+        withCredentials([$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']) {
             echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
             def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d ${data} -H 'Content-Type: application/json' -D comment.headers ${url}"
             output = sh(script: cmd, returnStdout: true).trim()
