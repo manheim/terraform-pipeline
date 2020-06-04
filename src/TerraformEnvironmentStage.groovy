@@ -202,18 +202,18 @@ class TerraformEnvironmentStage implements Stage {
         def output = null
 
         //withCredentials([$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']) {
-        echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
+        //echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
         def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d ${data} -H 'Content-Type: application/json' -D comment.headers ${url}"
         output = sh(script: cmd, returnStdout: true).trim()
         //}
-        
+
         def headers = readFile('comment.headers').trim()
         if (! headers.contains('HTTP/1.1 201 Created')) {
             error("Creating GitHub comment failed: ${headers}\n${output}")
         }
         // ok, success
         def decoded = new JsonSlurper().parseText(output)
-        echo "Created comment ${decoded.id} - ${decoded.html_url}" 
+        //echo "Created comment ${decoded.id} - ${decoded.html_url}" 
         return
     }
 }
