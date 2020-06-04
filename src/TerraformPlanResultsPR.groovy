@@ -25,7 +25,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
     public void apply(TerraformPlanCommand command) {
         if (landscape) {
             command.withSuffix(" -out=tfplan -input=false 2>plan.err | landscape | tee plan.out")
-        else{
+        }
+        else {
             command.withSuffix(" -out=tfplan -input=false 2>plan.err | tee plan.out")
         }
 
