@@ -85,6 +85,11 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return  Jenkinsfile.instance.original
     }
 
+    public void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'http://github.ove.local/api/v3/') {
+        def maxlen = 65535
+        def textlen = commentBody.length()
+    }
+
     @Override
     void apply(TerraformValidateCommand command) {
         def version = detectVersion()
