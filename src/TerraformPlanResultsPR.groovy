@@ -58,16 +58,15 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 String planStderr = ''
                 //String file_content = readFile('plan.out')
 
-                planOutput = readFile('plan.out') //.replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
-                //if (fileExists('plan.err')) {
-                //    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
-                //}
+                planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
+                if (fileExists('plan.err')) {
+                    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
+                }
 
-                //if (planStderr != '') {
-                //    planOutput = planOutput + "\nSTDERR:\n" + planStderr
-               //}
-                //def commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
-
+                if (planStderr != '') {
+                    planOutput = planOutput + "\nSTDERR:\n" + planStderr
+                }
+                String commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
                 //createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
             }
         }
