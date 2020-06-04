@@ -68,11 +68,9 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 String commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
                 //createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
 
-                sh "echo ${issueNumber}"
+                sh "echo ${prNum}"
                 sh "echo ${commentBody}"
                 sh "echo ${repoSlug}"
-                sh "echo ${credsID}"
-                sh "echo ${apiBaseUrl}"
                 //echo("Creating comment in GitHub")
 
                 //def maxlen = 65535
