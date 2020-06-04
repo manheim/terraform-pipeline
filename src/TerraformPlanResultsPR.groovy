@@ -69,7 +69,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
                 echo "Creating comment in GitHub"
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'man_releng', usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
-                    createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
+                    cls = createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
+                    cls()
                 }
             }
         }
