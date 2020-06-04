@@ -195,7 +195,7 @@ class TerraformEnvironmentStage implements Stage {
         }
         def data = JsonOutput.toJson([body: commentBody])
         //sh "echo ${data}"
-        def bodyPath = new File("{$tmpDir}/body.txt")
+        def bodyPath = new File("${tmpDir}/body.txt")
         bodyPath.write(data)
         //writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
