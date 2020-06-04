@@ -67,9 +67,14 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 }
                 String commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
                 sh "echo createComment"
-                createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
+                echoCommand("test")
+                //createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
             }
         }
+    }
+
+    public void echoCommand(String command) {
+        sh "echo ${command}"
     }
 
     public void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'https://ghe.coxautoinc.com/api/v3/') {
