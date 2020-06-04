@@ -90,6 +90,11 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         def textlen = commentBody.length()
     }
 
+    public String test(String test){
+        def content = "fdasfds "
+        return content.trim()
+    }
+
     @Override
     void apply(TerraformValidateCommand command) {
         def version = detectVersion()
