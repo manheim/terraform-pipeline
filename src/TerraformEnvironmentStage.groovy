@@ -198,10 +198,10 @@ class TerraformEnvironmentStage implements Stage {
         //def bodyPath = "${tmpDir}/body.txt"
         //writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
-        echo("Creating comment in GitHub: ${data}")
+        echo "Creating comment in GitHub: ${data}"
         def output = null
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
-            echo("\tRetrieved GITHUB_TOKEN from credential ${credsID}")
+            echo "\tRetrieved GITHUB_TOKEN from credential ${credsID}"
             def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d ${data} -H 'Content-Type: application/json' -D comment.headers ${url}"
             output = sh(script: cmd, returnStdout: true).trim()
         }
@@ -211,7 +211,7 @@ class TerraformEnvironmentStage implements Stage {
         }
         // ok, success
         def decoded = new JsonSlurper().parseText(output)
-        echo("Created comment ${decoded.id} - ${decoded.html_url}")
+        echo "Created comment ${decoded.id} - ${decoded.html_url}" 
         return
     }
 }
