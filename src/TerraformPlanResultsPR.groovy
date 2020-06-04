@@ -8,7 +8,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
 
     public static void init() {
         TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
-        TerraformPlanCommandPlugin.addPlugin(plugin)
+        TerraformPlanCommand.addPlugin(plugin)
     }
 
     public static withLandscape(boolean landscape) {
