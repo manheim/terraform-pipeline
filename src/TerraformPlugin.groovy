@@ -85,11 +85,6 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         return  Jenkinsfile.instance.original
     }
 
-    //public String test(String test){
-    //    def content = "fdasfds "
-    //    return content.trim()
-    //}
-
     @Override
     void apply(TerraformValidateCommand command) {
         def version = detectVersion()
