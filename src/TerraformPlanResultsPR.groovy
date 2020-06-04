@@ -65,6 +65,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
                 createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
             }
+            sh "echo HERE#########"
+            closure()
         }
     }
 
