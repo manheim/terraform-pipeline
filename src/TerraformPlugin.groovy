@@ -78,7 +78,6 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
     public String readFile(String filename) {
         def content = (getJenkinsOriginal().readFile(filename) as String)
-        sh "echo READING FILE"
         return content.trim()
     }
 
