@@ -206,5 +206,4 @@ class TerraformEnvironmentStage implements Stage {
         return cmd
     }
 
-    public static void
 }
