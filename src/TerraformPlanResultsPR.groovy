@@ -42,29 +42,6 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
     public static Closure addComment() {
         return { closure -> 
-
-            def repoHost = "ghe.coxautoinc.com" // reutils.repoHost(reutils.shellOutput('git config remote.origin.url'))
-            def branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
-
-            // comment on PR if this is a PR build
-            if (branch.startsWith("PR-")) {
-                def prNum = branch.replace('PR-', '')
-                // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
-                def planOutput = ''
-                def planStderr = ''
-
-                planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
-                if(fileExists('plan.err')) {
-                    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
-                }
-
-                if(planStderr != '') {
-                    planOutput = planOutput + "\nSTDERR:\n" + planStderr
-                }
-                def commentBody = "Jenkins plan results ( ${branch.BUILD_URL} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
-
-                createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
-            }
             sh "echo HERE#########"
             closure()
         }
