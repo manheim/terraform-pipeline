@@ -184,25 +184,25 @@ class TerraformEnvironmentStage implements Stage {
         def textlen = commentBody.length()
         def chunk = ""
         if (textlen > maxlen) {
-        // GitHub can't handle comments of 65536 or longer; chunk
-        def result = null
-        def i = 0
-        for (i = 0; i < textlen; i += maxlen) {
-            chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
-            result = createGithubComment(issueNumber, chunk, repoSlug, credsID, apiBaseUrl)
-        }
-        return result
+            // GitHub can't handle comments of 65536 or longer; chunk
+            def result = null
+            def i = 0
+            for (i = 0; i < textlen; i += maxlen) {
+                chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
+                result = createGithubComment(issueNumber, chunk, repoSlug, credsID, apiBaseUrl)
+            }
+            return result
         }
         def data = JsonOutput.toJson([body: commentBody])
-        def tmpDir = pwd(tmp: true)
-        def bodyPath = "${tmpDir}/body.txt"
-        writeFile(file: bodyPath, text: data)
+        //def tmpDir = pwd(tmp: true)
+        //def bodyPath = "${tmpDir}/body.txt"
+        //writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
         echo("Creating comment in GitHub: ${data}")
         def output = null
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
             echo("\tRetrieved GITHUB_TOKEN from credential ${credsID}")
-            def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+            def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d ${data} -H 'Content-Type: application/json' -D comment.headers ${url}"
             output = sh(script: cmd, returnStdout: true).trim()
         }
         def headers = readFile('comment.headers').trim()
