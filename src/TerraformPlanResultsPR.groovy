@@ -91,4 +91,13 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
         return
     }
 
+    public boolean fileExists(String filename) {
+        return getJenkinsOriginal().fileExists(filename)
+    }
+
+    public String readFile(String filename) {
+        def content = (getJenkinsOriginal().readFile(filename) as String)
+        return content.trim()
+    }
+
 }
