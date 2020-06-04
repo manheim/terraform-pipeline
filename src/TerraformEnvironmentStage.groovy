@@ -175,4 +175,10 @@ class TerraformEnvironmentStage implements Stage {
         this.globalPlugins = DEFAULT_PLUGINS.clone()
         // This totally jacks with localPlugins
     }
+
+    public void createGithubComment(String issueNumber, String commentBody, String repoSlug, String credsID, String apiBaseUrl = 'http://github.ove.local/api/v3/') {
+        def maxlen = 65535
+        def textlen = commentBody.length()
+        return
+    }
 }
