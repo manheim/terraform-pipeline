@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-import static TerraformEnvironmentStage.CONFIRM
+import static TerraformEnvironmentStage.PLAN
 
 class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
@@ -27,7 +27,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(CONFIRM, addComment())
+        stage.decorateAround(PLAN, addComment())
     }
 
     @Override
