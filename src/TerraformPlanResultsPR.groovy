@@ -56,7 +56,6 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
                 String planOutput = ''
                 String planStderr = ''
-                //String file_content = readFile('plan.out')
 
                 planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
                 if (fileExists('plan.err')) {
@@ -87,24 +86,24 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
             return result
         }
         def data = JsonOutput.toJson([body: commentBody])
-        def tmpDir = steps.pwd(tmp: true)
+        def tmpDir = pwd(tmp: true)
         def bodyPath = "${tmpDir}/body.txt"
-        steps.writeFile(file: bodyPath, text: data)
+        writeFile(file: bodyPath, text: data)
         def url = "${apiBaseUrl}repos/${repoSlug}/issues/${issueNumber}/comments"
-        steps.echo("Creating comment in GitHub: ${data}")
+        sh "echo 'Creating comment in GitHub: ${data}'"
         def output = null
-        steps.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
-            steps.echo("\tRetrieved GITHUB_TOKEN from credential ${credsID}")
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credsID, usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
+            sh "echo '\tRetrieved GITHUB_TOKEN from credential ${credsID}'"
             def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
-            output = steps.sh(script: cmd, returnStdout: true).trim()
+            output = sh(script: cmd, returnStdout: true).trim()
         }
-        def headers = steps.readFile('comment.headers').trim()
+        def headers = readFile('comment.headers').trim()
         if (! headers.contains('HTTP/1.1 201 Created')) {
-            steps.error("Creating GitHub comment failed: ${headers}\n${output}")
+            error("Creating GitHub comment failed: ${headers}\n${output}")
         }
         // ok, success
         def decoded = new JsonSlurper().parseText(output)
-        steps.echo("Created comment ${decoded.id} - ${decoded.html_url}")
+        echo("Created comment ${decoded.id} - ${decoded.html_url}")
         return
     }
 
