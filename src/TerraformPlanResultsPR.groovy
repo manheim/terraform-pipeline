@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-import static TerraformEnvironmentStage.PLAN
+import static TerraformEnvironmentStage.CONFIRM
 
 class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
