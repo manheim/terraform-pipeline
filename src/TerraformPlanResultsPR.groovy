@@ -31,10 +31,11 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
         }
 
         def repoHost = "ghe.coxautoinc.com" // reutils.repoHost(reutils.shellOutput('git config remote.origin.url'))
+        def branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
 
         // comment on PR if this is a PR build
-          if (env.BRANCH_NAME.startsWith("PR-")) {
-            def prNum = env.BRANCH_NAME.replace('PR-', '')
+        if (branch.startsWith("PR-")) {
+            def prNum = branch.replace('PR-', '')
             // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
             def planOutput = ''
             def planStderr = ''
@@ -45,12 +46,12 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin {
             }
 
             if(planStderr != '') {
-              planOutput = planOutput + "\nSTDERR:\n" + planStderr
+                planOutput = planOutput + "\nSTDERR:\n" + planStderr
             }
-            def commentBody = "Jenkins plan results ( ${env.BUILD_URL} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
+            def commentBody = "Jenkins plan results ( ${branch.BUILD_URL} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
 
             createGithubComment(prNum, commentBody, repoSlug, 'man_releng', "https://${repoHost}/api/v3/")
-          }
+        }
 
     }
 
