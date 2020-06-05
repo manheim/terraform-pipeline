@@ -84,7 +84,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                     chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
 
                     def data = JsonOutput.toJson([body: chunk])
-                    def tmpDir = steps.pwd(tmp: true)
+                    def tmpDir = pwd(tmp: true)
                     def bodyPath = "${tmpDir}/body.txt"
                     writeFile(file: bodyPath, text: data)
 
