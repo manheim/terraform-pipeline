@@ -56,6 +56,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     public static Closure addComment(String env) {
         String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
         String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
+        String environment = env
         
         return { closure -> 
             closure()
@@ -75,7 +76,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 if (planStderr != '') {
                     planOutput = planOutput + "\nSTDERR:\n" + planStderr
                 }
-                String commentBody = "Jenkins plan results for ${env} ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
+                String commentBody = "Jenkins plan results for ${environment} ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
 
                 echo "Creating comment in GitHub"
                 def maxlen = 65535
