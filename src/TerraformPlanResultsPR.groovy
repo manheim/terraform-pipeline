@@ -7,6 +7,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
     private static boolean landscape = false
     private static String repoSlug = ""
+    private static String repoHost = ""
+    private static String githubToken = "GITHUB_TOKEN"
 
     public static void init() {
         TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
@@ -20,8 +22,18 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         return this
     }
 
-    public static withRepoSlug(String repoSlug){
+    public static withRepoSlug(String repoSlug) {
         TerraformPlanResultsPR.repoSlug = repoSlug
+        return this
+    }
+
+    public static withRepoHost(String repoHost) {
+        TerraformPlanResultsPR.repoHost = repoHost
+        return this
+    }
+
+    public static withGithubToken(String githubToken) {
+        TerraformPlanResultsPR.githubToken = githubToken
         return this
     }
 
@@ -41,11 +53,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     }
 
     public static Closure addComment() {
-        String repoHost = "https://ghe.coxautoinc.com/api/v3/"
         String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
         String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
-        List env = Jenkinsfile.instance.getEnv()
-        sh "echo ${env}"
         
         return { closure -> 
             closure()
@@ -84,7 +93,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                         writeFile(file: bodyPath, text: data)
 
                         def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
-                        def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+                        def cmd = "curl -H \"Authorization: token \$${githubToken}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
                         def output = sh(script: cmd, returnStdout: true).trim()
 
@@ -104,7 +113,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                     writeFile(file: bodyPath, text: data)
 
                     def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
-                    def cmd = "curl -H \"Authorization: token \$GITHUB_TOKEN\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+                    def cmd = "curl -H \"Authorization: token \$${githubToken}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
                     def output = sh(script: cmd, returnStdout: true).trim()
 
