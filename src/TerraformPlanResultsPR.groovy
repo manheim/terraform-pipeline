@@ -8,7 +8,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     private static boolean landscape = false
     private static String repoSlug = ""
     private static String repoHost = "https://api.github.com/"
-    private static String githubToken = "GITHUB_TOKEN"
+    private static String githubTokenEnvVar = "GITHUB_TOKEN"
 
     public static void init() {
         TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
@@ -32,8 +32,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         return this
     }
 
-    public static withGithubToken(String githubToken) {
-        TerraformPlanResultsPR.githubToken = githubToken
+    public static withGithubTokenEnvVar(String githubTokenEnvVar) {
+        TerraformPlanResultsPR.githubTokenEnvVar = githubTokenEnvVar
         return this
     }
 
@@ -89,7 +89,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                     writeFile(file: bodyPath, text: data)
 
                     def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
-                    def cmd = "curl -H \"Authorization: token \$${githubToken}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+                    def cmd = "curl -H \"Authorization: token \$${githubTokenEnvVar}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
                     def output = sh(script: cmd, returnStdout: true).trim()
 
