@@ -15,6 +15,10 @@ Configuration Methods:
 * `withLandscape(bool)`: enable or disable the terraform landscape gem for plan output (DEFAULT: false)
 * `withGithubTokenEnvVar(String)`: specify the environment variable used for github auth (DEFAULT: "GITHUB_TOKEN")
 
+Important Notes:
+* This plugin supports terraform plan output with the terraform landscape gem, but there is currently a standalone plugin `TerraformLandscapePlugin` for this feature.
+* Note the `TerraformLandscapePlugin` does NOT contain support to post comments on pull requests.
+* If you desire BOTH terraform landscape output and comments on PR's, you should use the `TerraformPlanResultsPR` plugin with `withLandscape(true)`
 
 ```
 @Library(['terraform-pipeline']) _
