@@ -33,10 +33,10 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     @Override
     public void apply(TerraformPlanCommand command) {
         if (landscape) {
-            command.withSuffix(" -out=tfplan -input=false 2>plan.err | landscape | tee plan.out")
+            command.withSuffix(" -out=tfplan 2>plan.err | landscape | tee plan.out")
         }
         else {
-            command.withSuffix(" -out=tfplan -input=false 2>plan.err | tee plan.out")
+            command.withSuffix(" -out=tfplan 2>plan.err | tee plan.out")
         }
     }
 
@@ -47,8 +47,6 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         
         return { closure -> 
             closure()
-            sh "echo ${branch}"
-            sh "echo ${build_url}"
 
             // comment on PR if this is a PR build
             if (branch.startsWith("PR-")) {
@@ -66,13 +64,11 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                     planOutput = planOutput + "\nSTDERR:\n" + planStderr
                 }
                 String commentBody = "Jenkins plan results ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
-                //String commentBody = "Jenkins plan results ( ${build_url} ):\n\n"
 
                 echo "Creating comment in GitHub"
                 def maxlen = 65535
                 def textlen = commentBody.length()
                 def chunk = ""
-                //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'man_releng', usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN']]) {
                 if (textlen > maxlen) {
                     // GitHub can't handle comments of 65536 or longer; chunk
                     def result = null
@@ -119,7 +115,6 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                     echo "Created comment ${decoded.id} - ${decoded.html_url}" 
                     
                 }
-                //}
             }
         }
     }
