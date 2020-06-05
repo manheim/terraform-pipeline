@@ -44,6 +44,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         String repoHost = "https://ghe.coxautoinc.com/api/v3/"
         String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
         String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
+        List env = Jenkinsfile.instance.getEnv()
+        sh "echo ${env}"
         
         return { closure -> 
             closure()
