@@ -3,7 +3,11 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
 
 import org.junit.Test
 import org.junit.After
@@ -42,17 +46,10 @@ class TerraformPlanResultsPRTest {
 
     public class Apply {
 
-        @After
-        void resetPlugin() {
-            Jenkinsfile.instance = null
-            //TerraformPlanResultsPR.reset()
-        }
-
         @Test
         void addsTeeArgumentToTerraformPlan() {
             TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
-            //plugin.withLandscape(false)
-
+            plugin.withLandscape(false)
             TerraformPlanCommand command = new TerraformPlanCommand()
 
             plugin.apply(command)
@@ -61,17 +58,28 @@ class TerraformPlanResultsPRTest {
             assertThat(result, containsString(" -out=tfplan 2>plan.err | tee plan.out"))
         }
 
-        //@Test
-        //void addsTeeAndLandscapeArgumentToTerraformPlan() {
-        //    TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
-        //    plugin.withLandscape(true)
-        //    TerraformPlanCommand command = new TerraformPlanCommand()
-//
-        //    plugin.apply(command)
+        @Test
+        void addsTeeAndLandscapeArgumentToTerraformPlan() {
+            TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
+            plugin.withLandscape(true)
+            TerraformPlanCommand command = new TerraformPlanCommand()
 
-        //    String result = command.toString()
-        //    assertThat(result, containsString(" -out=tfplan 2>plan.err | tee plan.out"))
-        //}
+            plugin.apply(command)
+
+            String result = command.toString()
+            assertThat(result, containsString(" -out=tfplan 2>plan.err | landscape | tee plan.out"))
+        }
+
+        @Test
+        void decoratesTheTerraformEnvironmentStage()  {
+            def environmentStage = mock(TerraformEnvironmentStage.class)
+            def plugin = spy(new TerraformPlanResultsPR())
+            //Closure commentClosure = plugin.addComment(environmentStage.getEnvironment())
+
+            plugin.apply(environmentStage)
+
+            verify(environmentStage).decorate('plan', any(Closure.class))
+        }
 
     }
 }
