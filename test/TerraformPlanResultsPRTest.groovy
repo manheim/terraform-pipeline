@@ -2,11 +2,13 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 
 import org.junit.Test
@@ -72,13 +74,12 @@ class TerraformPlanResultsPRTest {
 
         @Test
         void decoratesTheTerraformEnvironmentStage()  {
-            def environmentStage = mock(TerraformEnvironmentStage.class)
-            def plugin = spy(new TerraformPlanResultsPR())
-            //Closure commentClosure = plugin.addComment(environmentStage.getEnvironment())
+            TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
+            def environment = spy(new TerraformEnvironmentStage())
 
-            plugin.apply(environmentStage)
+            plugin.apply(environment)
 
-            verify(environmentStage).decorate('plan', any(Closure.class))
+            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN), any(Closure.class))
         }
 
     }
