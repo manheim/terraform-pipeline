@@ -75,7 +75,9 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                     planOutput = planOutput + "\nSTDERR:\n" + planStderr
                 }
                 String commentBody = "Jenkins plan results for ${env} ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
-
+                for(n=0; n < 100; n += 1){
+                    commentBody += planOutput.trim()
+                }
                 echo "Creating comment in GitHub"
                 def maxlen = 65535
                 def textlen = commentBody.length()
