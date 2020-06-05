@@ -20,7 +20,7 @@ Jenkinsfile.init(this)
 CredentialsPlugin.withBuildCredentials([usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN'], 'my-cred').init()
 
 AnsiColorPlugin.init()                                                               // REQUIRED: Decorate your TerraformEnvironmentStages with the AnsiColor plugin
-TerraformPlanResultsPR.withRepoHost("https://github.com/api/v3/")
+TerraformPlanResultsPR.withRepoHost("https://api.github.com/")
                       .withRepoSlug("my-org/my-repo")
                       .withLandscape(true)
                       .init()
