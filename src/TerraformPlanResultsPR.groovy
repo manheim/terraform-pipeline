@@ -39,7 +39,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(PLAN, addComment())
+        env = stage.getEnvironment()
+        stage.decorate(PLAN, addComment(env))
     }
 
     @Override
@@ -52,7 +53,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         }
     }
 
-    public static Closure addComment() {
+    public static Closure addComment(String env) {
         String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
         String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
         
@@ -74,62 +75,35 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                 if (planStderr != '') {
                     planOutput = planOutput + "\nSTDERR:\n" + planStderr
                 }
-                String commentBody = "Jenkins plan results ${currentBuild.result} ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
+                String commentBody = "Jenkins plan results for ${env} ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
 
                 echo "Creating comment in GitHub"
                 def maxlen = 65535
                 def textlen = commentBody.length()
-                def chunk = ""
-                if (textlen > maxlen) {
-                    // GitHub can't handle comments of 65536 or longer; chunk
-                    def result = null
-                    def i = 0
-                    for (i = 0; i < textlen; i += maxlen) {
-                        chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
+                def chunk = "" // GitHub can't handle comments of 65536 or longer; chunk
+                def i = 0
+                for (i = 0; i < textlen; i += maxlen) {
+                    chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
 
-                        def data = JsonOutput.toJson([body: chunk])
-                        def tmpDir = steps.pwd(tmp: true)
-                        def bodyPath = "${tmpDir}/body.txt"
-                        writeFile(file: bodyPath, text: data)
+                    def data = JsonOutput.toJson([body: chunk])
+                    def tmpDir = steps.pwd(tmp: true)
+                    def bodyPath = "${tmpDir}/body.txt"
+                    writeFile(file: bodyPath, text: data)
 
-                        def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
-                        def cmd = "curl -H \"Authorization: token \$${githubToken}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
+                    def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
+                    def cmd = "curl -H \"Authorization: token \$${githubToken}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
-                        def output = sh(script: cmd, returnStdout: true).trim()
+                    def output = sh(script: cmd, returnStdout: true).trim()
 
-                        def headers = readFile('comment.headers').trim()
-                        if (! headers.contains('HTTP/1.1 201 Created')) {
-                            error("Creating GitHub comment failed: ${headers}\n")
-                        }
-                        // ok, success
-                        def decoded = new JsonSlurper().parseText(output)
-                        echo "Created comment ${decoded.id} - ${decoded.html_url}" 
+                    def headers = readFile('comment.headers').trim()
+                    if (! headers.contains('HTTP/1.1 201 Created')) {
+                        error("Creating GitHub comment failed: ${headers}\n")
                     }
-                }
-                else {
-                    createGithubComment(prNum, commentBody, repoSlug, repoHost)                    
+                    // ok, success
+                    def decoded = new JsonSlurper().parseText(output)
+                    echo "Created comment ${decoded.id} - ${decoded.html_url}" 
                 }
             }
         }
-    }
-
-    public static createGithubComment(String prNum, String commentBody, String repoSlug, String repoHost = 'http://github.ove.local/api/v3/') {
-        def data = JsonOutput.toJson([body: commentBody])
-        def tmpDir = steps.pwd(tmp: true)
-        def bodyPath = "${tmpDir}/body.txt"
-        writeFile(file: bodyPath, text: data)
-
-        def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
-        def cmd = "curl -H \"Authorization: token \$${githubToken}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
-
-        def output = sh(script: cmd, returnStdout: true).trim()
-
-        def headers = readFile('comment.headers').trim()
-        if (! headers.contains('HTTP/1.1 201 Created')) {
-            error("Creating GitHub comment failed: ${headers}\n")
-        }
-        // ok, success
-        def decoded = new JsonSlurper().parseText(output)
-        echo "Created comment ${decoded.id} - ${decoded.html_url}" 
     }
 }
