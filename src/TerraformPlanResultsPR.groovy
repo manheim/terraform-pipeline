@@ -113,7 +113,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
         }
     }
 
-    public static createGithubComment(String prNum, String commentBody, String repoSlug, String repoHost = 'http://github.ove.local/api/v3/'){{
+    public static createGithubComment(String prNum, String commentBody, String repoSlug, String repoHost = 'http://github.ove.local/api/v3/') {
         def data = JsonOutput.toJson([body: commentBody])
         def tmpDir = steps.pwd(tmp: true)
         def bodyPath = "${tmpDir}/body.txt"
