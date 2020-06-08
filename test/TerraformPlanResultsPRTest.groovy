@@ -8,14 +8,28 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static TerraformEnvironmentStage.PLAN;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test
+import org.junit.Before
 import org.junit.After
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPlanResultsPRTest {
+    @Before
+    void resetJenkinsEnv() {
+        Jenkinsfile.instance = mock(Jenkinsfile.class)
+        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
+    }
+
+    private configureJenkins(Map config = [:]) {
+        Jenkinsfile.instance = mock(Jenkinsfile.class)
+        when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
+        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
+    }
 
     public class Init {
         @After
@@ -71,6 +85,10 @@ class TerraformPlanResultsPRTest {
         void decoratesTheTerraformEnvironmentStage()  {
             TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
             def environment = spy(new TerraformEnvironmentStage())
+            configureJenkins(env: [
+                'BRANCH_NAME': 'master',
+                'BUILD_URL': 'https://my-jenkins/job/my-org/job/my-repo/job/PR-1/2/'
+            ])
 
             plugin.apply(environment)
 
