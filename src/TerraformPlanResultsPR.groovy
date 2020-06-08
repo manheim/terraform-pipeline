@@ -1,7 +1,6 @@
+import static TerraformEnvironmentStage.PLAN
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-
-import static TerraformEnvironmentStage.PLAN
 
 class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
@@ -55,8 +54,8 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     public static Closure addComment(String env) {
         String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
         String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
-        
-        return { closure -> 
+
+        return { closure ->
             closure()
 
             // comment on PR if this is a PR build
@@ -99,7 +98,7 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
                     }
                     // ok, success
                     def decoded = new JsonSlurper().parseText(output)
-                    echo "Created comment ${decoded.id} - ${decoded.html_url}" 
+                    echo "Created comment ${decoded.id} - ${decoded.html_url}"
                 }
             }
         }
