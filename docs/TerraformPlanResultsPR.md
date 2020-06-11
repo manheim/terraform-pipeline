@@ -3,7 +3,7 @@
 Use this to post Terraform plan results in the comments of a PR.
 
 One-Time Setup:
-* Install the terraform-landscape gem on your Jenkins slaves. (ONLY when using `withLandscape(true)`)
+* Install the terraform-landscape gem on your Jenkins agents. (ONLY when using `withLandscape(true)`)
 
 Requirements:
 * Set the environment variable for Github Authentication. The default environment variable to be set is `GITHUB_TOKEN`. The CredentialsPlugin can help with setting this variable.
