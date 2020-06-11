@@ -2,11 +2,18 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static TerraformEnvironmentStage.ALL;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test
-import org.junit.After
 import org.junit.Before
+import org.junit.After
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
@@ -69,9 +76,8 @@ class TargetPluginTest {
             plugin.apply(command)
 
             String result = command.toString()
-            assertThat(result, containsString(" -target=aws_dynamodb_table.test-table-2 -target=aws_dynamodb_table.test-table-3"))
+            assertThat(result, containsString(" -target aws_dynamodb_table.test-table-2 -target aws_dynamodb_table.test-table-3"))
         }
-
 
         @Test
         void addsTargetArgumentToTerraformApply() {
@@ -84,7 +90,7 @@ class TargetPluginTest {
             plugin.apply(command)
 
             String result = command.toString()
-            assertThat(result, containsString(" -target=aws_dynamodb_table.test-table-2 -target=aws_dynamodb_table.test-table-3"))
+            assertThat(result, containsString(" -target aws_dynamodb_table.test-table-2 -target aws_dynamodb_table.test-table-3"))
         }
 
         @Test
