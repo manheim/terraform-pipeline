@@ -6,7 +6,7 @@ One-Time Setup:
 * Install the terraform-landscape gem on your Jenkins slaves. (ONLY when using `withLandscape(true)`)
 
 Requirements:
-* Enable CredentialsPlugin to set the GITHUB_TOKEN environment varaible. This is later used in the TerraformPlanResultsPR Plugin for authentication.
+* Set the environment variable for Github Authentication. The default environment variable to be set is `GITHUB_TOKEN`. The CredentialsPlugin can help with setting this variable.
 * Enable AnsiColorPlugin for colors in Jenkins (ONLY when usng `withLandscape(true)`)
 
 Configuration Methods:
@@ -25,11 +25,11 @@ Important Notes:
 
 Jenkinsfile.init(this)
 
-// Required to set GITHUB_TOKEN envionrment variable for use with TerraformPlanResultsPR Plugin
+// set GITHUB_TOKEN environment variable for use with TerraformPlanResultsPR Plugin
 // FOO/GITHUB_TOKEN will contain the respective username/password values of the 'my-cred' credential.
 CredentialsPlugin.withBuildCredentials([usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN'], 'my-cred').init()
 
-AnsiColorPlugin.init()                                           // Required when using 'withLandscape(true)'
+AnsiColorPlugin.init()                                    // Required when using 'withLandscape(true)' to colorize plan output
 TerraformPlanResultsPR.withRepoHost("https://api.github.com/")
                       .withRepoSlug("my-org/my-repo")
                       .withLandscape(true)
