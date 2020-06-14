@@ -66,7 +66,8 @@ class TerraformPlanResultsPRTest {
             plugin.apply(command)
 
             String result = command.toString()
-            assertThat(result, containsString(" -out=tfplan 2>plan.err | tee plan.out"))
+            assertThat(result, containsString("-out=tfplan"))
+            assertThat(result, containsString("2>plan.err | tee plan.out"))
         }
 
         @Test
@@ -78,7 +79,8 @@ class TerraformPlanResultsPRTest {
             plugin.apply(command)
 
             String result = command.toString()
-            assertThat(result, containsString(" -out=tfplan 2>plan.err | landscape | tee plan.out"))
+            assertThat(result, containsString("-out=tfplan"))
+            assertThat(result, containsString("2>plan.err | landscape | tee plan.out"))
         }
 
         @Test
