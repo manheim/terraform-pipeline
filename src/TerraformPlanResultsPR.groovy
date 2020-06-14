@@ -44,10 +44,12 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     @Override
     public void apply(TerraformPlanCommand command) {
         if (landscape) {
-            command.withSuffix(" -out=tfplan 2>plan.err | landscape | tee plan.out")
+            command.withArgument("-out=tfplan")
+            command.withSuffix(" 2>plan.err | landscape | tee plan.out")
         }
         else {
-            command.withSuffix(" -out=tfplan 2>plan.err | tee plan.out")
+            command.withArgument("-out=tfplan")
+            command.withSuffix(" 2>plan.err | tee plan.out")
         }
     }
 
