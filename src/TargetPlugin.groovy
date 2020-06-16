@@ -11,22 +11,14 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        def targets = Jenkinsfile.instance.getEnv().RESOURCE_TARGETS
-        if ("${targets}" != '' && targets != null) {
-            for (item in "${targets}".split(',')) {
-                command.withArgument("-target ${item}")
-            }
-        }
+        def targets = Jenkinsfile.instance.getEnv().RESOURCE_TARGETS ?: ''
+        targets.split(',').each { item -> command.withArgument("-target ${item}") }
     }
 
     @Override
     public void apply(TerraformApplyCommand command) {
-        def targets = Jenkinsfile.instance.getEnv().RESOURCE_TARGETS
-        if ("${targets}" != '' && targets != null) {
-            for (item in "${targets}".split(',')) {
-                command.withArgument("-target ${item}")
-            }
-        }
+        def targets = Jenkinsfile.instance.getEnv().RESOURCE_TARGETS ?: ''
+        targets.split(',').each { item -> command.withArgument("-target ${item}") }
     }
 
     @Override

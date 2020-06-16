@@ -97,7 +97,6 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md): pause and review the plan, before applying any changes.
 * [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on master branch.
 * [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md): automatically set `TF_VAR_environment` variable.
-* [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 ### Credentials and Configuration Management
 * [CredentialsPlugin](./docs/CredentialsPlugin.md): Inject Jenkins credentials into your stages.
 * [FileParametersPlugin](./docs/FileParametersPlugin.md): Use properties files to inject environment-specific variables.
@@ -117,6 +116,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
 * [TerraformPlanResultsPR](./docs/TerraformPlanResultsPR.md): Use this to post Terraform plan results in the comments of a PR.
+* [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 
 ## Write your own Plugin
 
