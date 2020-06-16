@@ -116,6 +116,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
 * [TerraformPlanResultsPR](./docs/TerraformPlanResultsPR.md): Use this to post Terraform plan results in the comments of a PR.
+* [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 
 ## Write your own Plugin
 
