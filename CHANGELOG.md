@@ -3,6 +3,7 @@
 # Unpublished changes
 
 * [Issue #219](https://github.com/manheim/terraform-pipeline/issues/219) Fix documentation - example code does not work
+* [Issue #234](https://github.com/manheim/terraform-pipeline/issues/234) Rename TerraformPlanResultsPRPlugin to be consistent
 * [Issue #193](https://github.com/manheim/terraform-pipeline/issues/193) Support passing branch plans to Github PRs
 * [Issue #102](https://github.com/manheim/terraform-pipeline/issues/102) Support target when running terraform plan and apply
 
