@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
-class TerraformPlanResultsPRTest {
+class TerraformPlanResultsPRPluginTest {
     @Before
     void resetJenkinsEnv() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
@@ -40,18 +40,18 @@ class TerraformPlanResultsPRTest {
 
         @Test
         void modifiesTerraformPlanCommand() {
-            TerraformPlanResultsPR.init()
+            TerraformPlanResultsPRPlugin.init()
 
             Collection actualPlugins = TerraformPlanCommand.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(TerraformPlanResultsPR.class)))
+            assertThat(actualPlugins, hasItem(instanceOf(TerraformPlanResultsPRPlugin.class)))
         }
 
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
-            TerraformPlanResultsPR.init()
+            TerraformPlanResultsPRPlugin.init()
 
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(TerraformPlanResultsPR.class)))
+            assertThat(actualPlugins, hasItem(instanceOf(TerraformPlanResultsPRPlugin.class)))
         }
     }
 
@@ -59,7 +59,7 @@ class TerraformPlanResultsPRTest {
 
         @Test
         void addsTeeArgumentToTerraformPlan() {
-            TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
+            TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
             plugin.withLandscape(false)
             TerraformPlanCommand command = new TerraformPlanCommand()
 
@@ -71,7 +71,7 @@ class TerraformPlanResultsPRTest {
 
         @Test
         void addsTeeAndLandscapeArgumentToTerraformPlan() {
-            TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
+            TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
             plugin.withLandscape(true)
             TerraformPlanCommand command = new TerraformPlanCommand()
 
@@ -83,7 +83,7 @@ class TerraformPlanResultsPRTest {
 
         @Test
         void decoratesTheTerraformEnvironmentStage()  {
-            TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
+            TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
             def environment = spy(new TerraformEnvironmentStage())
             configureJenkins(env: [
                 'BRANCH_NAME': 'master',

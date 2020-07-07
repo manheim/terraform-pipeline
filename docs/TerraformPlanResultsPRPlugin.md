@@ -1,4 +1,4 @@
-## [TerraformPlanResultsPR](../src/TerraformPlanResultsPR.groovy)
+## [TerraformPlanResultsPRPlugin](../src/TerraformPlanResultsPRPlugin.groovy)
 
 Use this to post Terraform plan results in the comments of a PR.
 
@@ -18,23 +18,23 @@ Configuration Methods:
 Important Notes:
 * This plugin supports terraform plan output with the terraform landscape gem, but there is currently a standalone plugin `TerraformLandscapePlugin` for this feature.
 * Note the `TerraformLandscapePlugin` does NOT contain support to post comments on pull requests.
-* If you desire BOTH terraform landscape output and comments on PR's, you should use the `TerraformPlanResultsPR` plugin with `withLandscape(true)`
+* If you desire BOTH terraform landscape output and comments on PR's, you should use the `TerraformPlanResultsPRPlugin` with `withLandscape(true)`
 
 ```
 @Library(['terraform-pipeline']) _
 
 Jenkinsfile.init(this)
 
-// set GITHUB_TOKEN environment variable for use with TerraformPlanResultsPR Plugin
+// set GITHUB_TOKEN environment variable for use with TerraformPlanResultsPRPlugin
 // FOO/GITHUB_TOKEN will contain the respective username/password values of the 'my-cred' credential.
 CredentialsPlugin.withBuildCredentials([usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN'], 'my-cred').init()
 
 AnsiColorPlugin.init()                                    // Required when using 'withLandscape(true)' to colorize plan output
-TerraformPlanResultsPR.withRepoHost("https://api.github.com/")
-                      .withRepoSlug("my-org/my-repo")
-                      .withLandscape(true)
-                      .withGithubTokenEnvVar("GITHUB_TOKEN")
-                      .init()
+TerraformPlanResultsPRPlugin.withRepoHost("https://api.github.com/")
+                            .withRepoSlug("my-org/my-repo")
+                            .withLandscape(true)
+                            .withGithubTokenEnvVar("GITHUB_TOKEN")
+                            .init()
 
 def validate = new TerraformValidateStage()
 def deployQa = new TerraformEnvironmentStage('qa')

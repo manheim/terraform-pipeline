@@ -2,7 +2,7 @@ import static TerraformEnvironmentStage.PLAN
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
+class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
     private static boolean landscape = false
     private static String repoSlug = ""
@@ -10,29 +10,29 @@ class TerraformPlanResultsPR implements TerraformPlanCommandPlugin, TerraformEnv
     private static String githubTokenEnvVar = "GITHUB_TOKEN"
 
     public static void init() {
-        TerraformPlanResultsPR plugin = new TerraformPlanResultsPR()
+        TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
 
         TerraformEnvironmentStage.addPlugin(plugin)
         TerraformPlanCommand.addPlugin(plugin)
     }
 
     public static withLandscape(boolean landscape) {
-        TerraformPlanResultsPR.landscape = landscape
+        TerraformPlanResultsPRPlugin.landscape = landscape
         return this
     }
 
     public static withRepoSlug(String repoSlug) {
-        TerraformPlanResultsPR.repoSlug = repoSlug
+        TerraformPlanResultsPRPlugin.repoSlug = repoSlug
         return this
     }
 
     public static withRepoHost(String repoHost) {
-        TerraformPlanResultsPR.repoHost = repoHost
+        TerraformPlanResultsPRPlugin.repoHost = repoHost
         return this
     }
 
     public static withGithubTokenEnvVar(String githubTokenEnvVar) {
-        TerraformPlanResultsPR.githubTokenEnvVar = githubTokenEnvVar
+        TerraformPlanResultsPRPlugin.githubTokenEnvVar = githubTokenEnvVar
         return this
     }
 
