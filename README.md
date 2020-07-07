@@ -15,7 +15,7 @@ A reusable pipeline template to apply terraform configuration serially across mu
 ![Importing Pipeline Library](./images/import-terraform-pipeline.png)
 
 # How to Use
-1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  It's recommended that you always use the latest version.
+1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  The example below uses `v5.1`, but it's recommended that you always use the latest version - unreleased changes are queued in the master branch, so using master may cause unexpected results.
 ```
 // Jenkinsfile
 @Library(['terraform-pipeline@v5.1']) _
@@ -309,12 +309,16 @@ If no `.terraform-version` file is found, and no explicit version is provided, t
 
 # How to Contribute
 
-1.  Fork this project.
-2.  Make your changes and run the tests with `./gradlew test`.
-3.  Validate your changes by pointing a terraform-pipeline project to your fork.
-4.  Update the CHANGELOG with your changes.  Changes are queued under "Unreleased", until an official release is cut.
-5.  Your PR will be reviewed and merged into a release branch.
-6.  Release branches are periodically reviewed, then merged into master.  An official release is then published, and the release branch is deleted.
+1.  Create an [Issue](https://github.com/manheim/terraform-pipeline/issues) for the change that's being made.
+2.  All changes pending the next release will be staged in the master branch.
+3.  Fork this project.
+4.  Make a branch named after your issue, in your fork.
+5.  Make your changes in the branch and run the tests and codestyle checks with with `./gradlew check --info`
+6.  Update the CHANGELOG with your changes. Changes are queued under "Unreleased", until an official release is cut.
+7.  Validate your changes by pointing a terraform-pipeline project to your fork's branch, and run an actual pipeline.
+8.  Make a PR against the master branch of this project, and reference your Issue in the PR.
+9.  Your PR will be reviewed and merged into master.
+10.  Changes in master will be periodically grouped and published as a Release.
 
 # Goals that this library is trying to achieve:
 
