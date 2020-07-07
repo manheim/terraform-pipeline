@@ -15,7 +15,7 @@ A reusable pipeline template to apply terraform configuration serially across mu
 ![Importing Pipeline Library](./images/import-terraform-pipeline.png)
 
 # How to Use
-1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  It's recommended that you always use the latest version.
+1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  The example below uses `v5.1`, but it's recommended that you always use the latest version - unreleased changes are queued in the master branch, so using master may cause unexpected results.
 ```
 // Jenkinsfile
 @Library(['terraform-pipeline@v5.1']) _
