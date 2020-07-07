@@ -309,7 +309,7 @@ If no `.terraform-version` file is found, and no explicit version is provided, t
 
 # How to Contribute
 
-1.  Create an Issue for the change that's being made.
+1.  Create an [Issue](https://github.com/manheim/terraform-pipeline/issues) for the change that's being made.
 2.  All changes pending the next release will be staged in the master branch.
 3.  Fork this project.
 4.  Make a branch named after your issue, in your fork.
