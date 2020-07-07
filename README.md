@@ -224,7 +224,7 @@ As an example, we'll create a `vars/CustomPipelineTemplate.groovy` in our custom
 ```
 // terraform-pipeline-customizations/vars/CustomPipelineTemplate.groovy
 
-def call(stages) {
+def call(args) {
     pipeline {
         agent none
 
@@ -232,7 +232,7 @@ def call(stages) {
             stage('Validate') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(0)).build()
+                        ((Stage)args.getAt(0)).build()
                     }
                 }
             }
@@ -240,7 +240,7 @@ def call(stages) {
             stage('Qa') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(1)).build()
+                        ((Stage)args.getAt(1)).build()
                     }
                 }
             }
@@ -248,7 +248,7 @@ def call(stages) {
             stage('Uat') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(2)).build()
+                        ((Stage)args.getAt(2)).build()
                     }
                 }
             }
@@ -256,7 +256,7 @@ def call(stages) {
             stage('Prod') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(3)).build()
+                        ((Stage)args.getAt(3)).build()
                     }
                 }
             }
