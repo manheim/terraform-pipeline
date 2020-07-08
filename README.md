@@ -167,7 +167,7 @@ The above would generate roughly the following Jenkinsfile DSL:
 ...
 ```
 
-The order in which the plugins were initialized determined the order of the Jenkinsfile DSL. Had the plugins been initialized in the reverse order, the Jenkinsfile DSL would likewise be reversed, and would lead to an undesireable outcome.
+The order in which the plugins were initialized determined the order of the Jenkinsfile DSL. Had the plugins been initialized in the reverse order, the Jenkinsfile DSL would likewise be reversed, and would lead to an undesirable outcome.
 
 ```
 // Wrap everything before this in withAWSParameterStore { }
