@@ -175,6 +175,9 @@ ParameterStoreBuildWrapperPlugin.init()
 
 // Wrap everything before this in withAWS { }
 WithAwsPlugin.init()
+```
+
+```
 ...
 
     // AWS_ROLE_ARN is not defined - withAWS does nothing
