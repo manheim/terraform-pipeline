@@ -130,7 +130,7 @@ This library was intended to be customizable and extendable - if you don't find 
 6.  Call your `init()` method in your Jenkinsfile before calling `build()` on your pipeline.
 7.  If your plugin could be useful to others, feel free to put in a Pull Request.
 
-# Plugin Order
+## Plugin Order
 
 Plugins often work by wrapping your stages in Jenkinfile DSL blocks.  If multiple plugins wrap your stages simultaneously, the order in which they are wrapped can be very important.  On the whole, terraform-pipeline strives to preserve and maintain the order you initialize the plugins, so that the corresponding Jenkinsfile DSL blocks execute predictably.
 
