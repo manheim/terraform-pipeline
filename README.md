@@ -143,8 +143,11 @@ Take the following example:
 Using terraform-pipeline, you might initialize your pipeline as such:
 
 ```
-WithAwsPlugin.init() // Wrap everything before this in withAWS { }
-ParameterStoreBuildWrapperPlugin.init() // Wrap everything before this in withAWSParameterStore { }
+// Wrap everything before this in withAWS { }
+WithAwsPlugin.init()
+
+// Wrap everything before this in withAWSParameterStore { }
+ParameterStoreBuildWrapperPlugin.init()
 ```
 
 The above would generate roughly the following Jenkinsfile DSL:
@@ -155,7 +158,8 @@ The above would generate roughly the following Jenkinsfile DSL:
     // Set a key value pair in ParameterStore so that AWS_ROLE_ARN=<SomeArn>
     withAWSParameterStore {
         ...
-        // AWS_ROLE_ARN is visible as an environment variable, and passed along to withAWS
+        // AWS_ROLE_ARN was set by ParameterStore
+        // AWS_ROLE_ARN is picked up and used by withAWS
         withAWS(role: AWS_ROLE_ARN) {
             ...
         }
@@ -166,8 +170,11 @@ The above would generate roughly the following Jenkinsfile DSL:
 The order in which the plugins were initialized determined the order of the Jenkinsfile DSL. Had the plugins been initialized in the reverse order, the Jenkinsfile DSL would likewise be reversed, and would lead to an undesireable outcome.
 
 ```
-ParameterStoreBuildWrapperPlugin.init() // Wrap everything before this in withAWSParameterStore { }
-WithAwsPlugin.init() // Wrap everything before this in withAWS { }
+// Wrap everything before this in withAWSParameterStore { }
+ParameterStoreBuildWrapperPlugin.init()
+
+// Wrap everything before this in withAWS { }
+WithAwsPlugin.init()
 ...
 
     // AWS_ROLE_ARN is not defined - withAWS does nothing
