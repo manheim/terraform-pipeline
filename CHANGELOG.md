@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #218](https://github.com/manheim/terraform-pipeline/issues/218) Preserve stashes in default declarative pipeline templates
 * [Issue #206](https://github.com/manheim/terraform-pipeline/issues/206) Explain the importance of plugin order
 * [Issue #219](https://github.com/manheim/terraform-pipeline/issues/219) Fix documentation - example code does not work
 * [Issue #234](https://github.com/manheim/terraform-pipeline/issues/234) Rename TerraformPlanResultsPRPlugin to be consistent
