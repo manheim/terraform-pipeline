@@ -130,6 +130,67 @@ This library was intended to be customizable and extendable - if you don't find 
 6.  Call your `init()` method in your Jenkinsfile before calling `build()` on your pipeline.
 7.  If your plugin could be useful to others, feel free to put in a Pull Request.
 
+## Plugin Order
+
+Plugins often work by wrapping your stages in Jenkinfile DSL blocks.  If multiple plugins wrap your stages simultaneously, the order in which they are wrapped can be very important.  On the whole, terraform-pipeline strives to preserve and maintain the order you initialize the plugins, so that the corresponding Jenkinsfile DSL blocks execute predictably.
+
+Take the following example:
+
+* `ParameterStoreBuildWrapperPlugin` wraps your pipeline stages with the Jenkinsfile DSL `withAWSParameterStore { }` and can inject environment variables into your stage from ParameterStore key/value pairs.
+* `WithAwsPlugin` wraps your pipeline stages with the Jenkinsfile DSL `withAws { }` and can execute your stage under the context of an IAM role that's defined by an environment variable.
+* The two plugins can be used together - an IAM role can be defined in ParameterStore and translated to an environment variable `AWS_ROLE_ARN`, and that environment variable can in turn be used to configure the IAM role assumed by `WithAwsPlugin`.
+
+Using terraform-pipeline, you might initialize your pipeline as such:
+
+```
+// Wrap everything before this in withAWS { }
+WithAwsPlugin.init()
+
+// Wrap everything before this in withAWSParameterStore { }
+ParameterStoreBuildWrapperPlugin.init()
+```
+
+The above would generate roughly the following Jenkinsfile DSL:
+
+```
+...
+
+    // Set a key value pair in ParameterStore so that AWS_ROLE_ARN=<SomeArn>
+    withAWSParameterStore {
+        ...
+        // AWS_ROLE_ARN was set by ParameterStore
+        // AWS_ROLE_ARN is picked up and used by withAWS
+        withAWS(role: AWS_ROLE_ARN) {
+            ...
+        }
+    }
+...
+```
+
+The order in which the plugins were initialized determined the order of the Jenkinsfile DSL. Had the plugins been initialized in the reverse order, the Jenkinsfile DSL would likewise be reversed, and would lead to an undesirable outcome.
+
+```
+// Wrap everything before this in withAWSParameterStore { }
+ParameterStoreBuildWrapperPlugin.init()
+
+// Wrap everything before this in withAWS { }
+WithAwsPlugin.init()
+```
+
+```
+...
+
+    // AWS_ROLE_ARN is not defined - withAWS does nothing
+    withAWS(role: <?>) {
+        ...
+        // AWS_ROLE_ARN=<SomeArn> is defined in ParameterStore, but it's too late
+        withAWSParameterStore {
+            ...
+        }
+    }
+...
+```
+
 # Control Where Your Jobs Are Run
 
 By default, the pipeline jobs are not assigned to a particular Jenkins slave label.  If you want to tie your pipeline to particular Jenkins slave label, you can do so with the following line of code:
