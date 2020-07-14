@@ -3,7 +3,7 @@ import static TerraformEnvironmentStage.ALL
 
 public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin {
     private static String dockerImage
-    private static boolean withDockerfile
+    private static String dockerfile
     private static String dockerBuildOptions
     private static String dockerOptions
 
@@ -16,19 +16,23 @@ public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformE
         TerraformEnvironmentStage.addPlugin(plugin)
     }
 
-    public static AgentNodePlugin withAgentDockerImage(String dockerImage, withDockerfile=false) {
+    public static withAgentDockerImage(String dockerImage) {
         this.dockerImage = dockerImage
-        this.withDockerfile = withDockerfile
         return this
     }
 
-    public static AgentNodePlugin withAgentDockerImageOptions(String dockerOptions) {
+    public static withAgentDockerImageOptions(String dockerOptions) {
         this.dockerOptions = dockerOptions
         return this
     }
 
-    public static AgentNodePlugin withAgentDockerBuildOptions(String dockerBuildOptions) {
+    public static withAgentDockerBuildOptions(String dockerBuildOptions) {
         this.dockerBuildOptions = dockerBuildOptions
+        return this
+    }
+
+    public static withAgentDockerfile(String dockerfile = 'Dockerfile') {
+        this.dockerfile = dockerfile
         return this
     }
 
@@ -44,17 +48,24 @@ public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformE
 
     public Closure addAgent() {
         return { closure ->
-            if (this.dockerImage && this.withDockerfile == false) {
+            if (this.dockerImage && this.dockerfile == null) {
                 docker.image(this.dockerImage).inside(this.dockerOptions) {
                     closure()
                 }
-            } else if (this.dockerImage && this.withDockerfile == true) {
-                docker.build(this.dockerImage, "${this.dockerBuildOptions} -f Dockerfile .").inside(this.dockerOptions) {
+            } else if (this.dockerImage && this.dockerfile) {
+                docker.build(this.dockerImage, "${this.dockerBuildOptions} -f ${dockerfile} .").inside(this.dockerOptions) {
                     closure()
                 }
             } else {
                 closure()
             }
         }
+    }
+
+    public static void reset() {
+        dockerImage = null
+        dockerfile = null
+        dockerBuildOptions = null
+        dockerOptions = null
     }
 }

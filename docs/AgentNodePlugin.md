@@ -33,6 +33,7 @@ Jenkinsfile.init(this)
 
 AgentNodePlugin.withAgentDockerImage('custom/terraform-ruby:latest', true)
                .withAgentDockerImageOptions("--entrypoint=''")
+               .withAgentDockerfile()
                .init()
 
 def validate = new TerraformValidateStage()
