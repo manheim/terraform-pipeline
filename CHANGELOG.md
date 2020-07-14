@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #232](https://github.com/manheim/terraform-pipeline/issues/232) TerraformPlanResultsPR breaks with TerraformDirectoryPlugin
 * [Issue #230](https://github.com/manheim/terraform-pipeline/issues/230) AgentNode Support with PR Plugin - allow Dockerfile agents
 * [Issue #218](https://github.com/manheim/terraform-pipeline/issues/218) Preserve stashes in default declarative pipeline templates
 * [Issue #206](https://github.com/manheim/terraform-pipeline/issues/206) Explain the importance of plugin order
