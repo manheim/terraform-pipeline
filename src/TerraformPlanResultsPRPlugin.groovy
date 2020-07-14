@@ -4,7 +4,6 @@ import groovy.json.JsonSlurper
 
 class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
-    private static boolean landscape = false
     private static String repoSlug = ""
     private static String repoHost = "https://api.github.com/"
     private static String githubTokenEnvVar = "GITHUB_TOKEN"
@@ -14,11 +13,6 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
 
         TerraformEnvironmentStage.addPlugin(plugin)
         TerraformPlanCommand.addPlugin(plugin)
-    }
-
-    public static withLandscape(boolean landscape) {
-        TerraformPlanResultsPRPlugin.landscape = landscape
-        return this
     }
 
     public static withRepoSlug(String repoSlug) {
@@ -43,14 +37,9 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        if (landscape) {
-            command.withArgument("-out=tfplan")
-            command.withSuffix("2>plan.err | landscape | tee plan.out")
-        }
-        else {
-            command.withArgument("-out=tfplan")
-            command.withSuffix("2>plan.err | tee plan.out")
-        }
+        command.withArgument("-out=tfplan")
+        command.withStandardErrorRedirection('plan.err')
+        command.withSuffix('| tee plan.out')
     }
 
     public static Closure addComment(String env) {

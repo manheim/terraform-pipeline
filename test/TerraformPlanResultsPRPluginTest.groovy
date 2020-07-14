@@ -60,25 +60,13 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void addsTeeArgumentToTerraformPlan() {
             TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
-            plugin.withLandscape(false)
             TerraformPlanCommand command = new TerraformPlanCommand()
 
             plugin.apply(command)
 
             String result = command.toString()
-            assertThat(result, containsString(" -out=tfplan 2>plan.err | tee plan.out"))
-        }
-
-        @Test
-        void addsTeeAndLandscapeArgumentToTerraformPlan() {
-            TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
-            plugin.withLandscape(true)
-            TerraformPlanCommand command = new TerraformPlanCommand()
-
-            plugin.apply(command)
-
-            String result = command.toString()
-            assertThat(result, containsString(" -out=tfplan 2>plan.err | landscape | tee plan.out"))
+            assertThat(result, containsString("-out=tfplan"))
+            assertThat(result, containsString("2>plan.err | tee plan.out"))
         }
 
         @Test

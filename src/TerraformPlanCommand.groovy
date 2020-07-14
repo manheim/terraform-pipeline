@@ -10,6 +10,7 @@ class TerraformPlanCommand {
     private static plugins = DEFAULT_PLUGINS.clone()
     private appliedPlugins = []
     private String directory
+    private String errorFile
 
     public TerraformPlanCommand(String environment) {
         this.environment = environment
@@ -40,6 +41,11 @@ class TerraformPlanCommand {
         return this
     }
 
+    public TerraformPlanCommand withStandardErrorRedirection(String errorFile) {
+        this.errorFile = errorFile
+        return this
+    }
+
     public String toString() {
         applyPluginsOnce()
 
@@ -53,6 +59,12 @@ class TerraformPlanCommand {
         pieces += arguments
         if (directory) {
             pieces << directory
+        }
+
+        // This should be built out to handle more complex redirection
+        // and should be standardized across all TerraformCommands
+        if (errorFile) {
+            pieces << "2>${errorFile}"
         }
 
         pieces += suffixes

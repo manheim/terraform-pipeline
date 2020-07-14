@@ -3,6 +3,7 @@ import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.not
 import static org.hamcrest.Matchers.startsWith
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -114,6 +115,36 @@ class TerraformPlanCommandTest {
             def actualCommand = command.toString()
             assertThat(actualCommand, containsString(" foo"))
             assertThat(actualCommand, containsString(" bar"))
+        }
+    }
+
+    public class WithStandardErrorRedirection {
+        @Test
+        void sendsStandardErrorToTheGivenFile() {
+            def command = new TerraformPlanCommand().withStandardErrorRedirection('error.txt')
+
+            def actualCommand = command.toString()
+
+            assertThat(actualCommand, containsString("2>error.txt"))
+        }
+
+        @Test
+        void comesBeforeSuffix() {
+            def command = new TerraformPlanCommand()
+            command.withSuffix('| xargs echo')
+                   .withStandardErrorRedirection('error.txt')
+
+            def actualCommand = command.toString()
+
+            assertThat(actualCommand, containsString("2>error.txt | xargs echo"))
+        }
+
+        @Test
+        void isFluent() {
+            def expectedCommand = new TerraformPlanCommand()
+            def actualCommand = expectedCommand.withStandardErrorRedirection('error.txt')
+
+            assertTrue(expectedCommand == actualCommand)
         }
     }
 
