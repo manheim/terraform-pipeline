@@ -53,7 +53,12 @@ public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformE
                     closure()
                 }
             } else if (this.dockerImage && this.dockerfile) {
-                docker.build(this.dockerImage, "${this.dockerBuildOptions} -f ${dockerfile} .").inside(this.dockerOptions) {
+                def buildCommand = "-f ${dockerfile} ."
+                if (this.dockerBuildOptions) {
+                    buildCommand = "${this.dockerBuildOptions} ${buildCommand}"
+                }
+
+                docker.build(this.dockerImage, buildCommand.toString()).inside(this.dockerOptions) {
                     closure()
                 }
             } else {

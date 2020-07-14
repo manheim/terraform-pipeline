@@ -181,6 +181,20 @@ class AgentNodePluginTest {
             }
 
             @Test
+            void worksWithoutBuildOptions() {
+                def expectedBuildCommand = '-f Dockerfile .'
+                AgentNodePlugin.withAgentDockerfile('Dockerfile')
+                def plugin = new AgentNodePlugin()
+                def jenkinsfile = createJenkinsfileSpy()
+
+                def agentClosure = plugin.addAgent()
+                agentClosure.delegate = jenkinsfile
+                agentClosure { -> }
+
+                verify(jenkinsfile).build(anyString(), eq(expectedBuildCommand))
+            }
+
+            @Test
             void usesTheGivenDockerBuildOptions() {
                 def expectedOptions = 'expectedOptions'
                 AgentNodePlugin.withAgentDockerfile()
