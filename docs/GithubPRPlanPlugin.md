@@ -14,10 +14,13 @@ Jenkinsfile.init(this)
 // A GITHUB_TOKEN environment variable should contain your Github PAT
 GithubPRPlanPlugin.init()
 
+// After creating a PullRequest, the plan results for each 
+// environment are posted as a comment to the PullRequest.
 def validate = new TerraformValidateStage()
 def deployQa = new TerraformEnvironmentStage('qa')
 def deployUat = new TerraformEnvironmentStage('uat')
 def deployProd = new TerraformEnvironmentStage('prod')
+
 validate.then(deployQa)
         .then(deployUat)
         .then(deployProd)
