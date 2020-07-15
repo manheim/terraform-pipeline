@@ -113,9 +113,9 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [AgentNodePlugin](./docs/AgentNodePlugin.md): Run your pipeline on agents that are configured with Docker.
 * [AnsiColorPlugin](./docs/AnsiColorPlugin.md): Enable ansi-color output.
 * [CrqPlugin](./docs/CrqPlugin.md): Use the manheim_remedier gem to open automated Change Requests.
+* [GithubPRPlanPlugin](./docs/GithubPRPlanPlugin.md): Use this to post Terraform plan results in the comments of a Github PullRequest.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
-* [TerraformPlanResultsPRPlugin](./docs/TerraformPlanResultsPRPlugin.md): Use this to post Terraform plan results in the comments of a PR.
 * [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 
 ## Write your own Plugin
