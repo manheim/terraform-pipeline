@@ -1,6 +1,7 @@
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -80,6 +81,20 @@ class TargetPluginTest {
         }
 
         @Test
+        void doesNotAddTargetArgumentToTerraformPlanWhenResourceTargetsBlank() {
+            TargetPlugin plugin = new TargetPlugin()
+            TerraformPlanCommand command = new TerraformPlanCommand()
+            configureJenkins(env: [
+                'RESOURCE_TARGETS': ''
+            ])
+
+            plugin.apply(command)
+
+            String result = command.toString()
+            assertThat(result, not(containsString("-target")))
+        }
+
+        @Test
         void addsTargetArgumentToTerraformApply() {
             TargetPlugin plugin = new TargetPlugin()
             TerraformApplyCommand command = new TerraformApplyCommand()
@@ -91,6 +106,20 @@ class TargetPluginTest {
 
             String result = command.toString()
             assertThat(result, containsString(" -target aws_dynamodb_table.test-table-2 -target aws_dynamodb_table.test-table-3"))
+        }
+
+        @Test
+        void doesNotAddTargetArgumentToTerraformApplyWhenResourceTargetsBlank() {
+            TargetPlugin plugin = new TargetPlugin()
+            TerraformApplyCommand command = new TerraformApplyCommand()
+            configureJenkins(env: [
+                'RESOURCE_TARGETS': ''
+            ])
+
+            plugin.apply(command)
+
+            String result = command.toString()
+            assertThat(result, not(containsString("-target")))
         }
 
         @Test
