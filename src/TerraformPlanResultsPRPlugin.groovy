@@ -48,28 +48,9 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
             closure()
 
             if (isPullRequest()) {
-                String commentBody = getCommentBody(env)
-                echo "Creating comment in GitHub"
-                // GitHub can't handle comments of 65536 or longer; chunk
-                commentBody.split("(?<=\\G.{${MAX_COMMENT_LENGTH}})").each { chunk ->
-                    def data = JsonOutput.toJson([body: chunk])
-                    def tmpDir = pwd(tmp: true)
-                    def bodyPath = "${tmpDir}/body.txt"
-                    writeFile(file: bodyPath, text: data)
-
-                    def url = getPullRequestCommentUrl()
-                    def cmd = "curl -H \"Authorization: token \$${githubTokenEnvVar}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
-
-                    def output = sh(script: cmd, returnStdout: true).trim()
-
-                    def headers = readFile('comment.headers').trim()
-                    if (! headers.contains('HTTP/1.1 201 Created')) {
-                        error("Creating GitHub comment failed: ${headers}\n")
-                    }
-                    // ok, success
-                    def decoded = new JsonSlurper().parseText(output)
-                    echo "Created comment ${decoded.id} - ${decoded.html_url}"
-                }
+                String url = getPullRequestCommentUrl()
+                String comment = getCommentBody(env)
+                postPullRequestComment(url, comment)
             }
         }
     }
@@ -170,6 +151,34 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         lines << ''
 
         return lines.join('\n')
+    }
+
+    public postPullRequestComment(String pullRequestUrl, String commentBody) {
+        def closure = { ->
+            echo "Creating comment in GitHub"
+            // GitHub can't handle comments of 65536 or longer; chunk
+            commentBody.split("(?<=\\G.{${MAX_COMMENT_LENGTH}})").each { chunk ->
+                def data = JsonOutput.toJson([body: chunk])
+                def tmpDir = pwd(tmp: true)
+                def bodyPath = "${tmpDir}/body.txt"
+                writeFile(file: bodyPath, text: data)
+
+                def cmd = "curl -H \"Authorization: token \$${githubTokenEnvVar}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${pullRequestUrl}"
+
+                def output = sh(script: cmd, returnStdout: true).trim()
+
+                def headers = readFile('comment.headers').trim()
+                if (! headers.contains('HTTP/1.1 201 Created')) {
+                    error("Creating GitHub comment failed: ${headers}\n")
+                }
+                // ok, success
+                def decoded = new JsonSlurper().parseText(output)
+                echo "Created comment ${decoded.id} - ${decoded.html_url}"
+            }
+        }
+
+        closure.delegate = Jenkinsfile.original
+        closure()
     }
 
     public static void reset() {

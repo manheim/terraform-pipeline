@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static TerraformEnvironmentStage.PLAN;
@@ -365,5 +366,33 @@ class TerraformPlanResultsPRPluginTest {
 
             assertThat(actualComment, containsString(expectedEnvironment))
         }
+    }
+
+    class PostPullRequestComment {
+        @After
+        void reset() {
+            Jenkinsfile.reset()
+        }
+
+        @Before
+        void stubJenkins() {
+            Jenkinsfile.original = spy(new DummyJenkinsfile())
+        }
+
+        // This needs to be tested better than 'do not blow up'
+        @Test
+        void doesNotBlowUp() {
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn('HTTP/1.1 201 Created').when(plugin).readFile('comment.headers')
+            doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())
+
+            plugin.postPullRequestComment('someUrl', 'myPrComment')
+        }
+
+        // Test executes passed closure
+        // Test raises error on non HTTP/1.1 201 Created
+        // Uses the correct pullRequestUrl
+        // Uses the correct git auth token
+        // Chunks requests correct if over 65536
     }
 }
