@@ -49,18 +49,7 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
             closure()
 
             if (isPullRequest()) {
-                // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
-                String planOutput = ''
-                String planStderr = ''
-
-                planOutput = readFile('plan.out').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '')
-                if (fileExists('plan.err')) {
-                    planStderr = readFile('plan.err').replaceAll(/\u001b\[[0-9;]+m/, '').replace(/^\[[0-9;]+m/, '').trim()
-                }
-
-                if (planStderr != '') {
-                    planOutput = planOutput + "\nSTDERR:\n" + planStderr
-                }
+                def planOutput = getPlanOutput()
                 String commentBody = "**Jenkins plan results for ${env}** - ${currentBuild.currentResult} ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
                 echo "Creating comment in GitHub"
                 def maxlen = 65535
@@ -138,6 +127,33 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         def pullRequestNumber = getPullRequestNumber()
 
         return "${repoHost}/api/v3/repos/${repoSlug}/issues/${pullRequestNumber}/comments".toString()
+    }
+
+    public String readFile(String filename) {
+        def original = Jenkinsfile.instance.original
+        if (original.fileExists(filename)) {
+            return original.readFile(filename)
+        }
+
+        return null
+    }
+
+    public String getPlanOutput() {
+        def planOutput =  readFile('plan.out')
+        def planError = readFile('plan.err')
+        // Skip any file outputs when the file does not exist
+        def outputs = [planOutput, planError] - null
+
+        // Strip any ANSI color encodings and whitespaces
+        def results = outputs.collect { output ->
+            output.replaceAll(/\u001b\[[0-9;]+m/, '')
+                  .replace(/^\[[0-9;]+m/, '')
+                  .trim()
+        }
+
+        // Separate by STDERR header if plan.err is not empty
+        results.findAll { it != '' }
+               .join('\nSTDERR:\n')
     }
 
     public static void reset() {

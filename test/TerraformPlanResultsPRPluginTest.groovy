@@ -1,6 +1,7 @@
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.not
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertThat
@@ -23,6 +24,7 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPlanResultsPRPluginTest {
+
     @Before
     void resetJenkinsEnv() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
@@ -218,6 +220,96 @@ class TerraformPlanResultsPRPluginTest {
             def commentUrl = plugin.getPullRequestCommentUrl()
 
             assertEquals("${repoHost}/api/v3/repos/${repoSlug}/issues/${pullRequestNumber}/comments".toString(), commentUrl)
+        }
+    }
+
+    class GetPlanOutput {
+        @Test
+        void readsContentsFromPlanOutFile() {
+            def planOutFileContent = 'blahblahblah'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn(planOutFileContent).when(plugin).readFile('plan.out')
+            doReturn(null).when(plugin).readFile('plan.err')
+
+            def actualOutput = plugin.getPlanOutput()
+
+            assertThat(actualOutput, containsString(planOutFileContent))
+        }
+
+        @Test
+        void stripsWhitespaceEncodingFromContentsFromPlanOutFile() {
+            def expectedOutput = 'blahblah'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn("   ${expectedOutput}   ".toString()).when(plugin).readFile('plan.out')
+            doReturn(null).when(plugin).readFile('plan.err')
+
+            def actualOutput = plugin.getPlanOutput()
+
+            assertEquals(expectedOutput, actualOutput)
+        }
+
+        @Test
+        void stripsAnsiColorEncodingFromContentsFromPlanOutFile() {
+            def colorEncoding = '\u001b[32m'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn("${colorEncoding}blablah${colorEncoding}".toString()).when(plugin).readFile('plan.out')
+            doReturn(null).when(plugin).readFile('plan.err')
+
+            def planOutput = plugin.getPlanOutput()
+
+            assertThat(planOutput, not(containsString(colorEncoding)))
+        }
+
+        class WithErrorOutput {
+            @Test
+            void includesContentsFromPlanErrorFileIfPresent() {
+                def planErrorFileContent = 'errorcontent'
+                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                doReturn('blahblah').when(plugin).readFile('plan.out')
+                doReturn(planErrorFileContent).when(plugin).readFile('plan.err')
+
+                def actualOutput = plugin.getPlanOutput()
+
+                assertThat(actualOutput, containsString(planErrorFileContent))
+            }
+
+            @Test
+            void stripsWhitespaceFromContentsFromPlanErrorFile() {
+                def planOutput = 'planOut'
+                def planError = 'planError'
+                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                doReturn(planOutput).when(plugin).readFile('plan.out')
+                doReturn("   ${planError}   ".toString()).when(plugin).readFile('plan.err')
+
+                def actualOutput = plugin.getPlanOutput()
+
+                assertEquals("${planOutput}\nSTDERR:\n${planError}".toString(), actualOutput)
+            }
+
+            @Test
+            void stripsAnsiColorEncodingFromContentsFromPlanErrorFile() {
+                def colorEncoding = '\u001b[32m'
+                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                doReturn('planOut').when(plugin).readFile('plan.out')
+                doReturn("${colorEncoding}blablah${colorEncoding}".toString()).when(plugin).readFile('plan.err')
+
+                def actualOutput = plugin.getPlanOutput()
+
+                assertThat(actualOutput, not(containsString(colorEncoding)))
+            }
+
+            @Test
+            void ignoresPlanErrorFileContentIfEmpty() {
+                def planOutput = 'planOut'
+                def planError = ''
+                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                doReturn(planOutput).when(plugin).readFile('plan.out')
+                doReturn(planError).when(plugin).readFile('plan.err')
+
+                def actualOutput = plugin.getPlanOutput()
+
+                assertEquals(planOutput, actualOutput)
+            }
         }
     }
 }
