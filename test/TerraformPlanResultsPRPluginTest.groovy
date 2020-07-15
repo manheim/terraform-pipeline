@@ -312,4 +312,58 @@ class TerraformPlanResultsPRPluginTest {
             }
         }
     }
+
+    class GetCommentBody {
+        @Test
+        void usesThePlanOutput()  {
+            def planOutput = 'someOutput'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn(planOutput).when(plugin).getPlanOutput()
+            doReturn('someResult').when(plugin).getBuildResult()
+            doReturn('someUrl').when(plugin).getBuildUrl()
+
+            def actualComment = plugin.getCommentBody('myenv')
+
+            assertThat(actualComment, containsString(planOutput))
+        }
+
+        @Test
+        void usesTheCurrentBuildResult()  {
+            def expectedBuildResult = 'expectedResult'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn('someOutput').when(plugin).getPlanOutput()
+            doReturn(expectedBuildResult).when(plugin).getBuildResult()
+            doReturn('someUrl').when(plugin).getBuildUrl()
+
+            def actualComment = plugin.getCommentBody('myenv')
+
+            assertThat(actualComment, containsString(expectedBuildResult))
+        }
+
+        @Test
+        void usesTheCurrentBuildUrl()  {
+            def expectedBuildUrl = 'expectedBuildUrl'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn('someOutput').when(plugin).getPlanOutput()
+            doReturn('someResult').when(plugin).getBuildResult()
+            doReturn(expectedBuildUrl).when(plugin).getBuildUrl()
+
+            def actualComment = plugin.getCommentBody('myenv')
+
+            assertThat(actualComment, containsString(expectedBuildUrl))
+        }
+
+        @Test
+        void usesTheGivenEnvironment()  {
+            def expectedEnvironment = 'expectedEnv'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn('someOutput').when(plugin).getPlanOutput()
+            doReturn('someResult').when(plugin).getBuildResult()
+            doReturn('someUrl').when(plugin).getBuildUrl()
+
+            def actualComment = plugin.getCommentBody(expectedEnvironment)
+
+            assertThat(actualComment, containsString(expectedEnvironment))
+        }
+    }
 }

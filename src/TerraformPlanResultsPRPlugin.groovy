@@ -43,14 +43,11 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
     }
 
     public Closure addComment(String env) {
-        String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
-
         return { closure ->
             closure()
 
             if (isPullRequest()) {
-                def planOutput = getPlanOutput()
-                String commentBody = "**Jenkins plan results for ${env}** - ${currentBuild.currentResult} ( ${build_url} ):\n\n" + '```' + "\n" + planOutput.trim() + "\n```" + "\n"
+                String commentBody = getCommentBody(env)
                 echo "Creating comment in GitHub"
                 def maxlen = 65535
                 def textlen = commentBody.length()
@@ -154,6 +151,29 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         // Separate by STDERR header if plan.err is not empty
         results.findAll { it != '' }
                .join('\nSTDERR:\n')
+    }
+
+    public String getBuildResult() {
+        Jenkinsfile.instance.original.currentBuild.currentResult
+    }
+
+    public String getBuildUrl() {
+        Jenkinsfile.instance.original.build_url
+    }
+
+    public String getCommentBody(String environment) {
+        def planOutput = getPlanOutput()
+        def buildResult = getBuildResult()
+        def buildUrl = getBuildUrl()
+        def lines = []
+        lines << "**Jenkins plan results for ${environment}** - ${buildResult} ( ${buildUrl} ):"
+        lines << ''
+        lines << '```'
+        lines << planOutput
+        lines << '```'
+        lines << ''
+
+        return lines.join('\n')
     }
 
     public static void reset() {
