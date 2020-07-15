@@ -43,14 +43,12 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
     }
 
     public Closure addComment(String env) {
-        String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
         String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
 
         return { closure ->
             closure()
 
             if (isPullRequest()) {
-                String prNum = branch.replace('PR-', '')
                 // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
                 String planOutput = ''
                 String planStderr = ''
@@ -77,9 +75,7 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
                     def bodyPath = "${tmpDir}/body.txt"
                     writeFile(file: bodyPath, text: data)
 
-                    def repoSlug = getRepoSlug()
-                    def repoHost = getRepoHost()
-                    def url = "${repoHost}/api/v3/repos/${repoSlug}/issues/${prNum}/comments"
+                    def url = getPullRequestCommentUrl()
                     def cmd = "curl -H \"Authorization: token \$${githubTokenEnvVar}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
                     def output = sh(script: cmd, returnStdout: true).trim()
@@ -128,6 +124,20 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         def branchName = getBranchName()
 
         return branchName.startsWith('PR-')
+    }
+
+    public String getPullRequestNumber() {
+        def branchName = getBranchName()
+
+        return branchName.replace('PR-', '')
+    }
+
+    public String getPullRequestCommentUrl() {
+        def repoHost = getRepoHost()
+        def repoSlug = getRepoSlug()
+        def pullRequestNumber = getPullRequestNumber()
+
+        return "${repoHost}/api/v3/repos/${repoSlug}/issues/${pullRequestNumber}/comments".toString()
     }
 
     public static void reset() {

@@ -190,4 +190,34 @@ class TerraformPlanResultsPRPluginTest {
         }
 
     }
+
+    class GetPullRequestNumber {
+        @Test
+        void parsesTheNumberFromTheBranchName() {
+            def expectedNumber = "123"
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn("PR-${expectedNumber}".toString()).when(plugin).getBranchName()
+
+            def actualNumber = plugin.getPullRequestNumber()
+
+            assertEquals(expectedNumber, actualNumber)
+        }
+    }
+
+    class GetPullRequestCommentUrl {
+        @Test
+        void constructsTheUrlFromHostRepoSlugAndPrNumber() {
+            def repoHost = 'someHost'
+            def repoSlug = 'someSlug'
+            def pullRequestNumber = 'somePr'
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn(repoHost).when(plugin).getRepoHost()
+            doReturn(repoSlug).when(plugin).getRepoSlug()
+            doReturn(pullRequestNumber).when(plugin).getPullRequestNumber()
+
+            def commentUrl = plugin.getPullRequestCommentUrl()
+
+            assertEquals("${repoHost}/api/v3/repos/${repoSlug}/issues/${pullRequestNumber}/comments".toString(), commentUrl)
+        }
+    }
 }
