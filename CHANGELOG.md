@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #225](https://github.com/manheim/terraform-pipeline/issues/225) Simplify Contributor model - create PullRequests against master
+* [Issue #244](https://github.com/manheim/terraform-pipeline/issues/244) Simplify GithubPRPlanPlugin configuration - auto construct github URL and slug
 * [Issue #232](https://github.com/manheim/terraform-pipeline/issues/232) TerraformPlanResultsPR breaks with TerraformDirectoryPlugin
 * [Issue #230](https://github.com/manheim/terraform-pipeline/issues/230) AgentNode Support with PR Plugin - allow Dockerfile agents
 * [Issue #218](https://github.com/manheim/terraform-pipeline/issues/218) Preserve stashes in default declarative pipeline templates
