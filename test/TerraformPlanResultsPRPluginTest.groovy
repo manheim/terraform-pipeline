@@ -2,7 +2,9 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -168,5 +170,24 @@ class TerraformPlanResultsPRPluginTest {
 
             assertEquals('http://my.github.com', actualHost)
         }
+    }
+
+    class IsPullRequest {
+        @Test
+        void returnsTrueWhenBranchNameStartsWithPR() {
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn('PR-thisIsAPullRequest').when(plugin).getBranchName()
+
+            assertTrue(plugin.isPullRequest())
+        }
+
+        @Test
+        void returnsfalseWhenBranchNameDoesNotStartWithPR() {
+            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            doReturn('ThisIsNotA-PR').when(plugin).getBranchName()
+
+            assertFalse(plugin.isPullRequest())
+        }
+
     }
 }

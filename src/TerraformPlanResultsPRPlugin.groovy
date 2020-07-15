@@ -49,8 +49,7 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         return { closure ->
             closure()
 
-            // comment on PR if this is a PR build
-            if (branch.startsWith("PR-")) {
+            if (isPullRequest()) {
                 String prNum = branch.replace('PR-', '')
                 // this reads "plan.out" and strips the ANSI color escapes, which look awful in github markdown
                 String planOutput = ''
@@ -119,6 +118,16 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         def domain = parsedScmUrl['domain']
 
         return "${protocol}://${domain}"
+    }
+
+    public String getBranchName() {
+        return Jenkinsfile.instance.getEnv().BRANCH_NAME
+    }
+
+    public boolean isPullRequest() {
+        def branchName = getBranchName()
+
+        return branchName.startsWith('PR-')
     }
 
     public static void reset() {
