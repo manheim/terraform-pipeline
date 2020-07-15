@@ -7,6 +7,7 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
     private static String myRepoSlug
     private static String myRepoHost
     private static String githubTokenEnvVar = "GITHUB_TOKEN"
+    private static final int MAX_COMMENT_LENGTH = 65535
 
     public static void init() {
         TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
@@ -49,13 +50,8 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
             if (isPullRequest()) {
                 String commentBody = getCommentBody(env)
                 echo "Creating comment in GitHub"
-                def maxlen = 65535
-                def textlen = commentBody.length()
-                def chunk = "" // GitHub can't handle comments of 65536 or longer; chunk
-                def i = 0
-                for (i = 0; i < textlen; i += maxlen) {
-                    chunk = commentBody.substring(i, Math.min(textlen, i + maxlen))
-
+                // GitHub can't handle comments of 65536 or longer; chunk
+                commentBody.split("(?<=\\G.{${MAX_COMMENT_LENGTH}})").each { chunk ->
                     def data = JsonOutput.toJson([body: chunk])
                     def tmpDir = pwd(tmp: true)
                     def bodyPath = "${tmpDir}/body.txt"
