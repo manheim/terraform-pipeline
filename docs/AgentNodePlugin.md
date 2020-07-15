@@ -2,7 +2,7 @@
 
 This plugin allows you to run the terraform stages in a docker container. This **DOES NOT WORK WITH AWSSUME** you should be using iam_block with aws provider with terraform.
 
-### Using pre-build docker image
+### Using pre-built docker image
 ```
 // Jenkinsfile
 @Library(['terraform-pipeline']) _
