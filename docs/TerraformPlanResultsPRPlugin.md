@@ -2,27 +2,16 @@
 
 Use this to post Terraform plan results in the comments of a PR.
 
-Requirements:
-* Set the environment variable for Github Authentication. The default environment variable to be set is `GITHUB_TOKEN`. The CredentialsPlugin can help with setting this variable.
-
-Configuration Methods:
-* `withRepoHost(String)`: specify the Github source address (DEFAULT: "https://api.github.com/")
-* `withRepoSlug(String)`: specify the full repo slug (DEFAULT: "")
-* `withGithubTokenEnvVar(String)`: specify the environment variable used for github auth (DEFAULT: "GITHUB_TOKEN")
+One-Time Setup:
+* Create a Github Personal Access Token that has permission to comment on your repo.  The default, the Github Personal Access Token is expected to be available in an environment variable `GITHUB_TOKEN`.  A number of [credential and configuration management plugins](https://github.com/manheim/terraform-pipeline#credentials-and-configuration-management) are available to do this.  Optionally, your Github Authentication token can be assigned to a different environment variable using `.withGithubTokenEnvVar(<different variable>)`
 
 ```
 @Library(['terraform-pipeline']) _
 
 Jenkinsfile.init(this)
 
-// set GITHUB_TOKEN environment variable for use with TerraformPlanResultsPRPlugin
-// FOO/GITHUB_TOKEN will contain the respective username/password values of the 'my-cred' credential.
-CredentialsPlugin.withBuildCredentials([usernameVariable: 'FOO', passwordVariable: 'GITHUB_TOKEN'], 'my-cred').init()
-
-TerraformPlanResultsPRPlugin.withRepoHost("https://api.github.com/")
-                            .withRepoSlug("my-org/my-repo")
-                            .withGithubTokenEnvVar("GITHUB_TOKEN")
-                            .init()
+// A GITHUB_TOKEN environment variable should contain your Github PAT
+TerraformPlanResultsPRPlugin.init()
 
 def validate = new TerraformValidateStage()
 def deployQa = new TerraformEnvironmentStage('qa')

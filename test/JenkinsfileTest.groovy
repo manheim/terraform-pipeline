@@ -25,7 +25,7 @@ class JenkinsfileTest {
                     String organization = "MyOrg"
                     Map results = jenkinsfile.parseScmUrl("http://my.github.com/${organization}/SomeRepo.git")
 
-                    assertEquals(results['organization'], organization)
+                    assertEquals(organization, results['organization'])
                 }
 
                 @Test
@@ -33,7 +33,23 @@ class JenkinsfileTest {
                     String repo = "MyRepo"
                     Map results = jenkinsfile.parseScmUrl("http://my.github.com/SomeOrg/${repo}.git")
 
-                    assertEquals(results['repo'], repo)
+                    assertEquals(repo, results['repo'])
+                }
+
+                @Test
+                void returnsBaseUrl() {
+                    String expectedDomain = "my.github.com"
+                    Map results = jenkinsfile.parseScmUrl("http://${expectedDomain}/SomeOrg/SomeRepo.git")
+
+                    assertEquals(expectedDomain, results['domain'])
+                }
+
+                @Test
+                void returnsTheProtocolUsed() {
+                    String expectedProtocol = "http"
+                    Map results = jenkinsfile.parseScmUrl("${expectedProtocol}://my.github.com/SomeOrg/SomeRepo.git")
+
+                    assertEquals(expectedProtocol, results['protocol'])
                 }
             }
 
@@ -43,7 +59,7 @@ class JenkinsfileTest {
                     String organization = "MyOrg"
                     Map results = jenkinsfile.parseScmUrl("https://my.github.com/${organization}/SomeRepo.git")
 
-                    assertEquals(results['organization'], organization)
+                    assertEquals(organization, results['organization'])
                 }
 
                 @Test
@@ -51,7 +67,23 @@ class JenkinsfileTest {
                     String repo = "MyRepo"
                     Map results = jenkinsfile.parseScmUrl("https://my.github.com/SomeOrg/${repo}.git")
 
-                    assertEquals(results['repo'], repo)
+                    assertEquals(repo, results['repo'])
+                }
+
+                @Test
+                void returnsDomain() {
+                    String expectedDomain = "my.github.com"
+                    Map results = jenkinsfile.parseScmUrl("https://${expectedDomain}/SomeOrg/SomeRepo.git")
+
+                    assertEquals(expectedDomain, results['domain'])
+                }
+
+                @Test
+                void returnsTheProtocolUsed() {
+                    String expectedProtocol = "https"
+                    Map results = jenkinsfile.parseScmUrl("${expectedProtocol}://my.github.com/SomeOrg/SomeRepo.git")
+
+                    assertEquals(expectedProtocol, results['protocol'])
                 }
             }
         }
@@ -62,7 +94,7 @@ class JenkinsfileTest {
                 String organization = "MyOrg"
                 Map results = jenkinsfile.parseScmUrl("git@my.github.com:${organization}/SomeRepo.git")
 
-                assertEquals(results['organization'], organization)
+                assertEquals(organization, results['organization'])
             }
 
             @Test
@@ -70,7 +102,23 @@ class JenkinsfileTest {
                 String repo = "MyRepo"
                 Map results = jenkinsfile.parseScmUrl("git@my.github.com:SomeOrg/${repo}.git")
 
-                assertEquals(results['repo'], repo)
+                assertEquals(repo, results['repo'])
+            }
+
+            @Test
+            void returnsDomain() {
+                String expectedDomain = "my.github.com"
+                Map results = jenkinsfile.parseScmUrl("git@${expectedDomain}/SomeOrg/SomeRepo.git")
+
+                assertEquals(expectedDomain, results['domain'])
+            }
+
+            @Test
+            void returnsTheProtocolUsed() {
+                String expectedProtocol = 'git'
+                Map results = jenkinsfile.parseScmUrl("${expectedProtocol}@my.github.com/SomeOrg/SomeRepo.git")
+
+                assertEquals(expectedProtocol, results['protocol'])
             }
         }
     }
@@ -96,7 +144,7 @@ class JenkinsfileTest {
             Jenkinsfile.defaultNodeName = expectedName
 
             String actualName = Jenkinsfile.getNodeName()
-            assertEquals(actualName, expectedName)
+            assertEquals(expectedName, actualName)
         }
 
         @Test
@@ -106,7 +154,7 @@ class JenkinsfileTest {
             configureJenkins(env: [ DEFAULT_NODE_NAME: 'wrongName' ])
 
             String actualName = Jenkinsfile.getNodeName()
-            assertEquals(actualName, expectedName)
+            assertEquals(expectedName, actualName)
         }
 
         @Test
@@ -116,7 +164,7 @@ class JenkinsfileTest {
             configureJenkins(env: [ DEFAULT_NODE_NAME: expectedName ])
 
             String actualName = Jenkinsfile.getNodeName()
-            assertEquals(actualName, expectedName)
+            assertEquals(expectedName, actualName)
         }
     }
 }

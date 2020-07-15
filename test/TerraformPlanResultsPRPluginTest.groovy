@@ -1,7 +1,10 @@
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
@@ -9,7 +12,6 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static TerraformEnvironmentStage.PLAN;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 
 import org.junit.Test
 import org.junit.Before
@@ -83,5 +85,88 @@ class TerraformPlanResultsPRPluginTest {
             verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN), any(Closure.class))
         }
 
+    }
+
+    class GetRepoSlug {
+        @After
+        void resetPlugin() {
+            TerraformPlanResultsPRPlugin.reset()
+            Jenkinsfile.reset()
+        }
+
+        @Test
+        void returnsTheProvidedRepoSlug() {
+            String expectedSlug = 'some/slug'
+            TerraformPlanResultsPRPlugin.withRepoSlug(expectedSlug)
+            def plugin = new TerraformPlanResultsPRPlugin()
+
+            String actualSlug = plugin.getRepoSlug()
+
+            assertEquals(expectedSlug, actualSlug)
+        }
+
+        @Test
+        void defaultsToCurrentRepoSlug() {
+            def expectedOrg = 'someOrg'
+            def expectedRepo = 'someRepo'
+            def jenkinsfileInstance = mock(Jenkinsfile.class)
+            doReturn([organization: expectedOrg, repo: expectedRepo]).when(jenkinsfileInstance).getParsedScmUrl()
+            Jenkinsfile.withInstance(jenkinsfileInstance)
+            def plugin = new TerraformPlanResultsPRPlugin()
+
+            String actualSlug = plugin.getRepoSlug()
+
+            assertEquals("${expectedOrg}/${expectedRepo}".toString(), actualSlug.toString())
+        }
+
+    }
+
+    class GetRepoHost {
+        @Before
+        void resetBefore() {
+            TerraformPlanResultsPRPlugin.reset()
+            Jenkinsfile.reset()
+        }
+
+        @After
+        void reset() {
+            TerraformPlanResultsPRPlugin.reset()
+            Jenkinsfile.reset()
+        }
+
+        @Test
+        void returnsTheProvidedHost() {
+            String expectedHost = 'somehost'
+            TerraformPlanResultsPRPlugin.withRepoHost(expectedHost)
+            def plugin = new TerraformPlanResultsPRPlugin()
+
+            String actualHost = plugin.getRepoHost()
+
+            assertEquals(expectedHost, actualHost)
+        }
+
+        @Test
+        void defaultsToTheHostOfTheProject() {
+            def plugin = new TerraformPlanResultsPRPlugin()
+            def jenkinsfileInstance = mock(Jenkinsfile.class)
+            doReturn([protocol: 'https', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
+            Jenkinsfile.withInstance(jenkinsfileInstance)
+
+            String actualHost = plugin.getRepoHost()
+
+            assertEquals('https://my.github.com', actualHost)
+        }
+
+        @Test
+        void defaultsToTheProtocolOfTheProject() {
+            def plugin = new TerraformPlanResultsPRPlugin()
+            def jenkinsfileInstance = mock(Jenkinsfile.class)
+            doReturn([protocol: 'http', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
+            Jenkinsfile.withInstance(jenkinsfileInstance)
+
+            String actualHost = plugin.getRepoHost()
+
+            assertEquals('http://my.github.com', actualHost)
+        }
     }
 }

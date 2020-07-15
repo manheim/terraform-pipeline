@@ -4,8 +4,8 @@ import groovy.json.JsonSlurper
 
 class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
-    private static String repoSlug = ""
-    private static String repoHost = "https://api.github.com/"
+    private static String myRepoSlug
+    private static String myRepoHost
     private static String githubTokenEnvVar = "GITHUB_TOKEN"
 
     public static void init() {
@@ -15,13 +15,13 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         TerraformPlanCommand.addPlugin(plugin)
     }
 
-    public static withRepoSlug(String repoSlug) {
-        TerraformPlanResultsPRPlugin.repoSlug = repoSlug
+    public static withRepoSlug(String newRepoSlug) {
+        TerraformPlanResultsPRPlugin.myRepoSlug = newRepoSlug
         return this
     }
 
-    public static withRepoHost(String repoHost) {
-        TerraformPlanResultsPRPlugin.repoHost = repoHost
+    public static withRepoHost(String newRepoHost) {
+        myRepoHost = newRepoHost
         return this
     }
 
@@ -42,7 +42,7 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
         command.withSuffix('| tee plan.out')
     }
 
-    public static Closure addComment(String env) {
+    public Closure addComment(String env) {
         String branch = Jenkinsfile.instance.getEnv().BRANCH_NAME
         String build_url = Jenkinsfile.instance.getEnv().BUILD_URL
 
@@ -78,7 +78,9 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
                     def bodyPath = "${tmpDir}/body.txt"
                     writeFile(file: bodyPath, text: data)
 
-                    def url = "${repoHost}repos/${repoSlug}/issues/${prNum}/comments"
+                    def repoSlug = getRepoSlug()
+                    def repoHost = getRepoHost()
+                    def url = "${repoHost}/api/v3/repos/${repoSlug}/issues/${prNum}/comments"
                     def cmd = "curl -H \"Authorization: token \$${githubTokenEnvVar}\" -X POST -d @${bodyPath} -H 'Content-Type: application/json' -D comment.headers ${url}"
 
                     def output = sh(script: cmd, returnStdout: true).trim()
@@ -93,5 +95,34 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
                 }
             }
         }
+    }
+
+    public String getRepoSlug() {
+        if (myRepoSlug != null) {
+            return myRepoSlug
+        }
+
+        def parsedScmUrl = Jenkinsfile.instance.getParsedScmUrl()
+        def organization = parsedScmUrl['organization']
+        def repo = parsedScmUrl['repo']
+
+        return "${organization}/${repo}"
+    }
+
+    public String getRepoHost() {
+        if (myRepoHost != null) {
+            return myRepoHost
+        }
+
+        def parsedScmUrl = Jenkinsfile.instance.getParsedScmUrl()
+        def protocol = parsedScmUrl['protocol']
+        def domain = parsedScmUrl['domain']
+
+        return "${protocol}://${domain}"
+    }
+
+    public static void reset() {
+        myRepoSlug = null
+        myRepoHost = null
     }
 }
