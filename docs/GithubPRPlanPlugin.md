@@ -1,4 +1,4 @@
-## [TerraformPlanResultsPRPlugin](../src/TerraformPlanResultsPRPlugin.groovy)
+## [GithubPRPlanPlugin](../src/GithubPRPlanPlugin.groovy)
 
 Use this to post Terraform plan results in the comments of a PR.
 
@@ -12,7 +12,7 @@ One-Time Setup:
 Jenkinsfile.init(this)
 
 // A GITHUB_TOKEN environment variable should contain your Github PAT
-TerraformPlanResultsPRPlugin.init()
+GithubPRPlanPlugin.init()
 
 def validate = new TerraformValidateStage()
 def deployQa = new TerraformEnvironmentStage('qa')

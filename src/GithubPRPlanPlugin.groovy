@@ -2,7 +2,7 @@ import static TerraformEnvironmentStage.PLAN
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
+class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
     private static String myRepoSlug
     private static String myRepoHost
@@ -10,14 +10,14 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
     private static final int MAX_COMMENT_LENGTH = 65535
 
     public static void init() {
-        TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
+        GithubPRPlanPlugin plugin = new GithubPRPlanPlugin()
 
         TerraformEnvironmentStage.addPlugin(plugin)
         TerraformPlanCommand.addPlugin(plugin)
     }
 
     public static withRepoSlug(String newRepoSlug) {
-        TerraformPlanResultsPRPlugin.myRepoSlug = newRepoSlug
+        GithubPRPlanPlugin.myRepoSlug = newRepoSlug
         return this
     }
 
@@ -27,7 +27,7 @@ class TerraformPlanResultsPRPlugin implements TerraformPlanCommandPlugin, Terraf
     }
 
     public static withGithubTokenEnvVar(String githubTokenEnvVar) {
-        TerraformPlanResultsPRPlugin.githubTokenEnvVar = githubTokenEnvVar
+        GithubPRPlanPlugin.githubTokenEnvVar = githubTokenEnvVar
         return this
     }
 

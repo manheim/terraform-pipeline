@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
-class TerraformPlanResultsPRPluginTest {
+class GithubPRPlanPluginTest {
 
     @Before
     void resetJenkinsEnv() {
@@ -47,18 +47,18 @@ class TerraformPlanResultsPRPluginTest {
 
         @Test
         void modifiesTerraformPlanCommand() {
-            TerraformPlanResultsPRPlugin.init()
+            GithubPRPlanPlugin.init()
 
             Collection actualPlugins = TerraformPlanCommand.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(TerraformPlanResultsPRPlugin.class)))
+            assertThat(actualPlugins, hasItem(instanceOf(GithubPRPlanPlugin.class)))
         }
 
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
-            TerraformPlanResultsPRPlugin.init()
+            GithubPRPlanPlugin.init()
 
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(TerraformPlanResultsPRPlugin.class)))
+            assertThat(actualPlugins, hasItem(instanceOf(GithubPRPlanPlugin.class)))
         }
     }
 
@@ -66,7 +66,7 @@ class TerraformPlanResultsPRPluginTest {
 
         @Test
         void addsTeeArgumentToTerraformPlan() {
-            TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
+            GithubPRPlanPlugin plugin = new GithubPRPlanPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
 
             plugin.apply(command)
@@ -78,7 +78,7 @@ class TerraformPlanResultsPRPluginTest {
 
         @Test
         void decoratesTheTerraformEnvironmentStage()  {
-            TerraformPlanResultsPRPlugin plugin = new TerraformPlanResultsPRPlugin()
+            GithubPRPlanPlugin plugin = new GithubPRPlanPlugin()
             def environment = spy(new TerraformEnvironmentStage())
             configureJenkins(env: [
                 'BRANCH_NAME': 'master',
@@ -95,15 +95,15 @@ class TerraformPlanResultsPRPluginTest {
     class GetRepoSlug {
         @After
         void resetPlugin() {
-            TerraformPlanResultsPRPlugin.reset()
+            GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
         }
 
         @Test
         void returnsTheProvidedRepoSlug() {
             String expectedSlug = 'some/slug'
-            TerraformPlanResultsPRPlugin.withRepoSlug(expectedSlug)
-            def plugin = new TerraformPlanResultsPRPlugin()
+            GithubPRPlanPlugin.withRepoSlug(expectedSlug)
+            def plugin = new GithubPRPlanPlugin()
 
             String actualSlug = plugin.getRepoSlug()
 
@@ -117,7 +117,7 @@ class TerraformPlanResultsPRPluginTest {
             def jenkinsfileInstance = mock(Jenkinsfile.class)
             doReturn([organization: expectedOrg, repo: expectedRepo]).when(jenkinsfileInstance).getParsedScmUrl()
             Jenkinsfile.withInstance(jenkinsfileInstance)
-            def plugin = new TerraformPlanResultsPRPlugin()
+            def plugin = new GithubPRPlanPlugin()
 
             String actualSlug = plugin.getRepoSlug()
 
@@ -129,21 +129,21 @@ class TerraformPlanResultsPRPluginTest {
     class GetRepoHost {
         @Before
         void resetBefore() {
-            TerraformPlanResultsPRPlugin.reset()
+            GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
         }
 
         @After
         void reset() {
-            TerraformPlanResultsPRPlugin.reset()
+            GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
         }
 
         @Test
         void returnsTheProvidedHost() {
             String expectedHost = 'somehost'
-            TerraformPlanResultsPRPlugin.withRepoHost(expectedHost)
-            def plugin = new TerraformPlanResultsPRPlugin()
+            GithubPRPlanPlugin.withRepoHost(expectedHost)
+            def plugin = new GithubPRPlanPlugin()
 
             String actualHost = plugin.getRepoHost()
 
@@ -152,7 +152,7 @@ class TerraformPlanResultsPRPluginTest {
 
         @Test
         void defaultsToTheHostOfTheProject() {
-            def plugin = new TerraformPlanResultsPRPlugin()
+            def plugin = new GithubPRPlanPlugin()
             def jenkinsfileInstance = mock(Jenkinsfile.class)
             doReturn([protocol: 'https', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
             Jenkinsfile.withInstance(jenkinsfileInstance)
@@ -164,7 +164,7 @@ class TerraformPlanResultsPRPluginTest {
 
         @Test
         void defaultsToTheProtocolOfTheProject() {
-            def plugin = new TerraformPlanResultsPRPlugin()
+            def plugin = new GithubPRPlanPlugin()
             def jenkinsfileInstance = mock(Jenkinsfile.class)
             doReturn([protocol: 'http', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
             Jenkinsfile.withInstance(jenkinsfileInstance)
@@ -178,7 +178,7 @@ class TerraformPlanResultsPRPluginTest {
     class IsPullRequest {
         @Test
         void returnsTrueWhenBranchNameStartsWithPR() {
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn('PR-thisIsAPullRequest').when(plugin).getBranchName()
 
             assertTrue(plugin.isPullRequest())
@@ -186,7 +186,7 @@ class TerraformPlanResultsPRPluginTest {
 
         @Test
         void returnsfalseWhenBranchNameDoesNotStartWithPR() {
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn('ThisIsNotA-PR').when(plugin).getBranchName()
 
             assertFalse(plugin.isPullRequest())
@@ -198,7 +198,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void parsesTheNumberFromTheBranchName() {
             def expectedNumber = "123"
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn("PR-${expectedNumber}".toString()).when(plugin).getBranchName()
 
             def actualNumber = plugin.getPullRequestNumber()
@@ -213,7 +213,7 @@ class TerraformPlanResultsPRPluginTest {
             def repoHost = 'someHost'
             def repoSlug = 'someSlug'
             def pullRequestNumber = 'somePr'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn(repoHost).when(plugin).getRepoHost()
             doReturn(repoSlug).when(plugin).getRepoSlug()
             doReturn(pullRequestNumber).when(plugin).getPullRequestNumber()
@@ -228,7 +228,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void readsContentsFromPlanOutFile() {
             def planOutFileContent = 'blahblahblah'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn(planOutFileContent).when(plugin).readFile('plan.out')
             doReturn(null).when(plugin).readFile('plan.err')
 
@@ -240,7 +240,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void stripsWhitespaceEncodingFromContentsFromPlanOutFile() {
             def expectedOutput = 'blahblah'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn("   ${expectedOutput}   ".toString()).when(plugin).readFile('plan.out')
             doReturn(null).when(plugin).readFile('plan.err')
 
@@ -252,7 +252,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void stripsAnsiColorEncodingFromContentsFromPlanOutFile() {
             def colorEncoding = '\u001b[32m'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn("${colorEncoding}blablah${colorEncoding}".toString()).when(plugin).readFile('plan.out')
             doReturn(null).when(plugin).readFile('plan.err')
 
@@ -265,7 +265,7 @@ class TerraformPlanResultsPRPluginTest {
             @Test
             void includesContentsFromPlanErrorFileIfPresent() {
                 def planErrorFileContent = 'errorcontent'
-                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                def plugin = spy(new GithubPRPlanPlugin())
                 doReturn('blahblah').when(plugin).readFile('plan.out')
                 doReturn(planErrorFileContent).when(plugin).readFile('plan.err')
 
@@ -278,7 +278,7 @@ class TerraformPlanResultsPRPluginTest {
             void stripsWhitespaceFromContentsFromPlanErrorFile() {
                 def planOutput = 'planOut'
                 def planError = 'planError'
-                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                def plugin = spy(new GithubPRPlanPlugin())
                 doReturn(planOutput).when(plugin).readFile('plan.out')
                 doReturn("   ${planError}   ".toString()).when(plugin).readFile('plan.err')
 
@@ -290,7 +290,7 @@ class TerraformPlanResultsPRPluginTest {
             @Test
             void stripsAnsiColorEncodingFromContentsFromPlanErrorFile() {
                 def colorEncoding = '\u001b[32m'
-                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                def plugin = spy(new GithubPRPlanPlugin())
                 doReturn('planOut').when(plugin).readFile('plan.out')
                 doReturn("${colorEncoding}blablah${colorEncoding}".toString()).when(plugin).readFile('plan.err')
 
@@ -303,7 +303,7 @@ class TerraformPlanResultsPRPluginTest {
             void ignoresPlanErrorFileContentIfEmpty() {
                 def planOutput = 'planOut'
                 def planError = ''
-                def plugin = spy(new TerraformPlanResultsPRPlugin())
+                def plugin = spy(new GithubPRPlanPlugin())
                 doReturn(planOutput).when(plugin).readFile('plan.out')
                 doReturn(planError).when(plugin).readFile('plan.err')
 
@@ -318,7 +318,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void usesThePlanOutput()  {
             def planOutput = 'someOutput'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn(planOutput).when(plugin).getPlanOutput()
             doReturn('someResult').when(plugin).getBuildResult()
             doReturn('someUrl').when(plugin).getBuildUrl()
@@ -331,7 +331,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void usesTheCurrentBuildResult()  {
             def expectedBuildResult = 'expectedResult'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn('someOutput').when(plugin).getPlanOutput()
             doReturn(expectedBuildResult).when(plugin).getBuildResult()
             doReturn('someUrl').when(plugin).getBuildUrl()
@@ -344,7 +344,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void usesTheCurrentBuildUrl()  {
             def expectedBuildUrl = 'expectedBuildUrl'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn('someOutput').when(plugin).getPlanOutput()
             doReturn('someResult').when(plugin).getBuildResult()
             doReturn(expectedBuildUrl).when(plugin).getBuildUrl()
@@ -357,7 +357,7 @@ class TerraformPlanResultsPRPluginTest {
         @Test
         void usesTheGivenEnvironment()  {
             def expectedEnvironment = 'expectedEnv'
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn('someOutput').when(plugin).getPlanOutput()
             doReturn('someResult').when(plugin).getBuildResult()
             doReturn('someUrl').when(plugin).getBuildUrl()
@@ -382,7 +382,7 @@ class TerraformPlanResultsPRPluginTest {
         // This needs to be tested better than 'do not blow up'
         @Test
         void doesNotBlowUp() {
-            def plugin = spy(new TerraformPlanResultsPRPlugin())
+            def plugin = spy(new GithubPRPlanPlugin())
             doReturn('HTTP/1.1 201 Created').when(plugin).readFile('comment.headers')
             doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())
 
