@@ -12,13 +12,19 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
     @Override
     public void apply(TerraformPlanCommand command) {
         def targets = Jenkinsfile.instance.getEnv().RESOURCE_TARGETS ?: ''
-        targets.split(',').each { item -> command.withArgument("-target ${item}") }
+        targets.split(',')
+               .collect { item -> item.trim() }
+               .findAll { item -> item != '' }
+               .each { item -> command.withArgument("-target ${item}") }
     }
 
     @Override
     public void apply(TerraformApplyCommand command) {
         def targets = Jenkinsfile.instance.getEnv().RESOURCE_TARGETS ?: ''
-        targets.split(',').each { item -> command.withArgument("-target ${item}") }
+        targets.split(',')
+               .collect { item -> item.trim() }
+               .findAll { item -> item != '' }
+               .each { item -> command.withArgument("-target ${item}") }
     }
 
     @Override

@@ -21,4 +21,7 @@ class DummyJenkinsfile {
     public readFile(String filename) { return "Dummyjenkinsfile.readFile(${filename}): some content" }
     public fileExists(String filename) { return false }
     public sh(Map options) { println "DummyJenkinsfile.sh: ${options.toString()}"; return 'DummyJenkinsfile.sh output' }
+    public string(Map options) {  println "DummyJenkinsfile.string: ${options.toString()}" }
+    public parameters(params) {  println "DummyJenkinsfile.parameters: ${params.toString()}" }
+    public properties(props) {  println "DummyJenkinsfile.properties: ${props.toString()}" }
 }
