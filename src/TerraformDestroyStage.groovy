@@ -1,18 +1,18 @@
 class TerraformDestroyStage extends TerraformEnvironmentStage {
-    private Jenkinsfile jenkinsfile
-    private String environment
-    private StageDecorations decorations
-    private TerraformInitCommand initCommand
-    private TerraformPlanCommand planCommand
-    private TerraformDestroyCommand destroyCommand
-    private localPlugins
+    //private Jenkinsfile jenkinsfile
+    //private String environment
+    //private StageDecorations decorations
+    //private TerraformInitCommand initCommand
+    //private TerraformPlanCommand planCommand
+    //private TerraformDestroyCommand destroyCommand
+    //private localPlugins
 
-    private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
-    private static globalPlugins = DEFAULT_PLUGINS.clone()
+    //private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
+    //private static globalPlugins = DEFAULT_PLUGINS.clone()
 
-    public static final String ALL = 'all'
-    public static final String PLAN = 'plan'
-    public static final String CONFIRM = 'confirm'
+    //public static final String ALL = 'all'
+    //public static final String PLAN = 'plan'
+    //public static final String CONFIRM = 'confirm'
     public static final String DESTROY = 'destroy'
 
     TerraformDestroyStage(String environment) {

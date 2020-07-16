@@ -1,14 +1,14 @@
 class TerraformEnvironmentStage implements Stage {
-    private Jenkinsfile jenkinsfile
-    private String environment
-    private StageDecorations decorations
-    private TerraformInitCommand initCommand
-    private TerraformPlanCommand planCommand
-    private TerraformApplyCommand applyCommand
-    private localPlugins
+    protected Jenkinsfile jenkinsfile
+    protected String environment
+    protected StageDecorations decorations
+    protected TerraformInitCommand initCommand
+    protected TerraformPlanCommand planCommand
+    protected TerraformApplyCommand applyCommand
+    protected localPlugins
 
-    private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
-    private static globalPlugins = DEFAULT_PLUGINS.clone()
+    protected static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
+    protected static globalPlugins = DEFAULT_PLUGINS.clone()
 
     public static final String ALL = 'all'
     public static final String PLAN = 'plan'
