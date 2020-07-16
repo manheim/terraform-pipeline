@@ -13,13 +13,13 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        command = "apply"
+        command_name = "apply"
         if (stage instanceof TerraformDestroyStage){
-            comamnd = "destroy"
+            command_name = "destroy"
         }
 
         if (enabled) {
-            stage.decorate(CONFIRM, addConfirmation(command))
+            stage.decorate(CONFIRM, addConfirmation(command_name))
         }
     }
 
