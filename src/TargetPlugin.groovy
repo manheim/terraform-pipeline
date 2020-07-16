@@ -1,6 +1,6 @@
 import static TerraformEnvironmentStage.ALL
 
-class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformDestroyCommmandPlugin, TerraformEnvironmentStagePlugin {
+class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformDestroyCommandPlugin, TerraformEnvironmentStagePlugin {
     public static void init() {
         TargetPlugin plugin = new TargetPlugin()
 
