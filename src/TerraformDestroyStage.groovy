@@ -11,11 +11,11 @@ class TerraformDestroyStage extends TerraformEnvironmentStage {
     //public static final String CONFIRM = 'confirm'
     public static final String DESTROY = 'destroy'
 
-    TerraformDestroyStage(String environment) {
-        this.environment = environment
-        this.jenkinsfile = Jenkinsfile.instance
-        this.decorations = new StageDecorations()
-    }
+    //TerraformDestroyStage(String environment) {
+    //    this.environment = environment
+    //    this.jenkinsfile = Jenkinsfile.instance
+    //    this.decorations = new StageDecorations()
+    //}
 
     @Override
     private Closure pipelineConfiguration() {
