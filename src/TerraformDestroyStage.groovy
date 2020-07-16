@@ -12,9 +12,10 @@ class TerraformDestroyStage extends TerraformEnvironmentStage {
     public static final String DESTROY = 'destroy'
 
     TerraformDestroyStage(String environment) {
-        this.environment = environment
-        this.jenkinsfile = Jenkinsfile.instance
-        this.decorations = new StageDecorations()
+        //this.environment = environment
+        //this.jenkinsfile = Jenkinsfile.instance
+        //this.decorations = new StageDecorations()
+        super(environment)
     }
 
     @Override
