@@ -1,6 +1,6 @@
 import static TerraformEnvironmentStage.CONFIRM
 import static TerraformEnvironmentStage.APPLY
-import status TerraformDestroyStage.DESTROY
+import static TerraformDestroyStage.DESTROY
 
 public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin {
 
