@@ -53,7 +53,6 @@ class TerraformDestroyStage extends TerraformEnvironmentStage {
                     decorations.apply("Around-${DESTROY}") {
                         stage("${DESTROY}-${environment}") {
                             decorations.apply(DESTROY) {
-                                sh initCommand.toString()
                                 sh destroyCommand.toString()
                             }
                         }
