@@ -62,7 +62,7 @@ class TerraformDestroyCommand {
     private applyPluginsOnce() {
         def remainingPlugins = plugins - appliedPlugins
 
-        for (TerraformDestoryCommandPlugin plugin in remainingPlugins) {
+        for (TerraformDestroyCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
             appliedPlugins << plugin
         }
