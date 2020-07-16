@@ -22,7 +22,7 @@ class TerraformDestroyStage extends TerraformEnvironmentStage {
                 checkout(scm)
 
                 decorations.apply(ALL) {
-                    stage("${PLAN}-${environment}") {
+                    stage("${PLAN}-${DESTROY}-${environment}") {
                         decorations.apply(PLAN) {
                             sh initCommand.toString()
                             sh planCommand.toString()
@@ -30,7 +30,7 @@ class TerraformDestroyStage extends TerraformEnvironmentStage {
                     }
 
                     decorations.apply("Around-${CONFIRM}") {
-                        stage("${CONFIRM}-${environment}") {
+                        stage("${CONFIRM}-${DESTROY}-${environment}") {
                             decorations.apply(CONFIRM) {
                                 echo "Approved"
                             }

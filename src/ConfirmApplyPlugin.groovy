@@ -13,19 +13,24 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
+        command = "apply"
+        if (stage instanceof TerraformDestroyStage){
+            comamnd = "destroy"
+        }
+
         if (enabled) {
-            stage.decorate(CONFIRM, addConfirmation())
+            stage.decorate(CONFIRM, addConfirmation(command))
         }
     }
 
-    public static Closure addConfirmation() {
+    public static Closure addConfirmation(String command) {
         return { closure ->
             // ask for human input
             try {
                 timeout(time: 15, unit: 'MINUTES') {
                     input(
-                        message: 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?',
-                        ok: 'Run terraform APPLY now',
+                        message: "Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via \"terraform ${command}\"?",
+                        ok: "Run terraform ${command.toUpperCase()} now",
                         submitterParameter: 'approver'
                     )
                 }
