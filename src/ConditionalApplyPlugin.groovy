@@ -14,11 +14,9 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin {
     public void apply(TerraformEnvironmentStage stage) {
         stage.decorateAround(CONFIRM, onlyOnExpectedBranch())
         stage.decorateAround(APPLY, onlyOnExpectedBranch())
-    }
-
-    @Override
-    public void apply(TerraformDestroyStage stage) {
-        stage.decorateAround(DESTROY, onlyOnExpectedBranch())
+        if (stage instanceof TerraformDestroyStage){
+            stage.decorateAround(DESTROY, onlyOnExpectedBranch())
+        }
     }
 
     public Closure onlyOnExpectedBranch() {
