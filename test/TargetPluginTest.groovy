@@ -65,7 +65,6 @@ class TargetPluginTest {
     }
 
     public class Apply {
-
         @Test
         void addsTargetArgumentToTerraformPlan() {
             TargetPlugin plugin = new TargetPlugin()
@@ -133,6 +132,20 @@ class TargetPluginTest {
             plugin.apply(environment)
 
             verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.ALL), any(Closure.class))
+        }
+    }
+
+    class AddBuildParams {
+        @Test
+        void runsInnerClosure() {
+            def addParamsClosure = TargetPlugin.addBuildParams()
+            def innerClosure = spy { -> }
+            def jenkinsfile = new DummyJenkinsfile()
+
+            addParamsClosure.delegate = jenkinsfile
+            addParamsClosure(innerClosure)
+
+            verify(innerClosure).call()
         }
     }
 }
