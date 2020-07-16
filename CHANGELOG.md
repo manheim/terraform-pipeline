@@ -1,5 +1,23 @@
 # Unreleased
 
+# v5.8
+
+* Docs
+  * [Issue #225](https://github.com/manheim/terraform-pipeline/issues/225) Simplify Contributor model - create PullRequests against master
+  * [Issue #206](https://github.com/manheim/terraform-pipeline/issues/206) Explain the importance of plugin order
+  * [Issue #219](https://github.com/manheim/terraform-pipeline/issues/219) Declarative Pipeline, Fix documentation - example code does not work
+* Docker Agents
+  * [Issue #230](https://github.com/manheim/terraform-pipeline/issues/230) AgentNode Support with PR Plugin - allow Dockerfile agents
+* GithubPullRequests
+  * [Issue #193](https://github.com/manheim/terraform-pipeline/issues/193) Support passing branch plans to Github PRs
+  * [Issue #232](https://github.com/manheim/terraform-pipeline/issues/232) GithubPRPlanPlugin breaks with TerraformDirectoryPlugin
+  * [Issue #234](https://github.com/manheim/terraform-pipeline/issues/234) Rename GithubPRPlanPlugin to be consistent
+  * [Issue #244](https://github.com/manheim/terraform-pipeline/issues/244) Simplify GithubPRPlanPlugin configuration - auto construct github URL and slug
+* Declarative Pipelines
+  * [Issue #218](https://github.com/manheim/terraform-pipeline/issues/218) Preserve stashes in default declarative pipeline templates
+* Terraform
+  * [Issue #102](https://github.com/manheim/terraform-pipeline/issues/102) Support target when running terraform plan and apply
+
 # v5.7
 
 * [Issue #210](https://github.com/manheim/terraform-pipeline/issues/210) Support Terraform Landscape Plugin - Terraform Plan reformatting

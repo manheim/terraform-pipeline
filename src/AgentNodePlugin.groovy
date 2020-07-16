@@ -3,6 +3,8 @@ import static TerraformEnvironmentStage.ALL
 
 public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin {
     private static String dockerImage
+    private static String dockerfile
+    private static String dockerBuildOptions
     private static String dockerOptions
 
     AgentNodePlugin() { }
@@ -14,13 +16,23 @@ public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformE
         TerraformEnvironmentStage.addPlugin(plugin)
     }
 
-    public static AgentNodePlugin withAgentDockerImage(String dockerImage) {
+    public static withAgentDockerImage(String dockerImage) {
         this.dockerImage = dockerImage
         return this
     }
 
-    public static AgentNodePlugin withAgentDockerImageOptions(String dockerOptions) {
+    public static withAgentDockerImageOptions(String dockerOptions) {
         this.dockerOptions = dockerOptions
+        return this
+    }
+
+    public static withAgentDockerBuildOptions(String dockerBuildOptions) {
+        this.dockerBuildOptions = dockerBuildOptions
+        return this
+    }
+
+    public static withAgentDockerfile(String dockerfile = 'Dockerfile') {
+        this.dockerfile = dockerfile
         return this
     }
 
@@ -36,13 +48,29 @@ public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformE
 
     public Closure addAgent() {
         return { closure ->
-            if (dockerImage) {
+            if (this.dockerImage && this.dockerfile == null) {
                 docker.image(this.dockerImage).inside(this.dockerOptions) {
+                    closure()
+                }
+            } else if (this.dockerImage && this.dockerfile) {
+                def buildCommand = "-f ${dockerfile} ."
+                if (this.dockerBuildOptions) {
+                    buildCommand = "${this.dockerBuildOptions} ${buildCommand}"
+                }
+
+                docker.build(this.dockerImage, buildCommand.toString()).inside(this.dockerOptions) {
                     closure()
                 }
             } else {
                 closure()
             }
         }
+    }
+
+    public static void reset() {
+        dockerImage = null
+        dockerfile = null
+        dockerBuildOptions = null
+        dockerOptions = null
     }
 }

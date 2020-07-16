@@ -15,7 +15,7 @@ A reusable pipeline template to apply terraform configuration serially across mu
 ![Importing Pipeline Library](./images/import-terraform-pipeline.png)
 
 # How to Use
-1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  It's recommended that you always use the latest version.
+1.  Create a Jenkinsfile in your terraform project and import the [version](https://github.com/manheim/terraform-pipeline/releases) of terraform-pipeline that you want to use.  The example below uses `v5.1`, but it's recommended that you always use the latest version - unreleased changes are queued in the master branch, so using master may cause unexpected results.
 ```
 // Jenkinsfile
 @Library(['terraform-pipeline@v5.1']) _
@@ -93,10 +93,10 @@ validate.then(deployQa)
 The example above gives you a bare-bones pipeline, and there may be Jenkinsfile features that you'd like to take advantage of.  Some of these features have been pre-defined as Plugins for this library.  Pre-defined plugins can be enabled by simply calling their static `init()` method.
 
 ### Default Plugins
-* [TerraformPlugin](./docs/TerraformPlugin.md): apply version-specific terraform behavior based on the version of terraform in use.
 * [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md): pause and review the plan, before applying any changes.
 * [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on master branch.
 * [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md): automatically set `TF_VAR_environment` variable.
+* [TerraformPlugin](./docs/TerraformPlugin.md): apply version-specific terraform behavior based on the version of terraform in use.
 ### Credentials and Configuration Management
 * [CredentialsPlugin](./docs/CredentialsPlugin.md): Inject Jenkins credentials into your stages.
 * [FileParametersPlugin](./docs/FileParametersPlugin.md): Use properties files to inject environment-specific variables.
@@ -113,6 +113,8 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [AgentNodePlugin](./docs/AgentNodePlugin.md): Run your pipeline on agents that are configured with Docker.
 * [AnsiColorPlugin](./docs/AnsiColorPlugin.md): Enable ansi-color output.
 * [CrqPlugin](./docs/CrqPlugin.md): Use the manheim_remedier gem to open automated Change Requests.
+* [GithubPRPlanPlugin](./docs/GithubPRPlanPlugin.md): Use this to post Terraform plan results in the comments of a Github PullRequest.
+* [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
 
@@ -127,6 +129,67 @@ This library was intended to be customizable and extendable - if you don't find 
 5.  Import your shared library into your Jenkinsfile.
 6.  Call your `init()` method in your Jenkinsfile before calling `build()` on your pipeline.
 7.  If your plugin could be useful to others, feel free to put in a Pull Request.
+
+## Plugin Order
+
+Plugins often work by wrapping your stages in Jenkinfile DSL blocks.  If multiple plugins wrap your stages simultaneously, the order in which they are wrapped can be very important.  On the whole, terraform-pipeline strives to preserve and maintain the order you initialize the plugins, so that the corresponding Jenkinsfile DSL blocks execute predictably.
+
+Take the following example:
+
+* `ParameterStoreBuildWrapperPlugin` wraps your pipeline stages with the Jenkinsfile DSL `withAWSParameterStore { }` and can inject environment variables into your stage from ParameterStore key/value pairs.
+* `WithAwsPlugin` wraps your pipeline stages with the Jenkinsfile DSL `withAws { }` and can execute your stage under the context of an IAM role that's defined by an environment variable.
+* The two plugins can be used together - an IAM role can be defined in ParameterStore and translated to an environment variable `AWS_ROLE_ARN`, and that environment variable can in turn be used to configure the IAM role assumed by `WithAwsPlugin`.
+
+Using terraform-pipeline, you might initialize your pipeline as such:
+
+```
+// Wrap everything before this in withAWS { }
+WithAwsPlugin.init()
+
+// Wrap everything before this in withAWSParameterStore { }
+ParameterStoreBuildWrapperPlugin.init()
+```
+
+The above would generate roughly the following Jenkinsfile DSL:
+
+```
+...
+
+    // Set a key value pair in ParameterStore so that AWS_ROLE_ARN=<SomeArn>
+    withAWSParameterStore {
+        ...
+        // AWS_ROLE_ARN was set by ParameterStore
+        // AWS_ROLE_ARN is picked up and used by withAWS
+        withAWS(role: AWS_ROLE_ARN) {
+            ...
+        }
+    }
+...
+```
+
+The order in which the plugins were initialized determined the order of the Jenkinsfile DSL. Had the plugins been initialized in the reverse order, the Jenkinsfile DSL would likewise be reversed, and would lead to an undesirable outcome.
+
+```
+// Wrap everything before this in withAWSParameterStore { }
+ParameterStoreBuildWrapperPlugin.init()
+
+// Wrap everything before this in withAWS { }
+WithAwsPlugin.init()
+```
+
+```
+...
+
+    // AWS_ROLE_ARN is not defined - withAWS does nothing
+    withAWS(role: <?>) {
+        ...
+        // AWS_ROLE_ARN=<SomeArn> is defined in ParameterStore, but it's too late
+        withAWSParameterStore {
+            ...
+        }
+    }
+...
+```
 
 # Control Where Your Jobs Are Run
 
@@ -222,7 +285,7 @@ As an example, we'll create a `vars/CustomPipelineTemplate.groovy` in our custom
 ```
 // terraform-pipeline-customizations/vars/CustomPipelineTemplate.groovy
 
-def call(stages) {
+def call(args) {
     pipeline {
         agent none
 
@@ -230,7 +293,7 @@ def call(stages) {
             stage('Validate') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(0)).build()
+                        ((Stage)args.getAt(0)).build()
                     }
                 }
             }
@@ -238,7 +301,7 @@ def call(stages) {
             stage('Qa') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(1)).build()
+                        ((Stage)args.getAt(1)).build()
                     }
                 }
             }
@@ -246,7 +309,7 @@ def call(stages) {
             stage('Uat') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(2)).build()
+                        ((Stage)args.getAt(2)).build()
                     }
                 }
             }
@@ -254,7 +317,7 @@ def call(stages) {
             stage('Prod') {
                 steps {
                     script {
-                        ((Stage)stages.getAt(3)).build()
+                        ((Stage)args.getAt(3)).build()
                     }
                 }
             }
@@ -307,12 +370,16 @@ If no `.terraform-version` file is found, and no explicit version is provided, t
 
 # How to Contribute
 
-1.  Fork this project.
-2.  Make your changes and run the tests with `./gradlew test`.
-3.  Validate your changes by pointing a terraform-pipeline project to your fork.
-4.  Update the CHANGELOG with your changes.  Changes are queued under "Unreleased", until an official release is cut.
-5.  Your PR will be reviewed and merged into a release branch.
-6.  Release branches are periodically reviewed, then merged into master.  An official release is then published, and the release branch is deleted.
+1.  Create an [Issue](https://github.com/manheim/terraform-pipeline/issues) for the change that's being made.
+2.  All changes pending the next release will be staged in the master branch.
+3.  Fork this project.
+4.  Make a branch named after your issue, in your fork.
+5.  Make your changes in the branch and run the tests and codestyle checks with with `./gradlew check --info`
+6.  Update the CHANGELOG with your changes. Changes are queued under "Unreleased", until an official release is cut.
+7.  Validate your changes by pointing a terraform-pipeline project to your fork's branch, and run an actual pipeline.
+8.  Make a PR against the master branch of this project, and reference your Issue in the PR.
+9.  Your PR will be reviewed and merged into master.
+10.  Changes in master will be periodically grouped and published as a Release.
 
 # Goals that this library is trying to achieve:
 
