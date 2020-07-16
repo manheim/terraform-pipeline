@@ -4,7 +4,7 @@ class TerraformDestroyStage extends TerraformEnvironmentStage {
     //private StageDecorations decorations
     //private TerraformInitCommand initCommand
     //private TerraformPlanCommand planCommand
-    //private TerraformDestroyCommand destroyCommand
+    private TerraformDestroyCommand destroyCommand
     //private localPlugins
 
     //private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
