@@ -126,7 +126,7 @@ class TerraformEnvironmentStage implements Stage {
         return reconcileLocalAndGlobalPlugins()
     }
 
-    private reconcileLocalAndGlobalPlugins(TerraformEnvironmentStagePlugin newPlugin = null) {
+    protected reconcileLocalAndGlobalPlugins(TerraformEnvironmentStagePlugin newPlugin = null) {
         if (localPlugins == null) {
             if (newPlugin == null) {
                 // No local plugins were added - only global plugins take effect
