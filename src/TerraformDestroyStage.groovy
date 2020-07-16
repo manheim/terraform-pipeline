@@ -1,21 +1,20 @@
 class TerraformDestroyStage extends TerraformEnvironmentStage {
-    //private Jenkinsfile jenkinsfile
+    private Jenkinsfile jenkinsfile
     private String environment
-    //private StageDecorations decorations
-    //private TerraformInitCommand initCommand
-    //private TerraformPlanCommand planCommand
+    private StageDecorations decorations
+    private TerraformInitCommand initCommand
+    private TerraformPlanCommand planCommand
     private TerraformDestroyCommand destroyCommand
 
-    //public static final String ALL = 'all'
-    //public static final String PLAN = 'plan'
-    //public static final String CONFIRM = 'confirm'
+    public static final String ALL = 'all'
+    public static final String PLAN = 'plan'
+    public static final String CONFIRM = 'confirm'
     public static final String DESTROY = 'destroy'
 
     TerraformDestroyStage(String environment) {
-        //this.environment = environment
-        //this.jenkinsfile = Jenkinsfile.instance
-        //this.decorations = new StageDecorations()
-        super(environment)
+        this.environment = environment
+        this.jenkinsfile = Jenkinsfile.instance
+        this.decorations = new StageDecorations()
     }
 
     @Override
