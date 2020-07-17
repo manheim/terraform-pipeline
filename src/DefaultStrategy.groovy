@@ -5,6 +5,9 @@ class DefaultStrategy {
     private TerraformPlanCommand planCommand
     private TerraformApplyCommand applyCommand
 
+    DefaultStrategy() {
+    }
+
     public String getStrategyName() {
         return strategyName
     }

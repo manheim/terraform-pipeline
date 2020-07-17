@@ -5,6 +5,9 @@ class DestroyStrategy extends DefaultStrategy{
     private TerraformPlanCommand planCommand
     private TerraformDestroyCommand destroyCommand
 
+    DestroyStrategy() {   
+    }
+
     @Override    
     public Closure createPipelineClosure(String environment) {
 
