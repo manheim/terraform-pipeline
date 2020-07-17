@@ -60,7 +60,7 @@ class TerraformApplyCommand {
         return pieces.join(' ')
     }
 
-    private applyPluginsOnce() {
+    protected applyPluginsOnce() {
         def remainingPlugins = plugins - appliedPlugins
 
         for (TerraformApplyCommandPlugin plugin in remainingPlugins) {
