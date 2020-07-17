@@ -1,14 +1,14 @@
 class TerraformApplyCommand {
     protected boolean input = false
-    private String terraformBinary = "terraform"
-    private String command
+    protected String terraformBinary = "terraform"
+    protected String command
     String environment
-    private prefixes = []
-    private suffixes = []
+    protected prefixes = []
+    protected suffixes = []
     protected args = []
-    private static plugins = []
-    private appliedPlugins = []
-    private String directory
+    protected static plugins = []
+    protected appliedPlugins = []
+    protected String directory
 
     public TerraformApplyCommand(String environment, String command = "apply") {
         this.environment = environment
