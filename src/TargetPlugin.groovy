@@ -27,7 +27,6 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
                .each { item -> command.withArgument("-target ${item}") }
     }
 
-
     @Override
     public void apply(TerraformEnvironmentStage stage) {
         stage.decorate(ALL, addBuildParams())

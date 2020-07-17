@@ -3,7 +3,6 @@ import static TerraformEnvironmentStage.CONFIRM
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static enabled = true
-    public static command_name
 
     ConfirmApplyPlugin() {
     }
