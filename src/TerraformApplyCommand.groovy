@@ -1,7 +1,7 @@
 class TerraformApplyCommand {
     private boolean input = false
     private String terraformBinary = "terraform"
-    private String command = "apply"
+    private String command
     String environment
     private prefixes = []
     private suffixes = []
@@ -12,6 +12,7 @@ class TerraformApplyCommand {
 
     public TerraformApplyCommand(String environment) {
         this.environment = environment
+        this.command = "apply"
     }
 
     public TerraformApplyCommand withInput(boolean input) {

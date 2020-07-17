@@ -1,9 +1,8 @@
-class TerraformDestroyCommand extends TerraformApplyCommand{
-
-    private String command = "destroy"
+class TerraformDestroyCommand extends TerraformApplyCommand {
 
     public TerraformDestroyCommand(String environment) {
-        super(environment)
+        this.environment = environment
+        this.command = "destroy"
     }
 
 }
