@@ -1,9 +1,11 @@
-class DestroyStrategy {
+class DestroyStrategy extends DefaultStrategy{
 
+    private String strategyName = "destroy"
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
     private TerraformDestroyCommand destroyCommand
-    
+
+    @Override    
     public Closure createPipelineClosure(String environment) {
 
         initCommand = TerraformInitCommand.instanceFor(environment)

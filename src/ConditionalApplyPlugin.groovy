@@ -1,6 +1,5 @@
 import static TerraformEnvironmentStage.CONFIRM
 import static TerraformEnvironmentStage.APPLY
-import static TerraformDestroyStage.DESTROY
 
 public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin {
 
@@ -14,9 +13,6 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin {
     public void apply(TerraformEnvironmentStage stage) {
         stage.decorateAround(CONFIRM, onlyOnExpectedBranch())
         stage.decorateAround(APPLY, onlyOnExpectedBranch())
-        if (stage instanceof TerraformDestroyStage){
-            stage.decorateAround(DESTROY, onlyOnExpectedBranch())
-        }
     }
 
     public Closure onlyOnExpectedBranch() {

@@ -1,8 +1,13 @@
 class DefaultStrategy {
 
+    private String strategyName = "apply"
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
     private TerraformApplyCommand applyCommand
+
+    public String getStrategyName() {
+        return strategyName
+    }
 
     public Closure createPipelineClosure(String environment) {
         initCommand = TerraformInitCommand.instanceFor(environment)
