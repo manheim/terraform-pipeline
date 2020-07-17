@@ -49,10 +49,6 @@ class TerraformEnvironmentStage implements Stage {
         this.strategy = newStrategy
     }
 
-    public String getStrategyName() {
-        return strategy.getName()
-    }
-
     private Closure pipelineConfiguration() {
         applyPlugins()
         return strategy.createPipelineClosure(environment, decorations)
