@@ -3,7 +3,7 @@ class TerraformEnvironmentStage implements Stage {
     private String environment
     private StageDecorations decorations
     private localPlugins
-    private strategy = new DefaultStrategy()
+    private static strategy = new DefaultStrategy()
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
@@ -46,7 +46,7 @@ class TerraformEnvironmentStage implements Stage {
     }
 
     private void withStrategy(newStrategy) {
-        strategy = newStrategy
+        this.strategy = newStrategy
     }
 
     public String getStrategyName() {
