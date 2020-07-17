@@ -1,7 +1,7 @@
 class DestroyPlugin implements TerraformEnvironmentStagePlugin {
 
     @Override
-    public apply(TerraformEnvironmentStage stage) {
+    public void apply(TerraformEnvironmentStage stage) {
         stage.withStrategy(new DestroyStrategy())
     }
 
