@@ -13,7 +13,7 @@ class DestroyStrategy {
         return strategyName
     }
  
-    public Closure createPipelineClosure(String environment) {
+    public Closure createPipelineClosure(String environment, StageDecorations decorations) {
 
         initCommand = TerraformInitCommand.instanceFor(environment)
         planCommand = TerraformPlanCommand.instanceFor(environment)
