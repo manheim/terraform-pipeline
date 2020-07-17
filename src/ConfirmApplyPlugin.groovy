@@ -3,6 +3,7 @@ import static TerraformEnvironmentStage.CONFIRM
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static enabled = true
+    public static command = "apply"
 
     ConfirmApplyPlugin() {
     }
@@ -14,18 +15,18 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
     @Override
     public void apply(TerraformEnvironmentStage stage) {
         if (enabled) {
-            stage.decorate(CONFIRM, addConfirmation(stage.getStrategyName()))
+            stage.decorate(CONFIRM, addConfirmation(command)
         }
     }
 
-    public static Closure addConfirmation(String command) {
+    public static Closure addConfirmation(String command_name) {
         return { closure ->
             // ask for human input
             try {
                 timeout(time: 15, unit: 'MINUTES') {
                     input(
-                        message: "Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via \"terraform ${command}\"?",
-                        ok: "Run terraform ${command.toUpperCase()} now",
+                        message: "Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via \"terraform ${command_name}\"?",
+                        ok: "Run terraform ${command_name.toUpperCase()} now",
                         submitterParameter: 'approver'
                     )
                 }
@@ -34,6 +35,10 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
             }
             closure()
         }
+    }
+
+    public void set_command(String command) {
+        this.command = command
     }
 
     public static disable() {

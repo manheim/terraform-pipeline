@@ -4,6 +4,7 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
         DestroyPlugin plugin = new DestroyPlugin()
 
         TerraformEnvironmentStage.addPlugin(plugin)
+        ConfirmApplyPlugin.set_command("destroy")
     }
 
     @Override
