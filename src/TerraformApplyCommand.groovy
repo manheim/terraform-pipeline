@@ -10,9 +10,9 @@ class TerraformApplyCommand {
     private appliedPlugins = []
     private String directory
 
-    public TerraformApplyCommand(String environment) {
+    public TerraformApplyCommand(String environment, String command = "apply") {
         this.environment = environment
-        this.command = "apply"
+        this.command = command
     }
 
     public TerraformApplyCommand withInput(boolean input) {
