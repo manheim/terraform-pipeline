@@ -1,3 +1,8 @@
+import static TerraformEnvironmentStage.ALL
+import static TerraformEnvironmentStage.PLAN
+import static TerraformEnvironmentStage.CONFIRM
+import static TerraformEnvironmentStage.APPLY
+
 class DefaultStrategy {
 
     private String strategyName = "apply"
