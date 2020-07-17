@@ -5,7 +5,6 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
         
         // Need to set command name to "destroy"
         ConfirmApplyPlugin.withCommand("destroy")
-
         TerraformEnvironmentStage.addPlugin(plugin)
     }
 
