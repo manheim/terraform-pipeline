@@ -205,7 +205,6 @@ Alternatively, you can assign all of your pipelines to a particular Jenkins slav
 
 * [BuildStage](./docs/BuildStage.md) - build a deployment artifact that will subsequently be used by TerraformEnvironmentStage.
 * [RegressionStage](./docs/RegressionStage.md) - run automated tests against an environment
-* [TerraformDestroyStage](./docs/TerraformDestroyStage.md) - Destroy infrastructure with ``terraform destroy`` command
 
 # [DRY'ing](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) your Plugin configuration
 
