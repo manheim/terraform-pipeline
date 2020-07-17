@@ -1,9 +1,10 @@
 class DestroyPlugin implements TerraformEnvironmentStagePlugin {
 
-    DestroyPlugin() {
-    }
+    public static void init() {
+        DestroyPlugin plugin = new DestroyPlugin()
 
-    public static void init() {}
+        TerraformEnvironmentStage.addPlugin(plugin)
+    }
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
