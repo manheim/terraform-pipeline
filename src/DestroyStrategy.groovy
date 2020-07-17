@@ -1,21 +1,16 @@
-class TerraformDestroyStage extends TerraformEnvironmentStage {
+class DestroyStrategy {
+
+    private TerraformInitCommand initCommand
+    private TerraformPlanCommand planCommand
     private TerraformDestroyCommand destroyCommand
-    public static final String DESTROY = 'destroy'
+    
+    public Closure createPipelineClosure(String environment) {
 
-    TerraformDestroyStage(String environment) {
-        super(environment)
-    }
-
-    @Override
-    private Closure pipelineConfiguration() {
         initCommand = TerraformInitCommand.instanceFor(environment)
         planCommand = TerraformPlanCommand.instanceFor(environment)
         planCommand = planCommand.withArgument("-destroy")
         destroyCommand = TerraformDestroyCommand.instanceFor(environment)
 
-        applyPlugins()
-
-        def String environment = this.environment
         return { ->
             node(jenkinsfile.getNodeName()) {
                 deleteDir()
@@ -48,5 +43,4 @@ class TerraformDestroyStage extends TerraformEnvironmentStage {
             }
         }
     }
-
 }
