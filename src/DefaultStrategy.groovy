@@ -4,6 +4,7 @@ class DefaultStrategy {
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
     private TerraformApplyCommand applyCommand
+    private Jenkinsfile jenkinsfile
 
     DefaultStrategy() {
     }

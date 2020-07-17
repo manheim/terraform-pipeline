@@ -4,6 +4,7 @@ class DestroyStrategy {
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
     private TerraformDestroyCommand destroyCommand
+    private Jenkinsfile jenkinsfile
 
     DestroyStrategy() {   
     }
