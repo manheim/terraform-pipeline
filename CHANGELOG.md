@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #88](https://github.com/manheim/terraform-pipeline/issues/88) Add an optional TerraformDestroyStage
+
 # v5.8
 
 * Docs
