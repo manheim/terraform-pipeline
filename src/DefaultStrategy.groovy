@@ -17,6 +17,8 @@ class DefaultStrategy {
         planCommand = TerraformPlanCommand.instanceFor(environment)
         applyCommand = TerraformApplyCommand.instanceFor(environment)
 
+        jenkinsfile = Jenkinsfile.instance
+
         return { ->
             node(jenkinsfile.getNodeName()) {
                 deleteDir()

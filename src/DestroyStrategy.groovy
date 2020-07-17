@@ -19,6 +19,8 @@ class DestroyStrategy {
         planCommand = planCommand.withArgument("-destroy")
         destroyCommand = TerraformDestroyCommand.instanceFor(environment)
 
+        jenkinsfile = Jenkinsfile.instance
+
         return { ->
             node(jenkinsfile.getNodeName()) {
                 deleteDir()
