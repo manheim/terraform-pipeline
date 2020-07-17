@@ -5,15 +5,10 @@ import static TerraformEnvironmentStage.DESTROY
 
 class DestroyStrategy {
 
-    private String name = "destroy"
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
     private TerraformDestroyCommand destroyCommand
     private Jenkinsfile jenkinsfile
-
-    public String getName() {
-        return name
-    }
  
     public Closure createPipelineClosure(String environment, StageDecorations decorations) {
 

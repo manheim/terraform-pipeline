@@ -5,15 +5,10 @@ import static TerraformEnvironmentStage.APPLY
 
 class DefaultStrategy {
 
-    private String name = "apply"
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
     private TerraformApplyCommand applyCommand
     private Jenkinsfile jenkinsfile
-
-    public String getName() {
-        return name
-    }
 
     public Closure createPipelineClosure(String environment, StageDecorations decorations) {
         
