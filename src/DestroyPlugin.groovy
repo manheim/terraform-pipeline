@@ -4,5 +4,5 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
     public apply(TerraformEnvironmentStage stage) {
         stage.withStrategy(new DestroyStrategy())
     }
-    
+
 }

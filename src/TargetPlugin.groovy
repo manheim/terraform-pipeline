@@ -1,12 +1,11 @@
 import static TerraformEnvironmentStage.ALL
 
-class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformDestroyCommandPlugin, TerraformEnvironmentStagePlugin {
+class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
     public static void init() {
         TargetPlugin plugin = new TargetPlugin()
 
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
-        TerraformDestroyCommand.addPlugin(plugin)
         TerraformEnvironmentStage.addPlugin(plugin)
     }
 
@@ -28,14 +27,6 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
                .each { item -> command.withArgument("-target ${item}") }
     }
 
-    @Override
-    public void apply(TerraformDestroyCommand command) {
-        def targets = Jenkinsfile.instance.getEnv().RESOURCE_TARGETS ?: ''
-        targets.split(',')
-               .collect { item -> item.trim() }
-               .findAll { item -> item != '' }
-               .each { item -> command.withArgument("-target ${item}") }
-    }
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
