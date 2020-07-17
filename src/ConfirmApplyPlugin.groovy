@@ -3,7 +3,7 @@ import static TerraformEnvironmentStage.CONFIRM
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static enabled = true
-    public static command = "apply"
+    public static String command = "apply"
 
     ConfirmApplyPlugin() {
     }
@@ -37,8 +37,8 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
         }
     }
 
-    public void set_command(String command) {
-        this.command = command
+    public void withCommand(String newCommand) {
+        this.command = newCommand
     }
 
     public static disable() {
