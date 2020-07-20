@@ -1,7 +1,7 @@
 import static TerraformEnvironmentStage.ALL
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.CONFIRM
-import static TerraformEnvironmentStage.DESTROY
+import static TerraformEnvironmentStage.APPLY
 
 class DestroyStrategy {
 
@@ -24,7 +24,7 @@ class DestroyStrategy {
                 checkout(scm)
 
                 decorations.apply(ALL) {
-                    stage("${PLAN}-${DESTROY}-${environment}") {
+                    stage("${PLAN}-destroy-${environment}") {
                         decorations.apply(PLAN) {
                             sh initCommand.toString()
                             sh planCommand.toString()
@@ -32,16 +32,16 @@ class DestroyStrategy {
                     }
 
                     decorations.apply("Around-${CONFIRM}") {
-                        stage("${CONFIRM}-${DESTROY}-${environment}") {
+                        stage("${CONFIRM}-destroy-${environment}") {
                             decorations.apply(CONFIRM) {
                                 echo "Approved"
                             }
                         }
                     }
 
-                    decorations.apply("Around-${DESTROY}") {
-                        stage("${DESTROY}-${environment}") {
-                            decorations.apply(DESTROY) {
+                    decorations.apply("Around-destroy") {
+                        stage("destroy-${environment}") {
+                            decorations.apply(APPLY) {
                                 sh destroyCommand.toString()
                             }
                         }
