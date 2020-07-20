@@ -1,5 +1,3 @@
-import static TerraformEnvironmentStage.DESTROY
-
 class DestroyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static void init() {
