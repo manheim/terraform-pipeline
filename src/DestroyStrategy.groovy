@@ -7,7 +7,7 @@ class DestroyStrategy {
 
     private TerraformInitCommand initCommand
     private TerraformPlanCommand planCommand
-    private TerraformDestroyCommand destroyCommand
+    private TerraformApplyCommand destroyCommand
     private Jenkinsfile jenkinsfile
  
     public Closure createPipelineClosure(String environment, StageDecorations decorations) {
@@ -15,8 +15,8 @@ class DestroyStrategy {
         initCommand = TerraformInitCommand.instanceFor(environment)
         planCommand = TerraformPlanCommand.instanceFor(environment)
         planCommand = planCommand.withArgument("-destroy")
-        destroyCommand = TerraformDestroyCommand.instanceFor(environment)
-
+        destroyCommand = TerraformApplyCommand.instanceFor(environment)
+        destroyCommand = destroyCommand.withCommand("destroy")
         jenkinsfile = Jenkinsfile.instance
 
         return { ->
