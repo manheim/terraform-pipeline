@@ -1,6 +1,7 @@
 import static TerraformEnvironmentStage.ALL
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.CONFIRM
+import static TerraformEnvironmentStage.APPLY
 import static TerraformEnvironmentStage.DESTROY
 
 class DeployAndDestroyStrategy {
@@ -22,7 +23,7 @@ class DeployAndDestroyStrategy {
 
         // Last stage: destroy
         planDestroyCommand = TerraformPlanCommand.instanceFor(environment)
-        planDestroyCommand = planCommand.withArgument("-destroy")
+        planDestroyCommand = planDestroyCommand.withArgument("-destroy")
         destroyCommand = TerraformApplyCommand.instanceFor(environment)
         destroyCommand = destroyCommand.withCommand("destroy")
 
