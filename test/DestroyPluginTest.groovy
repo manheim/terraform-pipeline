@@ -20,6 +20,7 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class DestroyPluginTest {
+
     @Before
     void resetJenkinsEnv() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
@@ -27,6 +28,7 @@ class DestroyPluginTest {
     }
 
     public class Init {
+
         @After
         void resetPlugins() {
             TerraformEnvironmentStage.resetPlugins()
@@ -42,6 +44,7 @@ class DestroyPluginTest {
     }
 
     public class Apply {
+
         @Test
         void setStrategyForTerraformEnvironmentStage()  {
             DestroyPlugin plugin = new DestroyPlugin()
@@ -49,7 +52,7 @@ class DestroyPluginTest {
 
             plugin.apply(environment)
 
-            verify(environment, times(1)).withStrategy(new DestroyStrategy())
+            verify(environment, times(1)).withStrategy(any(DestroyStrategy.class))
         }
     }
 }

@@ -45,7 +45,7 @@ class TerraformEnvironmentStage implements Stage {
         Jenkinsfile.build(pipelineConfiguration())
     }
 
-    private void withStrategy(newStrategy) {
+    public void withStrategy(newStrategy) {
         this.strategy = newStrategy
     }
 
