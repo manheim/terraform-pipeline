@@ -17,11 +17,11 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
     @Override
     public void apply(TerraformEnvironmentStage stage) {
         if (enabled) {
-            stage.decorate(CONFIRM, addConfirmation(command))
+            stage.decorate(CONFIRM, addConfirmation())
         }
     }
 
-    public static Closure addConfirmation(String command_name) {
+    public static Closure addConfirmation() {
         return { closure ->
             // ask for human input
             try {
