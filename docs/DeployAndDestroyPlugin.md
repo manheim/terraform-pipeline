@@ -1,11 +1,14 @@
-## [DestroyPlugin](../src/DestroyPlugin.groovy)
+## [DesployAndDestroyPlugin](../src/DesployAndDestroyPlugin.groovy)
 
-Enable this plugin to use `terraform destroy` to destroy your environment(s).
+Add a `terraform destroy` stage after deployment. (Requires manual confirmation)
 
 When this plugin is enabled, the pipeline will follow these steps:  
-1. Run a `terraform plan -destroy` to display which resources will get destroyed.
-2. Ask for human confirmation to proceed with the destroy.
-3. Run the `terraform destroy` command.
+1. Run a `terraform plan`
+2. Ask for human confirmation to proceed with the apply.
+3. Run the `terraform apply` command.
+4. Run a `terraform plan -destroy` to see which resources will be destroyed.
+5. Ask for human confirmation to proceed with the destroy.
+6. Run `terraform destroy` to destroy the resources.
 
 
 ```
@@ -14,17 +17,21 @@ When this plugin is enabled, the pipeline will follow these steps:
 
 Jenkinsfile.init(this, env)
 
-// This enables the destroy functionality
-DestroyPlugin.init()
+// This adds the destroy functionality at the end of the pipeline
+DeployAndDestroyPlugin.init()
 
 def validate = new TerraformValidateStage()
 
-def destroyQa = new TerraformEnvironmentStage('qa')
-def destroyUat = new TerraformEnvironmentStage('uat')
-def destroyProd = new TerraformEnvironmentStage('prod')
+def deployQa = new TerraformEnvironmentStage('qa')
+def deployUat = new TerraformEnvironmentStage('uat')
+def deployProd = new TerraformEnvironmentStage('prod')
 
-validate.then(destroyQa)
-        .then(destroyUat)
-        .then(destroyProd)
+validate.then(deployQa)
+        .then(deployUat)
+        .then(deployProd)
         .build()
 ```
+
+When using this plugin, your pipeline will look something like this:
+
+![DestroyPlugin pipeline](../images/deploy-and-destroy-pipeline.png)
