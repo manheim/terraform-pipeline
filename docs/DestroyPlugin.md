@@ -70,4 +70,4 @@ validate.then(destroyQa)
 
 With this approach, the entire pipeline will look like so:
 
-![DeployAndDestroyPipeline](../images/deploy-and-destroy-pipeline.png)
+![DeployAndDestroyPipeline](../images/deploy-and-destroy.png)
