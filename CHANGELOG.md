@@ -1,6 +1,7 @@
 # Unreleased
 
 * [Issue #88](https://github.com/manheim/terraform-pipeline/issues/88) Add an optional TerraformDestroyStage
+* [Issue #24](https://github.com/manheim/terraform-pipeline/issues/24) ConfirmApplyPlugin - allow customization
 
 # v5.8
 
