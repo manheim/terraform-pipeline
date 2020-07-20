@@ -31,7 +31,7 @@ validate.then(destroyQa)
 
 When using this plugin, your pipeline will look something like this:
 
-![DestroyPlugin pipeline](../images/destroy-pipeline.png)
+![DestroyPluginPipeline](../images/destroy-pipeline.png)
 
 ---------
 
@@ -69,3 +69,5 @@ validate.then(destroyQa)
 ```
 
 With this approach, the entire pipeline will look like so:
+
+![DeployAndDestroyPipeline](../images/deploy-and-destroy-pipeline.png)
