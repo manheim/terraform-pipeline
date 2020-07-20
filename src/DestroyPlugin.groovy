@@ -1,5 +1,4 @@
 import static TerraformEnvironmentStage.DESTROY
-import ConditionalApplyPlugin.onlyOnExpectedBranch
 
 class DestroyPlugin implements TerraformEnvironmentStagePlugin {
 
@@ -15,7 +14,6 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
     @Override
     public void apply(TerraformEnvironmentStage stage) {
         stage.withStrategy(new DestroyStrategy())
-        stage.decorateAround(DESTROY, onlyOnExpectedBranch())
     }
 
 }
