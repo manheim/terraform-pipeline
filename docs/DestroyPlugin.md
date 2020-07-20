@@ -31,4 +31,4 @@ validate.then(destroyQa)
 
 When using this plugin, your pipeline will look something like this:
 
-![DestroyPlugin pipeline](./images/destroy-pipeline.png)
+![DestroyPlugin pipeline](../images/destroy-pipeline.png)
