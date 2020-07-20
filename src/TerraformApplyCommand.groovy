@@ -1,14 +1,14 @@
 class TerraformApplyCommand {
-    protected boolean input = false
-    protected String terraformBinary = "terraform"
-    protected static String command = "apply"
+    private boolean input = false
+    private String terraformBinary = "terraform"
+    private static String command = "apply"
     String environment
-    protected prefixes = []
-    protected suffixes = []
-    protected args = []
-    protected static plugins = []
-    protected appliedPlugins = []
-    protected String directory
+    private prefixes = []
+    private suffixes = []
+    private args = []
+    private static plugins = []
+    private appliedPlugins = []
+    private String directory
 
     public TerraformApplyCommand(String environment) {
         this.environment = environment
@@ -63,7 +63,7 @@ class TerraformApplyCommand {
         return pieces.join(' ')
     }
 
-    protected applyPluginsOnce() {
+    private applyPluginsOnce() {
         def remainingPlugins = plugins - appliedPlugins
 
         for (TerraformApplyCommandPlugin plugin in remainingPlugins) {

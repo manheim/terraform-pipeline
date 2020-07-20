@@ -5,8 +5,6 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
 
         ConfirmApplyPlugin.withConfirmMessage("YOU ARE ABOUT TO DESTROY YOUR ENVIRONMENT")
         ConfirmApplyPlugin.withOkMessage("!!!DESTROY DESTROY DESTROY!!!")
-        //TerraformPlanCommand.withArgument("-destroy")
-        //TerraformApplyCommand.withCommand("destroy")
         
         TerraformEnvironmentStage.addPlugin(plugin)
     }
