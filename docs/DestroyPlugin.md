@@ -32,3 +32,40 @@ validate.then(destroyQa)
 When using this plugin, your pipeline will look something like this:
 
 ![DestroyPlugin pipeline](../images/destroy-pipeline.png)
+
+---------
+
+## How to destroy environments after deployment
+
+If you wish to run a traditional deployment and then run `terraform destroy`, you can enable the DestroyPlugin after the deployment.
+
+
+```
+def validate = new TerraformValidateStage()
+
+def deployQa = new TerraformEnvironmentStage('qa')
+def deployUat = new TerraformEnvironmentStage('uat')
+def deployProd = new TerraformEnvironmentStage('prod')
+
+// First we deploy our environments
+validate.then(deployQa)
+        .then(deployUat)
+        .then(deployProd)
+        .build()
+
+
+// Now enable the destroy functionality
+DestroyPlugin.init()
+
+def destroyQa = new TerraformEnvironmentStage('qa')
+def destroyUat = new TerraformEnvironmentStage('uat')
+def destroyProd = new TerraformEnvironmentStage('prod')
+
+// Destroy the environments
+validate.then(destroyQa)
+        .then(destroyUat)
+        .then(destroyProd)
+        .build()
+```
+
+With this approach, the entire pipeline will look like so:
