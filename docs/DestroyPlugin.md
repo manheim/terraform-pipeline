@@ -28,3 +28,7 @@ validate.then(destroyQa)
         .then(destroyProd)
         .build()
 ```
+
+When using this plugin, your pipeline will look something like this:
+
+![DestroyPlugin pipeline](./images/destroy-pipeline.png)
