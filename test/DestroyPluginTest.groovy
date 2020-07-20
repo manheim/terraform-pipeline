@@ -1,16 +1,14 @@
-import static org.hamcrest.Matchers.containsString
-import static org.hamcrest.Matchers.hasItem
-import static org.hamcrest.Matchers.instanceOf
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
-import static TerraformEnvironmentStage.ALL;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test
 import org.junit.Before
@@ -41,6 +39,18 @@ class DestroyPluginTest {
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(DestroyPlugin.class)))
         }
+
+        @Test
+        void modifiesConfirmApplyPlugin() {
+            DestroyPlugin.init()
+
+            String confirmMessage = ConfirmApplyPlugin.getConfirmMessage()
+            String okMessage = ConfirmApplyPlugin.getOkMessage()
+
+            assertEquals(confirmMessage, 'WARNING! Are you absolutely sure the plan above is correct? Your environment will be IMMEDIATELY DESTROYED via "terraform destroy"')
+            assertEquals(okMessage, "Run terraform DESTROY now")
+        }
+
     }
 
     public class Apply {
