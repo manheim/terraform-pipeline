@@ -43,8 +43,8 @@ class DestroyPluginTest {
         void modifiesConfirmApplyPlugin() {
             DestroyPlugin.init()
 
-            String confirmMessage = ConfirmApplyPlugin.getConfirmMessage()
-            String okMessage = ConfirmApplyPlugin.getOkMessage()
+            String confirmMessage = ConfirmApplyPlugin.confirmMessage
+            String okMessage = ConfirmApplyPlugin.okMessage
 
             assertEquals(confirmMessage, 'WARNING! Are you absolutely sure the plan above is correct? Your environment will be IMMEDIATELY DESTROYED via "terraform destroy"')
             assertEquals(okMessage, "Run terraform DESTROY now")
