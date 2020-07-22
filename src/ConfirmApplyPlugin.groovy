@@ -51,17 +51,17 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
         this.submitterParameter = newParam
     }
 
-    public static String getConfirmMessage() {
-        return this.confirmMessage
-    }
+    //public static String getConfirmMessage() {
+    //    return this.confirmMessage
+   // }
 
-    public static String getOkMessage() {
-        return this.okMessage
-    }
+    //public static String getOkMessage() {
+    //    return this.okMessage
+   // }
 
-    public static String getSubmitter() {
-        return this.submitter
-    }
+    //public static String getSubmitter() {
+    //    return this.submitter
+    //}
 
     public static disable() {
         this.enabled = false
