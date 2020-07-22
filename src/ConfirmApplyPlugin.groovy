@@ -3,9 +3,9 @@ import static TerraformEnvironmentStage.CONFIRM
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static enabled = true
-    private static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?'
-    private static String okMessage = 'Run terraform apply now'
-    private static String submitter = 'approver'
+    public static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?'
+    public static String okMessage = 'Run terraform apply now'
+    public static String submitter = 'approver'
 
     ConfirmApplyPlugin() {
     }
