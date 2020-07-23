@@ -7,7 +7,22 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
+        stage.decorate(ALL, addBuildParams())
         stage.withStrategy(new PlanOnlyStrategy())
+    }
+
+    public static Closure addBuildParams() {
+        return { closure ->
+            def params = [
+                booleanParam(name: 'FAIL_PLAN_ON_CHANGES', defaultValue: true, description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'),
+            ]
+            def props = [
+                parameters(params)
+            ]
+            properties(props)
+
+            closure()
+        }
     }
 
 }

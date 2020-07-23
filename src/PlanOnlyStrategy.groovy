@@ -10,6 +10,7 @@ class PlanOnlyStrategy {
     public Closure createPipelineClosure(String environment, StageDecorations decorations) {
         initCommand = TerraformInitCommand.instanceFor(environment)
         planCommand = TerraformPlanCommand.instanceFor(environment)
+        planCommand = planCommand.withArgument('-detailed-exitcode')
 
         jenkinsfile = Jenkinsfile.instance
 
