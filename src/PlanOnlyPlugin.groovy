@@ -9,8 +9,8 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(ALL, addBuildParams())
         stage.withStrategy(new PlanOnlyStrategy())
+        stage.decorate(ALL, addBuildParams())
     }
 
     public static Closure addBuildParams() {
