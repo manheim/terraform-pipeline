@@ -118,6 +118,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
 * [DestroyPlugin](./docs/DestroyPlugin.md): Use this to change the pipeline functionality to `terraform destroy`. (Requires manual confirmation)
+* [PlanOnlyPlugin](./docs/PlanOnlyPlugin.md): Use this to change the pipeline functionality to `terraform plan` only.
 
 ## Write your own Plugin
 
