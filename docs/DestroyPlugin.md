@@ -33,41 +33,18 @@ When using this plugin, your pipeline will look something like this:
 
 ![DestroyPluginPipeline](../images/destroy-pipeline.png)
 
----------
+## Adding arguments to the destroy command
 
-## How to destroy environments after deployment
-
-If you wish to run a traditional deployment and then run `terraform destroy`, you can enable the DestroyPlugin after the deployment.
-
-
+You can use `withArgument("-some-arg")` to add arguments to the `terraform destroy` command.
 ```
-def validate = new TerraformValidateStage()
+// Jenkinsfile
+@Library(['terraform-pipeline@v3.10']) _
 
-def deployQa = new TerraformEnvironmentStage('qa')
-def deployUat = new TerraformEnvironmentStage('uat')
-def deployProd = new TerraformEnvironmentStage('prod')
+Jenkinsfile.init(this, env)
 
-// First we deploy our environments
-validate.then(deployQa)
-        .then(deployUat)
-        .then(deployProd)
-        .build()
+// This enables the destroy functionality
+// Set refresh to false for destroy command
+DestroyPlugin.withArgument("-refresh=false").init()
 
-
-// Now enable the destroy functionality
-DestroyPlugin.init()
-
-def destroyQa = new TerraformEnvironmentStage('qa')
-def destroyUat = new TerraformEnvironmentStage('uat')
-def destroyProd = new TerraformEnvironmentStage('prod')
-
-// Destroy the environments
-validate.then(destroyQa)
-        .then(destroyUat)
-        .then(destroyProd)
-        .build()
+...
 ```
-
-With this approach, the entire pipeline will look like so:
-
-![DeployAndDestroyPipeline](../images/deploy-and-destroy.png)

@@ -1,5 +1,7 @@
 class DestroyPlugin implements TerraformEnvironmentStagePlugin {
 
+    private static arguments = []
+
     public static void init() {
         DestroyPlugin plugin = new DestroyPlugin()
 
@@ -9,9 +11,14 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
         TerraformEnvironmentStage.addPlugin(plugin)
     }
 
+    public static withArgument(String arg) {
+        arguments << arg
+        return this
+    }
+
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.withStrategy(new DestroyStrategy())
+        stage.withStrategy(new DestroyStrategy(arguments))
     }
 
 }
