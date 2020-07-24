@@ -20,12 +20,13 @@ class DestroyStrategy {
 
         planCommand = TerraformPlanCommand.instanceFor(environment)
         planCommand = planCommand.withArgument("-destroy")
-        for (arg in extraArguments) {
-            planCommand = planCommand.withArgument(arg)
-        }
 
         destroyCommand = TerraformApplyCommand.instanceFor(environment)
         destroyCommand = destroyCommand.withCommand("destroy")
+        for (arg in extraArguments) {
+            destroyCommand = destroyCommand.withArgument(arg)
+        }
+
         jenkinsfile = Jenkinsfile.instance
 
         return { ->
