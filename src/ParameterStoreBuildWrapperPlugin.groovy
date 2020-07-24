@@ -1,5 +1,6 @@
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
+import static TerraformEnvironmentStage.DESTROY
 
 class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugin {
     private static globalPathPattern
@@ -26,6 +27,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
 
         stage.decorate(PLAN, addParameterStoreBuildWrapper(options))
         stage.decorate(APPLY, addParameterStoreBuildWrapper(options))
+        stage.decorate(DESTROY, addParameterStoreBuildWrapper(options))
     }
 
     String pathForEnvironment(String environment) {
