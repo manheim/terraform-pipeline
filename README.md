@@ -117,6 +117,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
+* [DestroyPlugin](./docs/DestroyPlugin.md): Use this to change the pipeline functionality to `terraform destroy`. (Requires manual confirmation)
 
 ## Write your own Plugin
 

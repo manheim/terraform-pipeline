@@ -14,6 +14,11 @@ class TerraformApplyCommand {
         this.environment = environment
     }
 
+    public TerraformApplyCommand withCommand(String newCommand) {
+        this.command = newCommand
+        return this
+    }
+
     public TerraformApplyCommand withInput(boolean input) {
         this.input = input
         return this

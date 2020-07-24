@@ -1,5 +1,6 @@
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
+import static TerraformEnvironmentStage.DESTROY
 
 class AnsiColorPlugin implements TerraformEnvironmentStagePlugin {
 
@@ -11,6 +12,7 @@ class AnsiColorPlugin implements TerraformEnvironmentStagePlugin {
     public void apply(TerraformEnvironmentStage stage) {
         stage.decorate(PLAN, addColor())
         stage.decorate(APPLY, addColor())
+        stage.decorate(DESTROY, addColor())
     }
 
     public static Closure addColor() {

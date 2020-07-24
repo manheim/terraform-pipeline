@@ -2,10 +2,8 @@ class TerraformEnvironmentStage implements Stage {
     private Jenkinsfile jenkinsfile
     private String environment
     private StageDecorations decorations
-    private TerraformInitCommand initCommand
-    private TerraformPlanCommand planCommand
-    private TerraformApplyCommand applyCommand
     private localPlugins
+    private static strategy = new DefaultStrategy()
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
@@ -14,6 +12,7 @@ class TerraformEnvironmentStage implements Stage {
     public static final String PLAN = 'plan'
     public static final String CONFIRM = 'confirm'
     public static final String APPLY = 'apply'
+    public static final String DESTROY = 'destroy'
 
     TerraformEnvironmentStage(String environment) {
         this.environment = environment
@@ -46,46 +45,13 @@ class TerraformEnvironmentStage implements Stage {
         Jenkinsfile.build(pipelineConfiguration())
     }
 
+    public void withStrategy(newStrategy) {
+        this.strategy = newStrategy
+    }
+
     private Closure pipelineConfiguration() {
-        initCommand = TerraformInitCommand.instanceFor(environment)
-        planCommand = TerraformPlanCommand.instanceFor(environment)
-        applyCommand = TerraformApplyCommand.instanceFor(environment)
-
         applyPlugins()
-
-        def String environment = this.environment
-        return { ->
-            node(jenkinsfile.getNodeName()) {
-                deleteDir()
-                checkout(scm)
-
-                decorations.apply(ALL) {
-                    stage("${PLAN}-${environment}") {
-                        decorations.apply(PLAN) {
-                            sh initCommand.toString()
-                            sh planCommand.toString()
-                        }
-                    }
-
-                    decorations.apply("Around-${CONFIRM}") {
-                        stage("${CONFIRM}-${environment}") {
-                            decorations.apply(CONFIRM) {
-                                echo "Approved"
-                            }
-                        }
-                    }
-
-                    decorations.apply("Around-${APPLY}") {
-                        stage("${APPLY}-${environment}") {
-                            decorations.apply(APPLY) {
-                                sh initCommand.toString()
-                                sh applyCommand.toString()
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return strategy.createPipelineClosure(environment, decorations)
     }
 
     public void decorate(Closure decoration) {

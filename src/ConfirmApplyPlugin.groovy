@@ -3,6 +3,9 @@ import static TerraformEnvironmentStage.CONFIRM
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static enabled = true
+    public static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?'
+    public static String okMessage = 'Run terraform apply now'
+    public static String submitter = 'approver'
 
     ConfirmApplyPlugin() {
     }
@@ -24,9 +27,9 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
             try {
                 timeout(time: 15, unit: 'MINUTES') {
                     input(
-                        message: 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?',
-                        ok: 'Run terraform APPLY now',
-                        submitterParameter: 'approver'
+                        message: confirmMessage,
+                        ok: okMessage,
+                        submitterParameter: submitter
                     )
                 }
             } catch (ex) {
@@ -34,6 +37,18 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
             }
             closure()
         }
+    }
+
+    public static void withConfirmMessage(String newMessage) {
+        this.confirmMessage = newMessage
+    }
+
+    public static void withOkMessage(String newMessage) {
+        this.okMessage = newMessage
+    }
+
+    public static void withSubmitterParameter(String newParam) {
+        this.submitterParameter = newParam
     }
 
     public static disable() {
