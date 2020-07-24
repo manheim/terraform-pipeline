@@ -32,3 +32,19 @@ validate.then(destroyQa)
 When using this plugin, your pipeline will look something like this:
 
 ![DestroyPluginPipeline](../images/destroy-pipeline.png)
+
+## Adding arguments to the destroy command
+
+You can use `withArgument("-some-arg")` to add arguments to the `terraform destroy` command.
+```
+// Jenkinsfile
+@Library(['terraform-pipeline@v3.10']) _
+
+Jenkinsfile.init(this, env)
+
+// This enables the destroy functionality
+// Set refresh to false for destroy command
+DestroyPlugin.withArgument("-refresh=false").init()
+
+...
+```

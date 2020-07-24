@@ -9,11 +9,21 @@ class DestroyStrategy {
     private TerraformPlanCommand planCommand
     private TerraformApplyCommand destroyCommand
     private Jenkinsfile jenkinsfile
+    private List extraArguments
+
+    DestroyStrategy(List args) {
+        this.extraArguments = args
+    }
 
     public Closure createPipelineClosure(String environment, StageDecorations decorations) {
         initCommand = TerraformInitCommand.instanceFor(environment)
+
         planCommand = TerraformPlanCommand.instanceFor(environment)
         planCommand = planCommand.withArgument("-destroy")
+        for (arg in extraArguments) {
+            planCommand = planCommand.withArgument(arg)
+        }
+
         destroyCommand = TerraformApplyCommand.instanceFor(environment)
         destroyCommand = destroyCommand.withCommand("destroy")
         jenkinsfile = Jenkinsfile.instance
