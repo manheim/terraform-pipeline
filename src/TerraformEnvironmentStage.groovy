@@ -51,24 +51,12 @@ class TerraformEnvironmentStage implements Stage {
     }
 
     private Closure pipelineConfiguration() {
-        decorate(ALL, applyParams())
         applyPlugins()
-        return strategy.createPipelineClosure(environment, decorations)
+        return strategy.createPipelineClosure(environment, decorations, params)
     }
 
     public addParams(newParams) {
         params << newParams
-    }
-
-    public static Closure applyParams() {
-        return { closure ->
-            def props = [
-                parameters(params)
-            ]
-            properties(props)
-
-            closure()
-        }
     }
 
     public void decorate(Closure decoration) {

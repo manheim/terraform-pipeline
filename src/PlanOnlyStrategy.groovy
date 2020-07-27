@@ -7,7 +7,7 @@ class PlanOnlyStrategy {
     private TerraformPlanCommand planCommand
     private Jenkinsfile jenkinsfile
 
-    public Closure createPipelineClosure(String environment, StageDecorations decorations) {
+    public Closure createPipelineClosure(String environment, StageDecorations decorations, params) {
         initCommand = TerraformInitCommand.instanceFor(environment)
         planCommand = TerraformPlanCommand.instanceFor(environment)
         planCommand = planCommand.withArgument('-detailed-exitcode')
@@ -18,6 +18,7 @@ class PlanOnlyStrategy {
             node(jenkinsfile.getNodeName()) {
                 deleteDir()
                 checkout(scm)
+                properties([parameters(params)])
 
                 decorations.apply(ALL) {
                     stage("${PLAN}-${environment}") {
