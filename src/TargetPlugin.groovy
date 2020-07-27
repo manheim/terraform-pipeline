@@ -29,7 +29,7 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.addParams([
+        stage.addParam([
             $class: 'hudson.model.StringParameterDefinition',
             name: "RESOURCE_TARGETS",
             default: '',

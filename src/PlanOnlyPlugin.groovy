@@ -10,12 +10,13 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
     @Override
     public void apply(TerraformEnvironmentStage stage) {
         stage.withStrategy(new PlanOnlyStrategy())
-        stage.addParams([
+        stage.addParam([
             $class: 'hudson.model.BooleanParameterDefinition',
             name: "FAIL_PLAN_ON_CHANGES",
             default: true,
             description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
-        ],[
+        ])
+        stage.addParam([
             $class: 'hudson.model.BooleanParameterDefinition',
             name: "PLAN_ONLY",
             default: false,
