@@ -51,8 +51,8 @@ class TerraformEnvironmentStage implements Stage {
     }
 
     private Closure pipelineConfiguration() {
-        applyPlugins()
         decorate(ALL, applyParams())
+        applyPlugins()
         return strategy.createPipelineClosure(environment, decorations)
     }
 
