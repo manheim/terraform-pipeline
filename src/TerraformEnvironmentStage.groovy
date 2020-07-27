@@ -56,7 +56,7 @@ class TerraformEnvironmentStage implements Stage {
         return strategy.createPipelineClosure(environment, decorations)
     }
 
-    public addParams(List newParams) {
+    public addParams(newParams) {
         params << newParams
     }
 
