@@ -29,27 +29,11 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(ALL, addBuildParams())
+        stage.addParams([
+            $class: 'hudson.model.StringParameterDefinition',
+            name: "RESOURCE_TARGETS",
+            default: '',
+            description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
+        ])
     }
-
-    public static Closure addBuildParams() {
-        return { closure ->
-
-            def existing_params = currentBuild.rawBuild.parent.properties
-                .findAll { it.value instanceof hudson.model.ParametersDefinitionProperty }
-                .collectMany { it.value.parameterDefinitions }
-
-            def params = [
-                string(name: 'RESOURCE_TARGETS', defaultValue: '', description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'),
-            ] + existing_params
-
-            def props = [
-                parameters(params)
-            ]
-            properties(props)
-
-            closure()
-        }
-    }
-
 }

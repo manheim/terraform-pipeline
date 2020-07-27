@@ -4,6 +4,7 @@ class TerraformEnvironmentStage implements Stage {
     private StageDecorations decorations
     private localPlugins
     private static strategy = new DefaultStrategy()
+    private params = []
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
@@ -51,7 +52,23 @@ class TerraformEnvironmentStage implements Stage {
 
     private Closure pipelineConfiguration() {
         applyPlugins()
+        decorate(ALL, applyParams())
         return strategy.createPipelineClosure(environment, decorations)
+    }
+
+    public addParams(List newParams) {
+        params << newParams
+    }
+
+    public static Closure applyParams() {
+        return { closure ->
+            def props = [
+                parameters(params)
+            ]
+            properties(props)
+
+            closure()
+        }
     }
 
     public void decorate(Closure decoration) {
