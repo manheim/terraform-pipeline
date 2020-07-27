@@ -32,4 +32,7 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
                .findAll { item -> item != '' }
                .each { item -> command.withArgument("-target ${item}") }
     }
+
+    @Override
+    public void apply(TerraformEnvironmentStage stage) {}
 }
