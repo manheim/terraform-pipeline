@@ -7,6 +7,12 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
         TerraformEnvironmentStage.addPlugin(plugin)
+        TerraformEnvironmentStage.addParam([
+            $class: 'hudson.model.StringParameterDefinition',
+            name: "RESOURCE_TARGETS",
+            default: '',
+            description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
+        ])
     }
 
     @Override
@@ -25,15 +31,5 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
                .collect { item -> item.trim() }
                .findAll { item -> item != '' }
                .each { item -> command.withArgument("-target ${item}") }
-    }
-
-    @Override
-    public void apply(TerraformEnvironmentStage stage) {
-        stage.addParam([
-            $class: 'hudson.model.StringParameterDefinition',
-            name: "RESOURCE_TARGETS",
-            default: '',
-            description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
-        ])
     }
 }
