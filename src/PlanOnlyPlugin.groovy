@@ -15,6 +15,11 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
             name: "FAIL_PLAN_ON_CHANGES",
             default: true,
             description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
+        ],[
+            $class: 'hudson.model.BooleanParameterDefinition',
+            name: "PLAN_ONLY",
+            default: false,
+            description: "only run a plan, no apply, even if on master"
         ])
     }
 }
