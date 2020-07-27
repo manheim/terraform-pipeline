@@ -35,7 +35,7 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
     public static Closure addBuildParams() {
         return { closure ->
 
-            def existing_params = currentBuild.rawBuild.parent.properties.
+            def existing_params = currentBuild.rawBuild.parent.properties
                 .findAll { it.value instanceof hudson.model.ParametersDefinitionProperty }
                 .collectMany { it.value.parameterDefinitions }
 
