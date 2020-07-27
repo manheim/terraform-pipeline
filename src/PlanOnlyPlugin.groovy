@@ -15,9 +15,15 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static Closure addBuildParams() {
         return { closure ->
+
+            def existing_params = currentBuild.rawBuild.parent.properties
+                .findAll { it.value instanceof hudson.model.ParametersDefinitionProperty }
+                .collectMany { it.value.parameterDefinitions }
+
             def params = [
                 booleanParam(name: 'FAIL_PLAN_ON_CHANGES', defaultValue: true, description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'),
-            ]
+            ] + existing_params
+
             def props = [
                 parameters(params)
             ]
