@@ -24,7 +24,7 @@ class PlanOnlyStrategy {
                         stage("${PLAN}-${environment}") {
                             decorations.apply(PLAN) {
                                 sh initCommand.toString()
-                                sh returnStatus: true, script: planCommand.toString()
+                                sh planCommand.toString()
                             }
                         }
                     }
