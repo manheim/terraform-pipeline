@@ -1,7 +1,9 @@
-class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
+class PlanOnlyPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
 
     public static void init() {
         PlanOnlyPlugin plugin = new PlanOnlyPlugin()
+
+        TerraformPlanCommand.addPlugin(plugin)
         TerraformEnvironmentStage.addPlugin(plugin)
         TerraformEnvironmentStage.addParam([
             $class: 'hudson.model.BooleanParameterDefinition',
@@ -9,6 +11,13 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
             defaultValue: false,
             description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
         ])
+    }
+
+    @Override
+    public void apply(TerraformPlanCommand command) {
+        if (Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES == 'true') {
+            command.withArgument('-detailed-exitcode')
+        }
     }
 
     @Override
