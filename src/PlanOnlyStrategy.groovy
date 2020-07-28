@@ -15,17 +15,24 @@ class PlanOnlyStrategy {
 
         return { ->
             node(jenkinsfile.getNodeName()) {
-                deleteDir()
-                checkout(scm)
-                properties([parameters(params)])
+                try {
+                    deleteDir()
+                    checkout(scm)
+                    properties([parameters(params)])
 
-                decorations.apply(ALL) {
-                    stage("${PLAN}-${environment}") {
-                        decorations.apply(PLAN) {
-                            sh initCommand.toString()
-                            sh returnStatus: true, script: planCommand.toString()
+                    decorations.apply(ALL) {
+                        stage("${PLAN}-${environment}") {
+                            decorations.apply(PLAN) {
+                                sh initCommand.toString()
+                                sh returnStatus: true, script: planCommand.toString()
+                            }
                         }
                     }
+                    currentBuild.result = 'SUCCESS'
+                } catch(Exception ex) {
+                    echo "Caught exception: ${ex.toString()}"
+                    currentBuild.result = 'FAILURE'
+                    throw ex
                 }
             }
         }
