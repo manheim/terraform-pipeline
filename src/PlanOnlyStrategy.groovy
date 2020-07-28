@@ -24,7 +24,9 @@ class PlanOnlyStrategy {
                         stage("${PLAN}-${environment}") {
                             decorations.apply(PLAN) {
                                 sh initCommand.toString()
-                                sh planCommand.toString()
+                                // sh planCommand.toString()
+                                def status = sh(returnStatus: true, script: planCommand.toString())
+                                sh "echo ${status}"
                             }
                         }
                     }
