@@ -23,10 +23,9 @@ class PlanOnlyStrategy {
                     stage("${PLAN}-${environment}") {
                         decorations.apply(PLAN) {
                             sh initCommand.toString()
-                            //sh planCommand.toString()
                             def status = sh(returnStatus: true, script: "set -o pipefail;" + planCommand.toString())
-                            sh "echo ${status}"
                             if ( status != "0" ) {
+                                echo "Pipeline failure! Expected NO CHANGES to terraform resources."
                                 currentBuild.result = 'FAILURE'
                             }
                         }
