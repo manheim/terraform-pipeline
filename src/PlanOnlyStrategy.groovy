@@ -25,7 +25,7 @@ class PlanOnlyStrategy {
                             sh initCommand.toString()
                             def status = sh(returnStatus: true, script: "set -o pipefail;" + planCommand.toString())
                             if ( status != "0" ) {
-                                echo "Pipeline failure! Expected NO CHANGES to terraform resources."
+                                echo "ERROR: Pipeline failure. Expected NO CHANGES to terraform resources."
                                 currentBuild.result = 'FAILURE'
                             }
                         }
