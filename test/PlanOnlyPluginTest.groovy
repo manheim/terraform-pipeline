@@ -1,5 +1,7 @@
+import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -30,7 +32,16 @@ class PlanOnlyPluginTest {
     public class Init {
         @After
         void resetPlugins() {
+            TerraformPlanCommand.resetPlugins()
             TerraformEnvironmentStage.resetPlugins()
+        }
+
+        @Test
+        void modifiesTerraformPlanCommand() {
+            PlanOnlyPlugin.init()
+
+            Collection actualPlugins = TerraformPlanCommand.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(PlanOnlyPlugin.class)))
         }
 
         @Test
@@ -51,6 +62,35 @@ class PlanOnlyPluginTest {
     }
 
     public class Apply {
+
+        @Test
+        void addsArgumentToTerraformPlan() {
+            PlanOnlyPlugin plugin = new PlanOnlyPlugin()
+            TerraformPlanCommand command = new TerraformPlanCommand()
+            configureJenkins(env: [
+                'FAIL_PLAN_ON_CHANGES': 'true'
+            ])
+
+            plugin.apply(command)
+
+            String result = command.toString()
+            assertThat(result, containsString("-detailed-exitcode"))
+        }
+
+        @Test
+        void doesNotAddArgumentToTerraformPlan() {
+            PlanOnlyPlugin plugin = new PlanOnlyPlugin()
+            TerraformPlanCommand command = new TerraformPlanCommand()
+            configureJenkins(env: [
+                'FAIL_PLAN_ON_CHANGES': 'false'
+            ])
+
+            plugin.apply(command)
+
+            String result = command.toString()
+            assertThat(result, not(containsString("-detailed-exitcode")))
+        }
+
         @Test
         void setStrategyForTerraformEnvironmentStage() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
