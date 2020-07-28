@@ -66,7 +66,7 @@ class TargetPluginTest {
             assertThat(actualParms, hasItem([
                 $class: 'hudson.model.StringParameterDefinition',
                 name: "RESOURCE_TARGETS",
-                default: '',
+                defaultValue: '',
                 description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
             ]))
         }
