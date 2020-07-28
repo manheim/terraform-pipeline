@@ -1,14 +1,10 @@
-import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
-import static TerraformEnvironmentStage.ALL;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
@@ -52,12 +48,11 @@ class PlanOnlyPluginTest {
                 description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
             ]))
         }
-        
     }
 
     public class Apply {
         @Test
-        void setStrategyForTerraformEnvironmentStage()  {
+        void setStrategyForTerraformEnvironmentStage() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             def environment = spy(new TerraformEnvironmentStage())
 

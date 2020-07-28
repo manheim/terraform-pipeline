@@ -1,5 +1,3 @@
-import static TerraformEnvironmentStage.ALL
-
 class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static void init() {

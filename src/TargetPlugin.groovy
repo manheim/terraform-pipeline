@@ -1,5 +1,3 @@
-import static TerraformEnvironmentStage.ALL
-
 class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
     public static void init() {
         TargetPlugin plugin = new TargetPlugin()
@@ -34,5 +32,5 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
     }
 
     @Override
-    public void apply(TerraformEnvironmentStage stage) {}
+    public void apply(TerraformEnvironmentStage stage) { }
 }
