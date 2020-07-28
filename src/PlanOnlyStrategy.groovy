@@ -24,11 +24,7 @@ class PlanOnlyStrategy {
                     stage("${PLAN}-${environment}") {
                         decorations.apply(PLAN) {
                             sh initCommand.toString()
-                            try {
-                                sh planCommand.toString()
-                            } catch (Exception ex) {
-                                throw ex
-                            }
+                            sh returnStatus: true, script: planCommand.toString()
                         }
                     }
                 }
