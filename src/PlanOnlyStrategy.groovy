@@ -25,9 +25,9 @@ class PlanOnlyStrategy {
                             decorations.apply(PLAN) {
                                 sh "set -o pipefail"
                                 sh initCommand.toString()
-                                sh planCommand.toString()
-                                //def status = sh(returnStatus: true, script: planCommand.toString())
-                                //sh "echo ${status}"
+                                //sh planCommand.toString()
+                                def status = sh(returnStatus: true, script: planCommand.toString())
+                                sh "echo ${status}"
                             }
                         }
                     }
