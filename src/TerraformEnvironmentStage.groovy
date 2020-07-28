@@ -142,6 +142,10 @@ class TerraformEnvironmentStage implements Stage {
         return globalPlugins
     }
 
+    public static getParams() {
+        return params
+    }
+
     public static void resetPlugins() {
         this.globalPlugins = DEFAULT_PLUGINS.clone()
         // This totally jacks with localPlugins

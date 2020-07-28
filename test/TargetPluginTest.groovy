@@ -61,7 +61,16 @@ class TargetPluginTest {
 
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(TargetPlugin.class)))
+
+            Collection actualParms = TerraformEnvironmentStage.getParams()
+            assertThat(actualParms, hasItem([
+                $class: 'hudson.model.StringParameterDefinition',
+                name: "RESOURCE_TARGETS",
+                default: '',
+                description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
+            ]))
         }
+        
     }
 
     public class Apply {
@@ -121,31 +130,6 @@ class TargetPluginTest {
             assertThat(result, not(containsString("-target")))
         }
 
-        @Test
-        void decoratesTheTerraformEnvironmentStage()  {
-            TargetPlugin plugin = new TargetPlugin()
-            def environment = spy(new TerraformEnvironmentStage())
-            configureJenkins(env: [
-                'RESOURCE_TARGETS': 'aws_dynamodb_table.test-table-2,aws_dynamodb_table.test-table-3'
-            ])
-
-            plugin.apply(environment)
-
-            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.ALL), any(Closure.class))
-        }
     }
 
-    class AddBuildParams {
-        @Test
-        void runsInnerClosure() {
-            def addParamsClosure = TargetPlugin.addBuildParams()
-            def innerClosure = spy { -> }
-            def jenkinsfile = new DummyJenkinsfile()
-
-            addParamsClosure.delegate = jenkinsfile
-            addParamsClosure(innerClosure)
-
-            verify(innerClosure).call()
-        }
-    }
 }
