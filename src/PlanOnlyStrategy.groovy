@@ -13,7 +13,7 @@ class PlanOnlyStrategy {
         planCommand = TerraformPlanCommand.instanceFor(environment)
         
         //fail_plan_on_changes = Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES ?: false
-        if ( Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES ) {
+        if (Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES == true) {
             planCommand = planCommand.withArgument('-detailed-exitcode')
         }
 
