@@ -15,6 +15,7 @@ class PlanOnlyPlugin implements TerraformPlanCommandPlugin, TerraformEnvironment
 
     @Override
     public void apply(TerraformPlanCommand command) {
+        // Jenkins boolen env vars get converted to strings
         if (Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES == 'true') {
             command.withArgument('-detailed-exitcode')
         }
