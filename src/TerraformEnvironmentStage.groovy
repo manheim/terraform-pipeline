@@ -7,7 +7,7 @@ class TerraformEnvironmentStage implements Stage {
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
-    private static params = []
+    private static List params = []
 
     public static final String ALL = 'all'
     public static final String PLAN = 'plan'

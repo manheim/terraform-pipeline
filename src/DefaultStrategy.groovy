@@ -10,7 +10,7 @@ class DefaultStrategy {
     private TerraformApplyCommand applyCommand
     private Jenkinsfile jenkinsfile
 
-    public Closure createPipelineClosure(String environment, StageDecorations decorations, params) {
+    public Closure createPipelineClosure(String environment, StageDecorations decorations, List params) {
         initCommand = TerraformInitCommand.instanceFor(environment)
         planCommand = TerraformPlanCommand.instanceFor(environment)
         applyCommand = TerraformApplyCommand.instanceFor(environment)

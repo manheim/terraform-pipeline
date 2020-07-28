@@ -15,7 +15,7 @@ class DestroyStrategy {
         this.extraArguments = args
     }
 
-    public Closure createPipelineClosure(String environment, StageDecorations decorations, params) {
+    public Closure createPipelineClosure(String environment, StageDecorations decorations, List params) {
         initCommand = TerraformInitCommand.instanceFor(environment)
 
         planCommand = TerraformPlanCommand.instanceFor(environment)
