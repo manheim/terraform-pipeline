@@ -31,7 +31,6 @@ class PlanOnlyPluginTest {
     public class Init {
         @After
         void resetPlugins() {
-            TerraformPlanCommand.resetPlugins()
             TerraformEnvironmentStage.resetPlugins()
         }
 
