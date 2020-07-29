@@ -83,8 +83,8 @@ class Jenkinsfile {
     }
 
     public static void build(List<Stage> stages) {
-        def param_closure = { closure ->
-            properties([parameters(this.params)])
+        def param_closure = { ->
+            properties([parameters(params)])
         }
         original.ApplyJenkinsfileClosure(param_closure)
 
