@@ -15,13 +15,10 @@ class PlanOnlyPlugin implements TerraformPlanCommandPlugin, TerraformEnvironment
 
     @Override
     public void apply(TerraformPlanCommand command) {
-
         // Jenkins boolen env vars get converted to strings
         if (Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES == 'true') {
-
-            // Return any fail exit code, even if piped into command that succeeds
-            // Ex: When we have 'terraform plan -detailed-exitcode | landscape'
-            //     the return code will always be 0 unless we set this.
+            // When we have 'terraform plan -detailed-exitcode | landscape'
+            // the return code will always be 0 unless we set this prefix
             command.withPrefix('set -o pipefail;')
             command.withArgument('-detailed-exitcode')
         }
