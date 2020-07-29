@@ -90,7 +90,7 @@ class Jenkinsfile {
             pipelineTemplate.call(stages)
         }
     }
-    
+
     public static Closure createParamClosure() {
         return { ->
             properties([
