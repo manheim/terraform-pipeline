@@ -1,5 +1,7 @@
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -31,12 +33,20 @@ class DestroyPluginTest {
             TerraformEnvironmentStage.resetPlugins()
         }
 
+        @Before
+        void resetParams() {
+            TerraformEnvironmentStage.resetParams()
+        }
+
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
             DestroyPlugin.init()
 
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(DestroyPlugin.class)))
+
+            Collection actualParms = TerraformEnvironmentStage.getParams()
+            assertThat(actualParms, is(empty()));
         }
 
         @Test
