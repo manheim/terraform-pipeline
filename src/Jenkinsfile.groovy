@@ -83,10 +83,7 @@ class Jenkinsfile {
     }
 
     public static void build(List<Stage> stages) {
-        def param_closure = { ->
-            properties([parameters(params)])
-        }
-        original.ApplyJenkinsfileClosure(param_closure)
+        original.ApplyJenkinsfileClosure(createParamClosure())
 
         if (!declarative) {
             stages.each { Stage stage -> stage.build() }
@@ -96,6 +93,14 @@ class Jenkinsfile {
             }
 
             pipelineTemplate.call(stages)
+        }
+    }
+    
+    public Closure createParamClosure() {
+        return { ->
+            properties([
+                parameters(params)
+            ])
         }
     }
 
