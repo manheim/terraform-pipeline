@@ -87,7 +87,9 @@ class Jenkinsfile {
             properties([parameters(this.params)])
             closure()
         }
-        original.ApplyJenkinsfileClosure(param_closure)
+        original.ApplyJenkinsfileClosure = param_closure
+
+        //original.ApplyJenkinsfileClosure(param_closure)
 
         if (!declarative) {
             stages.each { Stage stage -> stage.build() }
