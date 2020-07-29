@@ -6,7 +6,7 @@ class Jenkinsfile {
     public static instance = new Jenkinsfile()
     public static declarative = false
     public static pipelineTemplate
-    public static params = []
+    public static List params = []
 
     def String getStandardizedRepoSlug() {
         if (repoSlug != null) {
@@ -55,7 +55,7 @@ class Jenkinsfile {
         return scmMap['organization']
     }
     
-    public static List getParams() {
+    public static getParams() {
         return params
     }
 
@@ -131,8 +131,8 @@ class Jenkinsfile {
         this.instance = newInstance
     }
 
-    public static void addParam(newParam) {
-        this.params << newParam
+    public static addParam(newParam) {
+        params << newParam
     }
 
     public static reset() {
