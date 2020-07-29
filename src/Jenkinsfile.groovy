@@ -127,7 +127,7 @@ class Jenkinsfile {
     }
 
     public static void addParam(newParam) {
-        params << newParam
+        this.params << newParam
     }
 
     public static reset() {
