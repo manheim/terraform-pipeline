@@ -75,12 +75,11 @@ class Jenkinsfile {
     }
 
     public static build(Closure closure) {
+        original.ApplyJenkinsfileClosure(createParamClosure())
         original.ApplyJenkinsfileClosure(closure)
     }
 
     public static void build(List<Stage> stages) {
-        original.ApplyJenkinsfileClosure(createParamClosure())
-
         if (!declarative) {
             stages.each { Stage stage -> stage.build() }
         } else {
