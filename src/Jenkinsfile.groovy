@@ -6,6 +6,7 @@ class Jenkinsfile {
     public static instance = new Jenkinsfile()
     public static declarative = false
     public static pipelineTemplate
+    public static params = []
 
     def String getStandardizedRepoSlug() {
         if (repoSlug != null) {
@@ -53,6 +54,10 @@ class Jenkinsfile {
         def Map scmMap = getParsedScmUrl()
         return scmMap['organization']
     }
+    
+    public static List getParams() {
+        return params
+    }
 
     def static void init(original, Class customizations=null) {
         this.original = original
@@ -78,6 +83,11 @@ class Jenkinsfile {
     }
 
     public static void build(List<Stage> stages) {
+        param_closure = { closure ->
+            properties([parameters(params)])
+        }
+        original.ApplyJenkinsfileClosure(param_closure)
+
         if (!declarative) {
             stages.each { Stage stage -> stage.build() }
         } else {
@@ -116,8 +126,13 @@ class Jenkinsfile {
         this.instance = newInstance
     }
 
+    public static void addParam(newParam) {
+        params << newParam
+    }
+
     public static reset() {
         instance = new Jenkinsfile()
         original = null
+        params = []
     }
 }
