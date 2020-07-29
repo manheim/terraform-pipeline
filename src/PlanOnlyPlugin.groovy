@@ -1,4 +1,5 @@
 import static TerraformEnvironmentStage.APPLY
+import static TerraformEnvironmentStage.CONFIRM
 
 class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
 
@@ -8,14 +9,15 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin {
         TerraformEnvironmentStage.addPlugin(plugin)
     }
 
-    public Closure skipApply() {
+    public Closure skipStage(String stageName) {
         return  { closure ->
-            echo "Skipping apply stage. PlanOnlyPlugin is enabled."
+            echo "Skipping ${stageName} stage. PlanOnlyPlugin is enabled."
         }
     }
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorateAround(APPLY, skipApply())
+        stage.decorateAround(CONFIRM, skipStage(CONFIRM))
+        stage.decorateAround(APPLY, skipStage(APPLY))
     }
 }
