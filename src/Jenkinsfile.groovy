@@ -96,7 +96,7 @@ class Jenkinsfile {
         }
     }
     
-    public Closure createParamClosure() {
+    public static Closure createParamClosure() {
         return { ->
             properties([
                 parameters(params)
