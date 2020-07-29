@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -15,6 +16,9 @@ import org.junit.Before
 import org.junit.After
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
+
+import static TerraformEnvironmentStage.CONFIRM;
+import static TerraformEnvironmentStage.APPLY;
 
 @RunWith(HierarchicalContextRunner.class)
 class PlanOnlyPluginTest {
@@ -37,68 +41,24 @@ class PlanOnlyPluginTest {
         }
 
         @Test
-        void modifiesTerraformPlanCommand() {
-            PlanOnlyPlugin.init()
-
-            Collection actualPlugins = TerraformPlanCommand.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(PlanOnlyPlugin.class)))
-        }
-
-        @Test
         void modifiesTerraformEnvironmentStageCommand() {
             PlanOnlyPlugin.init()
 
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(PlanOnlyPlugin.class)))
-
-            Collection actualParms = TerraformEnvironmentStage.getParams()
-            assertThat(actualParms, hasItem([
-                $class: 'hudson.model.BooleanParameterDefinition',
-                name: "FAIL_PLAN_ON_CHANGES",
-                defaultValue: false,
-                description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
-            ]))
         }
     }
 
     public class Apply {
 
         @Test
-        void addsArgumentToTerraformPlan() {
-            PlanOnlyPlugin plugin = new PlanOnlyPlugin()
-            TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'true'
-            ])
-
-            plugin.apply(command)
-
-            String result = command.toString()
-            assertThat(result, containsString("-detailed-exitcode"))
-        }
-
-        @Test
-        void doesNotAddArgumentToTerraformPlan() {
-            PlanOnlyPlugin plugin = new PlanOnlyPlugin()
-            TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'false'
-            ])
-
-            plugin.apply(command)
-
-            String result = command.toString()
-            assertThat(result, not(containsString("-detailed-exitcode")))
-        }
-
-        @Test
-        void setStrategyForTerraformEnvironmentStage() {
+        void decoratesTheTerraformEnvironmentStage()  {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             def environment = spy(new TerraformEnvironmentStage())
-
             plugin.apply(environment)
 
-            verify(environment, times(1)).withStrategy(any(PlanOnlyStrategy.class))
+            verify(environment, times(1)).decorateAround(eq(TerraformEnvironmentStage.CONFIRM), any(Closure.class))
+            verify(environment, times(1)).decorateAround(eq(TerraformEnvironmentStage.APPLY), any(Closure.class))
         }
     }
 

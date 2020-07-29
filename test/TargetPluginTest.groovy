@@ -55,8 +55,13 @@ class TargetPluginTest {
 
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(TargetPlugin.class)))
+        }
 
-            Collection actualParms = TerraformEnvironmentStage.getParams()
+        @Test
+        void addsParameter() {
+            TargetPlugin.init()
+
+            Collection actualParms = Jenkinsfile.instance.params
             assertThat(actualParms, hasItem([
                 $class: 'hudson.model.StringParameterDefinition',
                 name: "RESOURCE_TARGETS",
