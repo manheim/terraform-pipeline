@@ -15,7 +15,7 @@ class DestroyStrategy {
         this.extraArguments = args
     }
 
-    public Closure createPipelineClosure(String environment, StageDecorations decorations, List params) {
+    public Closure createPipelineClosure(String environment, StageDecorations decorations) {
         initCommand = TerraformInitCommand.instanceFor(environment)
 
         planCommand = TerraformPlanCommand.instanceFor(environment)
@@ -33,7 +33,6 @@ class DestroyStrategy {
             node(jenkinsfile.getNodeName()) {
                 deleteDir()
                 checkout(scm)
-                //properties([parameters(params)])
 
                 decorations.apply(ALL) {
                     stage("${PLAN}-${DESTROY}-${environment}") {

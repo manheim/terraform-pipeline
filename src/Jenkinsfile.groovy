@@ -54,10 +54,6 @@ class Jenkinsfile {
         def Map scmMap = getParsedScmUrl()
         return scmMap['organization']
     }
-    
-    //public static getParams() {
-    //    return params
-    //}
 
     def static void init(original, Class customizations=null) {
         this.original = original

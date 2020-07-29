@@ -10,7 +10,7 @@ class DefaultStrategy {
     private TerraformApplyCommand applyCommand
     private Jenkinsfile jenkinsfile
 
-    public Closure createPipelineClosure(String environment, StageDecorations decorations, List params) {
+    public Closure createPipelineClosure(String environment, StageDecorations decorations) {
         initCommand = TerraformInitCommand.instanceFor(environment)
         planCommand = TerraformPlanCommand.instanceFor(environment)
         applyCommand = TerraformApplyCommand.instanceFor(environment)
@@ -21,7 +21,6 @@ class DefaultStrategy {
             node(jenkinsfile.getNodeName()) {
                 deleteDir()
                 checkout(scm)
-                //properties([parameters(params)])
 
                 decorations.apply(ALL) {
                     stage("${PLAN}-${environment}") {

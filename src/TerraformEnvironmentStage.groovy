@@ -7,7 +7,6 @@ class TerraformEnvironmentStage implements Stage {
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
-    private static List params = []
 
     public static final String ALL = 'all'
     public static final String PLAN = 'plan'
@@ -52,7 +51,7 @@ class TerraformEnvironmentStage implements Stage {
 
     private Closure pipelineConfiguration() {
         applyPlugins()
-        return strategy.createPipelineClosure(environment, decorations, params)
+        return strategy.createPipelineClosure(environment, decorations)
     }
 
     public void decorate(Closure decoration) {
@@ -73,10 +72,6 @@ class TerraformEnvironmentStage implements Stage {
 
     public static addPlugin(plugin) {
         globalPlugins << plugin
-    }
-
-    public static addParam(newParam) {
-        params << newParam
     }
 
     public void applyPlugins() {
@@ -142,16 +137,9 @@ class TerraformEnvironmentStage implements Stage {
         return globalPlugins
     }
 
-    public static getParams() {
-        return params
-    }
-
     public static void resetPlugins() {
         this.globalPlugins = DEFAULT_PLUGINS.clone()
         // This totally jacks with localPlugins
     }
 
-    public static void resetParams() {
-        this.params = []
-    }
 }
