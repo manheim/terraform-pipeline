@@ -45,22 +45,6 @@ class TerraformEnvironmentStageTest {
         }
     }
 
-    public class AddedParams {
-        @Test
-        void willAddParams() {
-            def testParam = [
-                $class: 'hudson.model.BooleanParameterDefinition',
-                name: "FAIL_PLAN_ON_CHANGES",
-                defaultValue: false,
-                description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
-            ]
-            TerraformEnvironmentStage.addParam(testParam)
-
-            TerraformEnvironmentStage stage = new TerraformEnvironmentStage('anyStage')
-            assertThat(stage.getParams(), hasItem(testParam))
-        }
-    }
-
     public class WithEnv {
         @Test
         void addsAnInstanceOfEnvironmentVariablePlugin() {
