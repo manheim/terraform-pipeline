@@ -33,7 +33,7 @@ class DestroyStrategy {
             node(jenkinsfile.getNodeName()) {
                 deleteDir()
                 checkout(scm)
-                properties([parameters(params)])
+                //properties([parameters(params)])
 
                 decorations.apply(ALL) {
                     stage("${PLAN}-${DESTROY}-${environment}") {
