@@ -1,5 +1,4 @@
-class DestroyPlugin implements TerraformEnvironmentStagePlugin,
-                               TerraformPlanCommandPlugin,
+class DestroyPlugin implements TerraformPlanCommandPlugin,
                                TerraformApplyCommandPlugin {
 
     private static arguments = []
@@ -9,16 +8,10 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin,
 
         ConfirmApplyPlugin.withConfirmMessage('WARNING! Are you absolutely sure the plan above is correct? Your environment will be IMMEDIATELY DESTROYED via "terraform destroy"')
         ConfirmApplyPlugin.withOkMessage("Run terraform DESTROY now")
+        TerraformEnvironmentStage.withStageNamePattern { options -> "${options['command']}-DESTROY-${options['environment']}" }
 
-        TerraformEnvironmentStage.addPlugin(plugin)
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
-    }
-
-    @Override
-    public void apply(TerraformEnvironmentStage stage) {
-        // Change stage name to append the word 'destroy' so it's clear that it's altered
-        // the Stage
     }
 
     public void apply(TerraformPlanCommand command) {

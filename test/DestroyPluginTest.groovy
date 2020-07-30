@@ -32,9 +32,11 @@ class DestroyPluginTest {
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
             DestroyPlugin.init()
+            def stage = new TerraformEnvironmentStage('foo')
 
-            Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(DestroyPlugin.class)))
+            def actualStageName = stage.getStageNameFor(TerraformEnvironmentStage.PLAN)
+
+            assertThat(actualStageName, containsString('DESTROY'))
         }
 
         @Test

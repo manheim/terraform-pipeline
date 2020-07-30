@@ -59,8 +59,7 @@ class TerraformEnvironmentStage implements Stage {
                 checkout(scm)
 
                 decorations.apply(ALL) {
-                    // The stage name need to be editable
-                    stage("${PLAN}-${environment}") {
+                    stage(getStageNameFor(PLAN)) {
                         decorations.apply(PLAN) {
                             sh initCommand.toString()
                             sh planCommand.toString()
@@ -69,7 +68,7 @@ class TerraformEnvironmentStage implements Stage {
 
                     decorations.apply("Around-${CONFIRM}") {
                         // The stage name needs to be editable
-                        stage("${CONFIRM}-${environment}") {
+                        stage(getStageNameFor(CONFIRM)) {
                             decorations.apply(CONFIRM) {
                                 echo "Approved"
                             }
@@ -78,7 +77,7 @@ class TerraformEnvironmentStage implements Stage {
 
                     decorations.apply("Around-${APPLY}") {
                         // The stage name needs to be editable
-                        stage("${APPLY}-${environment}") {
+                        stage(getStageNameFor(APPLY)) {
                             decorations.apply(APPLY) {
                                 sh initCommand.toString()
                                 sh applyCommand.toString()
