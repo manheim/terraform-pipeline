@@ -151,4 +151,14 @@ class TerraformEnvironmentStageTest {
             closure()
         }
     }
+
+    /*
+    class WithStageNamePattern {
+        @Test
+        void constructsTheDefaultStageNameWhenBlank() { }
+
+        @Test
+        void constructTheStageNameUsingTheGivenPattern() { }
+    }
+    */
 }
