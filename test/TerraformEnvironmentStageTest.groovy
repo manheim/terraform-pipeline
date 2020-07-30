@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.isA
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
+import static TerraformEnvironmentStage.PLAN
 
 import org.junit.After
 import org.junit.Before
@@ -152,13 +153,19 @@ class TerraformEnvironmentStageTest {
         }
     }
 
-    /*
     class WithStageNamePattern {
         @Test
-        void constructsTheDefaultStageNameWhenBlank() { }
+        void constructsTheDefaultStageNameWhenBlank() {
+            def stage = new TerraformEnvironmentStage('myenv')
 
+            def name = stage.getStageNameFor(PLAN)
+
+            assertEquals('plan-myenv', name)
+        }
+
+        /*
         @Test
         void constructTheStageNameUsingTheGivenPattern() { }
+        */
     }
-    */
 }

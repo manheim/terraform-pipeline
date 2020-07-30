@@ -89,6 +89,10 @@ class TerraformEnvironmentStage implements Stage {
         }
     }
 
+    public String getStageNameFor(String command) {
+        return "${command}-${environment}"
+    }
+
     public void decorate(Closure decoration) {
         decorations.add(ALL, decoration)
     }
