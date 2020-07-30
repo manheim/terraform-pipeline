@@ -82,7 +82,7 @@ class Jenkinsfile {
 
         if (stages.size() > 0) {
             first_stage = stages[0]
-            first_stage.decorate(ALL, createParamClosure())
+            first_stage.decorate(TerraformEnvironmentStage.ALL, createParamClosure())
         }
 
         if (!declarative) {
