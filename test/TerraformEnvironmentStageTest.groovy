@@ -92,6 +92,19 @@ class TerraformEnvironmentStageTest {
         }
 
         @Test
+        void preservesMultipleEnvironmentPlugins() {
+            def stage = new TerraformEnvironmentStage('foo')
+
+            stage.withEnv('key1', 'value1')
+                 .withEnv('key2', 'value2')
+
+            def plugins = stage.getAllPlugins()
+                               .findAll { plugin -> plugin instanceof EnvironmentVariablePlugin }
+
+            assertEquals(2, plugins.size())
+        }
+
+        @Test
         void doesNotAddPluginToOtherInstances() {
             def modifiedStage = new TerraformEnvironmentStage('modified')
             def unmodifiedStage = new TerraformEnvironmentStage('unmodified')
