@@ -115,4 +115,15 @@ class TerraformEnvironmentStageTest {
             assertTrue(result == TerraformEnvironmentStage.class)
         }
     }
+
+    class PipelineConfigurations {
+        @Test
+        void returnsAClosure() {
+            def stage = new TerraformEnvironmentStage('foo')
+
+            def result = stage.pipelineConfiguration()
+
+            assertThat(result, isA(Closure.class))
+        }
+    }
 }

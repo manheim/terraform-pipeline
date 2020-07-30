@@ -44,7 +44,7 @@ class TerraformEnvironmentStage implements Stage {
         Jenkinsfile.build(pipelineConfiguration())
     }
 
-    private Closure pipelineConfiguration() {
+    public Closure pipelineConfiguration() {
         def initCommand = TerraformInitCommand.instanceFor(environment)
         def planCommand = TerraformPlanCommand.instanceFor(environment)
         def applyCommand = TerraformApplyCommand.instanceFor(environment)
