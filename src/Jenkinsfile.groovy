@@ -75,18 +75,22 @@ class Jenkinsfile {
     }
 
     public static build(Closure closure) {
-        original.ApplyJenkinsfileClosure(createParamClosure())
         original.ApplyJenkinsfileClosure(closure)
     }
 
     public static void build(List<Stage> stages) {
+
+        if (stages.size() > 0) {
+            first_stage = stages[0]
+            first_stage.decorate(ALL, createParamClosure())
+        }
+
         if (!declarative) {
             stages.each { Stage stage -> stage.build() }
         } else {
             if (pipelineTemplate == null) {
                 this.pipelineTemplate = getPipelineTemplate(stages)
             }
-
             pipelineTemplate.call(stages)
         }
     }
