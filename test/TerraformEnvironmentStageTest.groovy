@@ -1,4 +1,6 @@
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doReturn
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.is
@@ -8,6 +10,7 @@ import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
@@ -117,6 +120,16 @@ class TerraformEnvironmentStageTest {
     }
 
     class PipelineConfigurations {
+        @Before
+        void resetBefore() {
+            Jenkinsfile.reset()
+        }
+
+        @After
+        void resetAfter() {
+            Jenkinsfile.reset()
+        }
+
         @Test
         void returnsAClosure() {
             def stage = new TerraformEnvironmentStage('foo')
@@ -124,6 +137,18 @@ class TerraformEnvironmentStageTest {
             def result = stage.pipelineConfiguration()
 
             assertThat(result, isA(Closure.class))
+        }
+
+        @Test
+        void doesNotBlowUpWhenRunningClosure() {
+            Jenkinsfile.instance = spy(new Jenkinsfile())
+            doReturn([:]).when(Jenkinsfile.instance).getEnv()
+            Jenkinsfile.defaultNodeName = 'foo'
+            def stage = new TerraformEnvironmentStage('foo')
+
+            def closure = stage.pipelineConfiguration()
+            closure.delegate = new DummyJenkinsfile()
+            closure()
         }
     }
 }
