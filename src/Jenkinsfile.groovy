@@ -91,7 +91,7 @@ class Jenkinsfile {
             if (pipelineTemplate == null) {
                 this.pipelineTemplate = getPipelineTemplate(stages)
             }
-            
+
             pipelineTemplate.call(stages)
         }
     }
