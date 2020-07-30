@@ -23,6 +23,18 @@ class TerraformEnvironmentStageTest {
         TerraformEnvironmentStage.reset()
     }
 
+    public class ToString {
+        @Test
+        void returnsEnvironmentName() {
+            def expectedEnvironment = 'foo'
+            def stage = new TerraformEnvironmentStage(expectedEnvironment)
+
+            def result = stage.toString()
+
+            assertEquals(expectedEnvironment, result)
+        }
+    }
+
     public class Then {
 
         @Test
