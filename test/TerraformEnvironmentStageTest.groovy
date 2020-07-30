@@ -154,18 +154,29 @@ class TerraformEnvironmentStageTest {
     }
 
     class WithStageNamePattern {
+        @Before
+        @After
+        void reset() {
+            TerraformEnvironmentStage.reset()
+        }
+
         @Test
         void constructsTheDefaultStageNameWhenBlank() {
             def stage = new TerraformEnvironmentStage('myenv')
 
-            def name = stage.getStageNameFor(PLAN)
+            def actualName = stage.getStageNameFor(PLAN)
 
-            assertEquals('plan-myenv', name)
+            assertEquals('plan-myenv', actualName)
         }
 
-        /*
         @Test
-        void constructTheStageNameUsingTheGivenPattern() { }
-        */
+        void constructTheStageNameUsingTheGivenPattern() {
+            TerraformEnvironmentStage.withStageNamePattern { options -> "${options['command']}-override-${options['environment']}" }
+            def stage = new TerraformEnvironmentStage('myenv')
+
+            def actualName = stage.getStageNameFor(PLAN)
+
+            assertEquals('plan-override-myenv', actualName)
+        }
     }
 }

@@ -6,6 +6,7 @@ class TerraformEnvironmentStage implements Stage {
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
+    private static Closure stageNamePattern
 
     public static final String ALL = 'all'
     public static final String PLAN = 'plan'
@@ -90,7 +91,10 @@ class TerraformEnvironmentStage implements Stage {
     }
 
     public String getStageNameFor(String command) {
-        return "${command}-${environment}"
+        def pattern = stageNamePattern ?: { options -> "${options['command']}-${options['environment']}" }
+        def options = [ command: command, environment: environment ]
+
+        return pattern.call(options)
     }
 
     public void decorate(Closure decoration) {
@@ -176,8 +180,17 @@ class TerraformEnvironmentStage implements Stage {
         return globalPlugins
     }
 
+    public static withStageNamePattern(Closure stageNamePattern) {
+        this.stageNamePattern = stageNamePattern
+    }
+
     public static void resetPlugins() {
         this.globalPlugins = DEFAULT_PLUGINS.clone()
         // This totally jacks with localPlugins
+    }
+
+    // Replace resetPlugins with this method
+    public static void reset() {
+        this.stageNamePattern = null
     }
 }
