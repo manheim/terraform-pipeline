@@ -3,7 +3,6 @@ class TerraformEnvironmentStage implements Stage {
     private String environment
     private StageDecorations decorations
     private localPlugins
-    private static strategy = new DefaultStrategy()
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
@@ -45,13 +44,49 @@ class TerraformEnvironmentStage implements Stage {
         Jenkinsfile.build(pipelineConfiguration())
     }
 
-    public void withStrategy(newStrategy) {
-        this.strategy = newStrategy
-    }
-
     private Closure pipelineConfiguration() {
+        def initCommand = TerraformInitCommand.instanceFor(environment)
+        def planCommand = TerraformPlanCommand.instanceFor(environment)
+        def applyCommand = TerraformApplyCommand.instanceFor(environment)
+
         applyPlugins()
-        return strategy.createPipelineClosure(environment, decorations)
+
+        def String environment = this.environment
+        return { ->
+            node(jenkinsfile.getNodeName()) {
+                deleteDir()
+                checkout(scm)
+
+                decorations.apply(ALL) {
+                    // The stage name need to be editable
+                    stage("${PLAN}-${environment}") {
+                        decorations.apply(PLAN) {
+                            sh initCommand.toString()
+                            sh planCommand.toString()
+                        }
+                    }
+
+                    decorations.apply("Around-${CONFIRM}") {
+                        // The stage name needs to be editable
+                        stage("${CONFIRM}-${environment}") {
+                            decorations.apply(CONFIRM) {
+                                echo "Approved"
+                            }
+                        }
+                    }
+
+                    decorations.apply("Around-${APPLY}") {
+                        // The stage name needs to be editable
+                        stage("${APPLY}-${environment}") {
+                            decorations.apply(APPLY) {
+                                sh initCommand.toString()
+                                sh applyCommand.toString()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void decorate(Closure decoration) {

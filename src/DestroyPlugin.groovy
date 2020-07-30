@@ -1,4 +1,6 @@
-class DestroyPlugin implements TerraformEnvironmentStagePlugin {
+class DestroyPlugin implements TerraformEnvironmentStagePlugin,
+                               TerraformPlanCommandPlugin,
+                               TerraformApplyCommandPlugin {
 
     private static arguments = []
 
@@ -9,6 +11,25 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
         ConfirmApplyPlugin.withOkMessage("Run terraform DESTROY now")
 
         TerraformEnvironmentStage.addPlugin(plugin)
+        TerraformPlanCommand.addPlugin(plugin)
+        TerraformApplyCommand.addPlugin(plugin)
+    }
+
+    @Override
+    public void apply(TerraformEnvironmentStage stage) {
+        // Change stage name to append the word 'destroy' so it's clear that it's altered
+        // the Stage
+    }
+
+    public void apply(TerraformPlanCommand command) {
+        command.withArgument('-destroy')
+    }
+
+    public void apply(TerraformApplyCommand command) {
+        command.withCommand('destroy')
+        for (arg in arguments) {
+            command.withArgument(arg)
+        }
     }
 
     public static withArgument(String arg) {
@@ -16,9 +37,7 @@ class DestroyPlugin implements TerraformEnvironmentStagePlugin {
         return this
     }
 
-    @Override
-    public void apply(TerraformEnvironmentStage stage) {
-        stage.withStrategy(new DestroyStrategy(arguments))
+    public static reset() {
+        arguments = []
     }
-
 }
