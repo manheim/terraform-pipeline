@@ -46,9 +46,8 @@ class DestroyPluginTest {
             String confirmMessage = ConfirmApplyPlugin.confirmMessage
             String okMessage = ConfirmApplyPlugin.okMessage
 
-            // Lets turn these into constants
-            assertEquals(confirmMessage, 'WARNING! Are you absolutely sure the plan above is correct? Your environment will be IMMEDIATELY DESTROYED via "terraform destroy"')
-            assertEquals(okMessage, "Run terraform DESTROY now")
+            assertEquals(DestroyPlugin.DESTROY_CONFIRM_MESSAGE, confirmMessage)
+            assertEquals(DestroyPlugin.DESTROY_OK_MESSAGE, okMessage)
         }
 
         @Test
