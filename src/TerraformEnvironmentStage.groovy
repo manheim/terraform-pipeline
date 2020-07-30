@@ -184,13 +184,9 @@ class TerraformEnvironmentStage implements Stage {
         this.stageNamePattern = stageNamePattern
     }
 
-    public static void resetPlugins() {
-        this.globalPlugins = DEFAULT_PLUGINS.clone()
-        // This totally jacks with localPlugins
-    }
-
-    // Replace resetPlugins with this method
     public static void reset() {
+        // This totally jacks with localPlugins
+        this.globalPlugins = DEFAULT_PLUGINS.clone()
         this.stageNamePattern = null
     }
 }

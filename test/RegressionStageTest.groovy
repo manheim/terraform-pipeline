@@ -13,7 +13,7 @@ class RegressionStageTest {
     public class AutomationRepo {
         @After
         void reset() {
-            TerraformEnvironmentStage.resetPlugins()
+            TerraformEnvironmentStage.reset()
             Jenkinsfile.instance = mock(Jenkinsfile.class)
             Jenkinsfile.original = null
         }
@@ -81,7 +81,7 @@ class RegressionStageTest {
     public class AddedPlugins {
         @After
         void resetPlugins() {
-            TerraformEnvironmentStage.resetPlugins()
+            TerraformEnvironmentStage.reset()
         }
 
         @Test

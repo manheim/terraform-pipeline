@@ -20,7 +20,7 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner
 class TerraformEnvironmentStageTest {
     @After
     void resetPlugins() {
-        TerraformEnvironmentStage.resetPlugins()
+        TerraformEnvironmentStage.reset()
     }
 
     public class Then {

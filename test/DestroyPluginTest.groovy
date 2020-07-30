@@ -24,7 +24,7 @@ class DestroyPluginTest {
     public class Init {
         @After
         void resetPlugins() {
-            TerraformEnvironmentStage.resetPlugins()
+            TerraformEnvironmentStage.reset()
             TerraformPlanCommand.resetPlugins()
             TerraformApplyCommand.resetPlugins()
         }
