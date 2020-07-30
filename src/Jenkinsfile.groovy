@@ -81,7 +81,7 @@ class Jenkinsfile {
     public static void build(List<Stage> stages) {
 
         if (stages.size() > 0) {
-            first_stage = stages[0]
+            Stage first_stage = stages[0]
             first_stage.decorate(TerraformEnvironmentStage.ALL, createParamClosure())
         }
 
