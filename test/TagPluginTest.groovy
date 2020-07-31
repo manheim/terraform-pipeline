@@ -41,6 +41,33 @@ class TagPluginTest {
         }
     }
 
+    class WithTag {
+        @Test
+        void isFluent() {
+            def result = TagPlugin.withTag('key', 'value')
+
+            assertEquals(result, TagPlugin.class)
+        }
+    }
+
+    class WithTagFromFile {
+        @Test
+        void isFluent() {
+            def result = TagPlugin.withTagFromFile('key', 'value')
+
+            assertEquals(result, TagPlugin.class)
+        }
+    }
+
+    class WithEnvironmentTag {
+        @Test
+        void isFluent() {
+            def result = TagPlugin.withEnvironmentTag()
+
+            assertEquals(result, TagPlugin.class)
+        }
+    }
+
     public class ApplyForPlanCommand {
         @Test
         public void addsTheTagArgument() {
