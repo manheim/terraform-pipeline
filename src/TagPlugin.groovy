@@ -2,7 +2,7 @@ class TagPlugin implements TerraformPlanCommandPlugin,
                            TerraformApplyCommandPlugin {
 
     private static variableName
-    private Map tags = [:]
+    private List tagClosures = []
 
     public static init() {
         def plugin = new TagPlugin()
@@ -38,11 +38,11 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     }
 
     public withTag(String key, String value) {
-        tags.put(key, value)
+        tagClosures << { -> "\"${key}\":\"${value}\"" }
     }
 
     public String getTagsAsString() {
-        def result = tags.collect { "\"${it.key}\":\"${it.value}\"" }.join(',')
+        def result = tagClosures.collect { it.call() }.join(',')
         return "{${result}}"
     }
 
