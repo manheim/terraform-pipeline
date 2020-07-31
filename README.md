@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/manheim/terraform-pipeline.svg?branch=master)](https://travis-ci.com/manheim/terraform-pipeline)
+[![Build Status](https://travis-ci.com/manheim/terraform-pipeline.svg?branch=master)](https://travis-ci.com/manheim/terraform-pipeline) [![codecov](https://codecov.io/gh/manheim/terraform-pipeline/branch/master/graph/badge.svg)](https://codecov.io/gh/manheim/terraform-pipeline)
 
 # terraform-pipeline
 A reusable pipeline template to apply terraform configuration serially across multiple environments.
