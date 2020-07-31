@@ -159,6 +159,24 @@ class TagPluginTest {
         }
 
         @Test
+        void constructsTagsUsingTheGivenFile() {
+            def key = 'change-id'
+            def file = 'changeId.txt'
+            def fileContent = 'someContent'
+            def plugin = new TagPlugin()
+            plugin.withTagFromFile(key, file)
+            def command = mock(TerraformCommand.class)
+            def original = spy(new DummyJenkinsfile())
+            doReturn(true).when(original).fileExists(file)
+            doReturn(fileContent).when(original).readFile(file)
+            Jenkinsfile.original = original
+
+            def result = plugin.getTagsAsString(command)
+
+            assertEquals("{\"${key}\":\"${fileContent}\"}".toString(), result)
+        }
+
+        @Test
         void preservesTheOrderOfTags() {
             TagPlugin.withTag('key1', 'value1')
                      .withEnvironmentTag()

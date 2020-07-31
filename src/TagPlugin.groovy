@@ -43,6 +43,10 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         return this
     }
 
+    public static withTagFromFile(String key, String filename) {
+        tagClosures << { command -> "\"${key}\":\"${Jenkinsfile.readFile(filename)}\"" }
+    }
+
     private static getVariableName() {
         return variableName ?: 'tags'
     }
