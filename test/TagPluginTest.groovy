@@ -47,7 +47,7 @@ class TagPluginTest {
             def expectedTags = '{"key1":"value1","key2":"value2"}'
             def command = new TerraformPlanCommand()
             def plugin = spy(new TagPlugin())
-            doReturn(expectedTags).when(plugin).getTagsAsString()
+            doReturn(expectedTags).when(plugin).getTagsAsString(command)
 
             plugin.apply(command)
             def result = command.toString()
@@ -77,7 +77,7 @@ class TagPluginTest {
             def expectedTags = '{"key1":"value1","key2":"value2"}'
             def command = new TerraformApplyCommand()
             def plugin = spy(new TagPlugin())
-            doReturn(expectedTags).when(plugin).getTagsAsString()
+            doReturn(expectedTags).when(plugin).getTagsAsString(command)
 
             plugin.apply(command)
             def result = command.toString()
