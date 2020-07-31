@@ -80,8 +80,8 @@ class Jenkinsfile {
 
     public static void build(List<Stage> stages) {
         // Decorate the first stage with the list of parameters
-        // The stage must be a TerraformEnvionmentStage so we can call decorate()
-        if (stages.size() > 0) {
+        // The stage must have the decorate() method available
+        if (stages.size() > 0 && stages[0].metaClass.respondsTo(stages[0], 'decorate', String, Closure)) {
             Stage first_stage = stages[0]
             first_stage.decorate(TerraformEnvironmentStage.ALL, createParamClosure())
         }
