@@ -12,7 +12,6 @@ class TerraformEnvironmentStage implements Stage {
     public static final String PLAN = 'plan'
     public static final String CONFIRM = 'confirm'
     public static final String APPLY = 'apply'
-    public static final String DESTROY = 'destroy'
 
     TerraformEnvironmentStage(String environment) {
         this.environment = environment
