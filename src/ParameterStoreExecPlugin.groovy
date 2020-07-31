@@ -1,6 +1,5 @@
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
-import static TerraformEnvironmentStage.DESTROY
 
 class ParameterStoreExecPlugin implements TerraformEnvironmentStagePlugin, TerraformPlanCommandPlugin, TerraformApplyCommandPlugin {
     public static void init() {
@@ -18,7 +17,6 @@ class ParameterStoreExecPlugin implements TerraformEnvironmentStagePlugin, Terra
 
         stage.decorate(PLAN, addEnvVariables(parameterStorePath))
         stage.decorate(APPLY, addEnvVariables(parameterStorePath))
-        stage.decorate(DESTROY, addEnvVariables(parameterStorePath))
     }
 
     public String pathForEnvironment(String environment) {

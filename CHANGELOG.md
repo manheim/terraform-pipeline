@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #268](https://github.com/manheim/terraform-pipeline/issues/268) Fix broken README links
+* [Issue #265](https://github.com/manheim/terraform-pipeline/issues/265) Make code coverage more visible - add codecov badge to README
 * [Issue #257](https://github.com/manheim/terraform-pipeline/issues/257) Fix codecov reporting
 * [Issue #88](https://github.com/manheim/terraform-pipeline/issues/88) Add an optional TerraformDestroyStage
 * [Issue #24](https://github.com/manheim/terraform-pipeline/issues/24) ConfirmApplyPlugin - allow customization

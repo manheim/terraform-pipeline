@@ -140,5 +140,6 @@ class Jenkinsfile {
         instance = new Jenkinsfile()
         original = null
         params = []
+        defaultNodeName = null
     }
 }

@@ -1,4 +1,6 @@
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doReturn
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.is
@@ -6,8 +8,10 @@ import static org.hamcrest.Matchers.isA
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
+import static TerraformEnvironmentStage.PLAN
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
@@ -16,7 +20,19 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner
 class TerraformEnvironmentStageTest {
     @After
     void resetPlugins() {
-        TerraformEnvironmentStage.resetPlugins()
+        TerraformEnvironmentStage.reset()
+    }
+
+    public class ToString {
+        @Test
+        void returnsEnvironmentName() {
+            def expectedEnvironment = 'foo'
+            def stage = new TerraformEnvironmentStage(expectedEnvironment)
+
+            def result = stage.toString()
+
+            assertEquals(expectedEnvironment, result)
+        }
     }
 
     public class Then {
@@ -76,6 +92,19 @@ class TerraformEnvironmentStageTest {
         }
 
         @Test
+        void preservesMultipleEnvironmentPlugins() {
+            def stage = new TerraformEnvironmentStage('foo')
+
+            stage.withEnv('key1', 'value1')
+                 .withEnv('key2', 'value2')
+
+            def plugins = stage.getAllPlugins()
+                               .findAll { plugin -> plugin instanceof EnvironmentVariablePlugin }
+
+            assertEquals(2, plugins.size())
+        }
+
+        @Test
         void doesNotAddPluginToOtherInstances() {
             def modifiedStage = new TerraformEnvironmentStage('modified')
             def unmodifiedStage = new TerraformEnvironmentStage('unmodified')
@@ -113,6 +142,66 @@ class TerraformEnvironmentStageTest {
             def result = TerraformEnvironmentStage.withGlobalEnv('somekey', 'somevalue')
 
             assertTrue(result == TerraformEnvironmentStage.class)
+        }
+    }
+
+    class PipelineConfigurations {
+        @Before
+        void resetBefore() {
+            Jenkinsfile.reset()
+        }
+
+        @After
+        void resetAfter() {
+            Jenkinsfile.reset()
+        }
+
+        @Test
+        void returnsAClosure() {
+            def stage = new TerraformEnvironmentStage('foo')
+
+            def result = stage.pipelineConfiguration()
+
+            assertThat(result, isA(Closure.class))
+        }
+
+        @Test
+        void doesNotBlowUpWhenRunningClosure() {
+            Jenkinsfile.instance = spy(new Jenkinsfile())
+            doReturn([:]).when(Jenkinsfile.instance).getEnv()
+            Jenkinsfile.defaultNodeName = 'foo'
+            def stage = new TerraformEnvironmentStage('foo')
+
+            def closure = stage.pipelineConfiguration()
+            closure.delegate = new DummyJenkinsfile()
+            closure()
+        }
+    }
+
+    class WithStageNamePattern {
+        @Before
+        @After
+        void reset() {
+            TerraformEnvironmentStage.reset()
+        }
+
+        @Test
+        void constructsTheDefaultStageNameWhenBlank() {
+            def stage = new TerraformEnvironmentStage('myenv')
+
+            def actualName = stage.getStageNameFor(PLAN)
+
+            assertEquals('plan-myenv', actualName)
+        }
+
+        @Test
+        void constructTheStageNameUsingTheGivenPattern() {
+            TerraformEnvironmentStage.withStageNamePattern { options -> "${options['command']}-override-${options['environment']}" }
+            def stage = new TerraformEnvironmentStage('myenv')
+
+            def actualName = stage.getStageNameFor(PLAN)
+
+            assertEquals('plan-override-myenv', actualName)
         }
     }
 }

@@ -30,7 +30,7 @@ class TargetPluginTest {
         void resetPlugins() {
             TerraformPlanCommand.resetPlugins()
             TerraformApplyCommand.resetPlugins()
-            TerraformEnvironmentStage.resetPlugins()
+            TerraformEnvironmentStage.reset()
         }
 
         @Test
