@@ -112,6 +112,15 @@ class Jenkinsfile {
         return original.env
     }
 
+    public static String readFile(String filename) {
+        if (original.fileExists(filename)) {
+            def content = (original.readFile(filename) as String)
+            return content.trim()
+        }
+
+        return null
+    }
+
     public static withInstance(Jenkinsfile newInstance) {
         this.instance = newInstance
     }

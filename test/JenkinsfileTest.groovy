@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals
+import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.when
 
 import org.junit.After
@@ -165,6 +167,35 @@ class JenkinsfileTest {
 
             String actualName = Jenkinsfile.getNodeName()
             assertEquals(expectedName, actualName)
+        }
+    }
+
+    class ReadFile {
+        @Test
+        void returnsNullIfTheFileDoesNotExist() {
+            def filename = 'somefile'
+            def original = spy(new DummyJenkinsfile())
+            doReturn(false).when(original).fileExists(filename)
+            Jenkinsfile.original = original
+
+            def result = Jenkinsfile.readFile(filename)
+
+            assertEquals(null, result)
+        }
+
+        @Test
+        void returnsFileContentIfFileExists() {
+            def expectedContent = 'someContent'
+            def filename = 'somefile'
+            def original = spy(new DummyJenkinsfile())
+            doReturn(true).when(original).fileExists(filename)
+            doReturn(expectedContent).when(original).readFile(filename)
+
+            Jenkinsfile.original = original
+
+            def result = Jenkinsfile.readFile(filename)
+
+            assertEquals(expectedContent, result)
         }
     }
 }
