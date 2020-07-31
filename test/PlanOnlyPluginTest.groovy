@@ -23,11 +23,6 @@ class PlanOnlyPluginTest {
         when(Jenkinsfile.instance.getEnv()).thenReturn([:])
     }
 
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     public class Init {
         @After
         void resetPlugins() {
