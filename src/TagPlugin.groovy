@@ -2,7 +2,7 @@ class TagPlugin implements TerraformPlanCommandPlugin,
                            TerraformApplyCommandPlugin {
 
     private static variableName
-    private List tagClosures = []
+    private static List tagClosures = []
 
     public static init() {
         def plugin = new TagPlugin()
@@ -13,16 +13,16 @@ class TagPlugin implements TerraformPlanCommandPlugin,
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        def tagString = getTagsAsString()
-        def variableName = getVariableName()
-        def tagArgument = "-var=\'${variableName}=${tagString}\'"
-
-        command.withArgument(tagArgument)
+        applyToCommand(command)
     }
 
     @Override
     public void apply(TerraformApplyCommand command) {
-        def tagString = getTagsAsString()
+        applyToCommand(command)
+    }
+
+    private void applyToCommand(command) {
+        def tagString = getTagsAsString(command)
         def variableName = getVariableName()
         def tagArgument = "-var=\'${variableName}=${tagString}\'"
 
@@ -33,20 +33,27 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         this.variableName = variableName
     }
 
+    public static withEnvironmentTag(String tagKey = 'environment') {
+        tagClosures << { command -> "\"${tagKey}\":\"${command.getEnvironment()}\"" }
+        return this
+    }
+
+    public static withTag(String key, String value) {
+        tagClosures << { command -> "\"${key}\":\"${value}\"" }
+        return this
+    }
+
     private static getVariableName() {
         return variableName ?: 'tags'
     }
 
-    public withTag(String key, String value) {
-        tagClosures << { -> "\"${key}\":\"${value}\"" }
-    }
-
-    public String getTagsAsString() {
-        def result = tagClosures.collect { it.call() }.join(',')
+    public String getTagsAsString(TerraformCommand command) {
+        def result = tagClosures.collect { it.call(command) }.join(',')
         return "{${result}}"
     }
 
     public static reset() {
+        tagClosures = []
         variableName = null
     }
 }

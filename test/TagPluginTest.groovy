@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 import org.junit.Test
@@ -19,6 +20,7 @@ class TagPluginTest {
     public void reset() {
         TerraformApplyCommand.resetPlugins()
         TerraformPlanCommand.resetPlugins()
+        TagPlugin.reset()
     }
 
     public class Init {
@@ -54,12 +56,6 @@ class TagPluginTest {
         }
 
         class WithVariableName {
-            @Before
-            @After
-            void reset() {
-                TagPlugin.reset()
-            }
-
             @Test
             void overridesTheDefaultVariableName() {
                 def expectedVariableName = 'myVar'
@@ -90,12 +86,6 @@ class TagPluginTest {
         }
 
         class WithVariableName {
-            @Before
-            @After
-            void reset() {
-                TagPlugin.reset()
-            }
-
             @Test
             void overridesTheDefaultVariableName() {
                 def expectedVariableName = 'myVar'
@@ -142,6 +132,44 @@ class TagPluginTest {
 
             assertEquals('{"key1":"value1","key2":"value2"}', result)
         }
-    }
 
+        @Test
+        void constructsEnvironmentTagUsingTheGivenCommandsEnvironment() {
+            def plugin = new TagPlugin()
+            plugin.withEnvironmentTag()
+            def command = mock(TerraformCommand.class)
+            doReturn('myenv').when(command).getEnvironment()
+
+            def result = plugin.getTagsAsString(command)
+
+            assertEquals('{"environment":"myenv"}', result)
+        }
+
+        @Test
+        void constructsEnvironmentTagUsingTheGivenTagKey() {
+            def expectedTagKey = 'myEnvKey'
+            def plugin = new TagPlugin()
+            plugin.withEnvironmentTag(expectedTagKey)
+            def command = mock(TerraformCommand.class)
+            doReturn('myenv').when(command).getEnvironment()
+
+            def result = plugin.getTagsAsString(command)
+
+            assertEquals("{\"${expectedTagKey}\":\"myenv\"}".toString(), result)
+        }
+
+        @Test
+        void preservesTheOrderOfTags() {
+            TagPlugin.withTag('key1', 'value1')
+                     .withEnvironmentTag()
+                     .withTag('key2', 'value2')
+            def plugin = new TagPlugin()
+            def command = mock(TerraformCommand.class)
+            doReturn('myenv').when(command).getEnvironment()
+
+            def result = plugin.getTagsAsString(command)
+
+            assertEquals('{"key1":"value1","environment":"myenv","key2":"value2"}', result)
+        }
+    }
 }

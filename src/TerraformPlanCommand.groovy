@@ -1,4 +1,4 @@
-class TerraformPlanCommand {
+class TerraformPlanCommand implements TerraformCommand {
     private static final DEFAULT_PLUGINS = []
     private boolean input = false
     private String terraformBinary = "terraform"
@@ -96,5 +96,9 @@ class TerraformPlanCommand {
 
     public static resetPlugins() {
         this.plugins = DEFAULT_PLUGINS.clone()
+    }
+
+    public String getEnvironment() {
+        return environment
     }
 }

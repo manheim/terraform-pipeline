@@ -1,4 +1,4 @@
-class TerraformApplyCommand {
+class TerraformApplyCommand implements TerraformCommand {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "apply"
@@ -89,5 +89,9 @@ class TerraformApplyCommand {
 
     public static resetPlugins() {
         this.plugins = []
+    }
+
+    public String getEnvironment() {
+        return environment
     }
 }
