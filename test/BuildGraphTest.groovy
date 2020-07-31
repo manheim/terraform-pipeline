@@ -13,7 +13,7 @@ class BuildGraphTest {
     public class WithASingleStage {
         @Test
         void buildsTheStageThatItWasCreatedWith() {
-            Stage startStage = mock(Stage.class)
+            Stage startStage = mock(TerraformValidateStage.class)
             BuildGraph graph = new BuildGraph(startStage)
 
             graph.build()
@@ -25,7 +25,7 @@ class BuildGraphTest {
     public class WithMultipleStages {
         @Test
         void buildsTheStagesInOrder() {
-            Stage stage1 = mock(Stage.class)
+            Stage stage1 = mock(TerraformValidateStage.class)
             Stage stage2 = mock(Stage.class)
             Stage stage3 = mock(Stage.class)
             Stage stage4 = mock(Stage.class)
