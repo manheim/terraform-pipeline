@@ -15,7 +15,7 @@ class ParameterStoreBuildWrapperPluginTest {
     public class Init {
         @After
         void resetPlugins() {
-            TerraformEnvironmentStage.resetPlugins()
+            TerraformEnvironmentStage.reset()
         }
 
         @Test

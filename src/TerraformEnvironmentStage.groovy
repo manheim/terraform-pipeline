@@ -3,10 +3,10 @@ class TerraformEnvironmentStage implements Stage {
     private String environment
     private StageDecorations decorations
     private localPlugins
-    private static strategy = new DefaultStrategy()
 
     private static final DEFAULT_PLUGINS = [ new ConditionalApplyPlugin(), new ConfirmApplyPlugin(), new DefaultEnvironmentPlugin() ]
     private static globalPlugins = DEFAULT_PLUGINS.clone()
+    private static Closure stageNamePattern
 
     public static final String ALL = 'all'
     public static final String PLAN = 'plan'
@@ -45,13 +45,55 @@ class TerraformEnvironmentStage implements Stage {
         Jenkinsfile.build(pipelineConfiguration())
     }
 
-    public void withStrategy(newStrategy) {
-        this.strategy = newStrategy
+    public Closure pipelineConfiguration() {
+        def initCommand = TerraformInitCommand.instanceFor(environment)
+        def planCommand = TerraformPlanCommand.instanceFor(environment)
+        def applyCommand = TerraformApplyCommand.instanceFor(environment)
+
+        applyPlugins()
+
+        def String environment = this.environment
+        return { ->
+            node(jenkinsfile.getNodeName()) {
+                deleteDir()
+                checkout(scm)
+
+                decorations.apply(ALL) {
+                    stage(getStageNameFor(PLAN)) {
+                        decorations.apply(PLAN) {
+                            sh initCommand.toString()
+                            sh planCommand.toString()
+                        }
+                    }
+
+                    decorations.apply("Around-${CONFIRM}") {
+                        // The stage name needs to be editable
+                        stage(getStageNameFor(CONFIRM)) {
+                            decorations.apply(CONFIRM) {
+                                echo "Approved"
+                            }
+                        }
+                    }
+
+                    decorations.apply("Around-${APPLY}") {
+                        // The stage name needs to be editable
+                        stage(getStageNameFor(APPLY)) {
+                            decorations.apply(APPLY) {
+                                sh initCommand.toString()
+                                sh applyCommand.toString()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    private Closure pipelineConfiguration() {
-        applyPlugins()
-        return strategy.createPipelineClosure(environment, decorations)
+    public String getStageNameFor(String command) {
+        def pattern = stageNamePattern ?: { options -> "${options['command']}-${options['environment']}" }
+        def options = [ command: command, environment: environment ]
+
+        return pattern.call(options)
     }
 
     public void decorate(Closure decoration) {
@@ -137,8 +179,13 @@ class TerraformEnvironmentStage implements Stage {
         return globalPlugins
     }
 
-    public static void resetPlugins() {
-        this.globalPlugins = DEFAULT_PLUGINS.clone()
+    public static withStageNamePattern(Closure stageNamePattern) {
+        this.stageNamePattern = stageNamePattern
+    }
+
+    public static void reset() {
         // This totally jacks with localPlugins
+        this.globalPlugins = DEFAULT_PLUGINS.clone()
+        this.stageNamePattern = null
     }
 }

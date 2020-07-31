@@ -13,7 +13,6 @@ class CrqPlugin implements TerraformEnvironmentStagePlugin {
         def environment = stage.getEnvironment()
 
         stage.decorate(TerraformEnvironmentStage.APPLY, addCrq(environment))
-        stage.decorate(TerraformEnvironmentStage.DESTROY, addCrq(environment))
     }
 
     public String getCrqEnvironment(String environment) {

@@ -119,5 +119,6 @@ class Jenkinsfile {
     public static reset() {
         instance = new Jenkinsfile()
         original = null
+        defaultNodeName = null
     }
 }
