@@ -8,7 +8,7 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin, TerraformPlanCo
 
         Jenkinsfile.instance.addParam([
             $class: 'hudson.model.BooleanParameterDefinition',
-            name: 'FAIL_PLAN_ON_CHANGES',
+            name: "FAIL_PLAN_ON_CHANGES",
             defaultValue: false,
             description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
         ])
