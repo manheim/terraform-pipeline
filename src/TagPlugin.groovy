@@ -1,6 +1,7 @@
 class TagPlugin implements TerraformPlanCommandPlugin,
                            TerraformApplyCommandPlugin {
 
+    private static variableName
     private Map tags = [:]
 
     public static init() {
@@ -13,7 +14,8 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     @Override
     public void apply(TerraformPlanCommand command) {
         def tags = getTagsAsString()
-        def tagArgument = "-var=\'${tags}\'"
+        def variableName = getVariableName()
+        def tagArgument = "-var=\'${variableName}=${tags}\'"
 
         command.withArgument(tagArgument)
     }
@@ -21,9 +23,18 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     @Override
     public void apply(TerraformApplyCommand command) {
         def tags = getTagsAsString()
-        def tagArgument = "-var=\'${tags}\'"
+        def variableName = getVariableName()
+        def tagArgument = "-var=\'${variableName}=${tags}\'"
 
         command.withArgument(tagArgument)
+    }
+
+    public static withVariableName(String variableName) {
+        this.variableName = variableName
+    }
+
+    private static getVariableName() {
+        return variableName ?: 'tags'
     }
 
     public withTag(String key, String value) {
@@ -33,5 +44,9 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     public String getTagsAsString() {
         def result = tags.collect { "\"${it.key}\":\"${it.value}\"" }.join(',')
         return "{${result}}"
+    }
+
+    public static reset() {
+        variableName = null
     }
 }

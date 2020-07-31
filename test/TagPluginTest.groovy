@@ -50,7 +50,28 @@ class TagPluginTest {
             plugin.apply(command)
             def result = command.toString()
 
-            assertThat(result, containsString("-var=\'${expectedTags}\'"))
+            assertThat(result, containsString("-var=\'tags=${expectedTags}\'"))
+        }
+
+        class WithVariableName {
+            @Before
+            @After
+            void reset() {
+                TagPlugin.reset()
+            }
+
+            @Test
+            void overridesTheDefaultVariableName() {
+                def expectedVariableName = 'myVar'
+                TagPlugin.withVariableName(expectedVariableName)
+                def command = new TerraformPlanCommand()
+                def plugin = new TagPlugin()
+
+                plugin.apply(command)
+                def result = command.toString()
+
+                assertThat(result, containsString("-var=\'${expectedVariableName}={}'"))
+            }
         }
     }
 
@@ -65,8 +86,30 @@ class TagPluginTest {
             plugin.apply(command)
             def result = command.toString()
 
-            assertThat(result, containsString("-var=\'${expectedTags}\'"))
+            assertThat(result, containsString("-var=\'tags=${expectedTags}\'"))
         }
+
+        class WithVariableName {
+            @Before
+            @After
+            void reset() {
+                TagPlugin.reset()
+            }
+
+            @Test
+            void overridesTheDefaultVariableName() {
+                def expectedVariableName = 'myVar'
+                TagPlugin.withVariableName(expectedVariableName)
+                def command = new TerraformApplyCommand()
+                def plugin = new TagPlugin()
+
+                plugin.apply(command)
+                def result = command.toString()
+
+                assertThat(result, containsString("-var=\'${expectedVariableName}={}'"))
+            }
+        }
+
     }
 
     public class GetTagsAsString {
@@ -100,4 +143,5 @@ class TagPluginTest {
             assertEquals('{"key1":"value1","key2":"value2"}', result)
         }
     }
+
 }
