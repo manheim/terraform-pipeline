@@ -82,6 +82,7 @@ class PlanOnlyPluginTest {
 
             String result = command.toString()
             assertThat(result, containsString("-detailed-exitcode"))
+            assertThat(result, containsString("set -e; set -o pipefail"))
         }
 
         @Test
@@ -96,6 +97,7 @@ class PlanOnlyPluginTest {
 
             String result = command.toString()
             assertThat(result, not(containsString("-detailed-exitcode")))
+            assertThat(result, not(containsString("set -e; set -o pipefail")))
         }
     }
 
