@@ -21,20 +21,19 @@ Modify your pipeline to enable the `TagPlugin`, and configure the tags that you 
 
 Jenkinsfile.init(this, env)
 TagPlugin.withTag('simple', 'sometag') // Simple static tags
-         .withTag('project', Jenkinsfile.getRepoName()) // Dynamic tags from your git configuration
-         .withTag('repo', Jenkinsfile.getScmUrl()) // Dynamic tags from your git configuration
-         .withTag('team', '$TEAM') // Dynamic tags from an environment variable
+         .withTag('repo', Jenkinsfile.instance.getScmUrl()) // Dynamic tags from your git configuration
          .withEnvironmentTag('environment') // Dynamic tags from TerraformEnvironmentStage
-         .withTagFromFile('changeId', 'change-id.txt') // Dyanmic tags from file
+         .withTagFromEnvironmentVariable('team', 'TEAM') // Dynamic tags from an environment variable
+         .withTagFromFile('changeId', 'change-id.txt') // Dynamic tags from file
          .init()
 
 def validate = new TerraformValidateStage()
 
-// -var='tags={"simple":"sometag","project":"<project>","repo":"<repo>","team":"<team>","environment":"qa"}'
+// -var='tags={"simple":"sometag","repo":"<repo>","environment":"qa","team":"<team>","changeId":"<changeId>"}'
 def deployQa = new TerraformEnvironmentStage('qa')
-// -var='tags={"simple":"sometag","project":"<project>","repo":"<repo>","team":"<team>","environment":"uat"}'
+// -var='tags={"simple":"sometag","repo":"<repo>","environment":"uat","team":"<team>","changeId":"<changeId>"}'
 def deployUat = new TerraformEnvironmentStage('uat')
-// -var='tags={"simple":"sometag","project":"<project>","repo":"<repo>","team":"<team>","environment":"prod"}'
+// -var='tags={"simple":"sometag","repo":"<repo>","environment":"prod","team":"<team>","changeId":"<changeId>"}'
 def deployProd = new TerraformEnvironmentStage('prod')
 
 validate.then(deployQa)
@@ -61,20 +60,19 @@ variable "myCustomTags" {
 Jenkinsfile.init(this, env)
 TagPlugin.withVariableName('myCustomTags')
          .withTag('simple', 'sometag') // Simple static tags
-         .withTag('project', Jenkinsfile.getRepoName()) // Dynamic tags from your git configuration
-         .withTag('repo', Jenkinsfile.getScmUrl()) // Dynamic tags from your git configuration
-         .withTag('team', '$TEAM') // Dynamic tags from an environment variable
+         .withTag('repo', Jenkinsfile.instance.getScmUrl()) // Dynamic tags from your git configuration
          .withEnvironmentTag('environment') // Dynamic tags from TerraformEnvironmentStage
-         .withTagFromFile('changeId', 'change-id.txt') // Dyanmic tags from file
+         .withTagFromEnvironmentVariable('team', 'TEAM') // Dynamic tags from an environment variable
+         .withTagFromFile('changeId', 'change-id.txt') // Dynamic tags from file
          .init()
 
 def validate = new TerraformValidateStage()
 
-// -var='myCustomTags={"simple":"sometag","project":"<project>","repo":"<repo>","team":"<team>","environment":"qa"}'
+// -var='myCustomTags={"simple":"sometag","repo":"<repo>","environment":"qa","team":"<team>","changeId":"<changeId>"}'
 def deployQa = new TerraformEnvironmentStage('qa')
-// -var='myCustomTags={"simple":"sometag","project":"<project>","repo":"<repo>","team":"<team>","environment":"uat"}'
+// -var='myCustomTags={"simple":"sometag","repo":"<repo>","environment":"uat","team":"<team>","changeId":"<changeId>"}'
 def deployUat = new TerraformEnvironmentStage('uat')
-// -var='myCustomTags={"simple":"sometag","project":"<project>","repo":"<repo>","team":"<team>","environment":"prod"}'
+// -var='myCustomTags={"simple":"sometag","repo":"<repo>","environment":"prod","team":"<team>","changeId":"<changeId>"}'
 def deployProd = new TerraformEnvironmentStage('prod')
 
 validate.then(deployQa)
