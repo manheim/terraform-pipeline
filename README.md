@@ -8,9 +8,9 @@ A reusable pipeline template to apply terraform configuration serially across mu
     1.  `terraform init`
     2.  `terraform plan`
     3.  `terraform apply`
-2.  After running a terraform plan, your pipeline will pause.  A human must review and confirm the plan before `terraform apply` is run.  See: [ConfirmApplyPlugin](#confirmapplyplugin).
-3.  When running your pipeline on a branch, only the `terraform init` and `terraform plan` commands will be run across all of your environments.  `terraform apply` is only made available on the master branch. See: [ConditionalApplyPlugin](#conditionalapplyplugin).
-4.  If your environments might create conflicting resources, a TF_VAR_environment variable is automatically available to your project and can be used to namespace your resources and avoid conflicts. See: [DefaultEnvironmentPlugin](#defaultenvironmentplugin).
+2.  After running a terraform plan, your pipeline will pause.  A human must review and confirm the plan before `terraform apply` is run.  See: [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md).
+3.  When running your pipeline on a branch, only the `terraform init` and `terraform plan` commands will be run across all of your environments.  `terraform apply` is only made available on the master branch. See: [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md).
+4.  If your environments might create conflicting resources, a TF_VAR_environment variable is automatically available to your project and can be used to namespace your resources and avoid conflicts. See: [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md).
 5.  Import terraform-pipeline as a Jenkinsfile library to your Jenkins instance.
 ![Importing Pipeline Library](./images/import-terraform-pipeline.png)
 
