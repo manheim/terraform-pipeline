@@ -112,6 +112,10 @@ class Jenkinsfile {
         return original.env
     }
 
+    public static String getEnvironmentVariable(String key) {
+        return original.env[key]
+    }
+
     public static String readFile(String filename) {
         if (original.fileExists(filename)) {
             def content = (original.readFile(filename) as String)

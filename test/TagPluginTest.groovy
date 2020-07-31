@@ -59,6 +59,15 @@ class TagPluginTest {
         }
     }
 
+    class WithTagFromEnvironmentVariable {
+        @Test
+        void isFluent() {
+            def result = TagPlugin.withTagFromEnvironmentVariable('key', 'variable')
+
+            assertEquals(result, TagPlugin.class)
+        }
+    }
+
     class WithEnvironmentTag {
         @Test
         void isFluent() {
@@ -201,6 +210,25 @@ class TagPluginTest {
             def result = plugin.getTagsAsString(command)
 
             assertEquals("{\"${key}\":\"${fileContent}\"}".toString(), result)
+        }
+
+        @Test
+        void constructsTagsFromEnvironmentVariables() {
+            def key = 'someTagName'
+            def variable = 'MY_ENV'
+            def expectedValue = 'valueOfMY_ENV'
+            def plugin = new TagPlugin()
+            plugin.withTagFromEnvironmentVariable(key, variable)
+            def command = mock(TerraformCommand.class)
+            def original = new DummyJenkinsfile()
+            original.env = [:]
+            original.env[variable] = expectedValue
+
+            Jenkinsfile.original = original
+
+            def result = plugin.getTagsAsString(command)
+
+            assertEquals("{\"${key}\":\"${expectedValue}\"}".toString(), result)
         }
 
         @Test

@@ -48,6 +48,11 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         return this
     }
 
+    public static withTagFromEnvironmentVariable(String key, String variable) {
+        tagClosures << { command -> "\"${key}\":\"${Jenkinsfile.getEnvironmentVariable(variable)}\"" }
+        return this
+    }
+
     private static getVariableName() {
         return variableName ?: 'tags'
     }
