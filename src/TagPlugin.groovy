@@ -1,5 +1,8 @@
 class TagPlugin implements TerraformPlanCommandPlugin,
                            TerraformApplyCommandPlugin {
+
+    private Map tags = [:]
+
     public static init() {
         def plugin = new TagPlugin()
 
@@ -23,7 +26,12 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         command.withArgument(tagArgument)
     }
 
+    public withTag(String key, String value) {
+        tags.put(key, value)
+    }
+
     public String getTagsAsString() {
-        return "foo"
+        def result = tags.collect { "\"${it.key}\":\"${it.value}\"" }.join(',')
+        return "{${result}}"
     }
 }

@@ -2,7 +2,7 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
@@ -71,9 +71,33 @@ class TagPluginTest {
 
     public class GetTagsAsString {
         @Test
-        void constructsArgumentsFromTheKeyValuePairs() {
-            // Start testing this
-            assertTrue(true)
+        void returnsAndEmptyMapStringIfNoKeyValuePairsWereAdded() {
+            def plugin = new TagPlugin()
+
+            def result = plugin.getTagsAsString()
+
+            assertEquals("{}", result)
+        }
+
+        @Test
+        void constructMapStringUsingASingleKeyValuePair() {
+            def plugin = new TagPlugin()
+            plugin.withTag('key', 'value')
+
+            def result = plugin.getTagsAsString()
+
+            assertEquals('{"key":"value"}', result)
+        }
+
+        @Test
+        void constructMapStringUsingMultipleKeyValuePairs() {
+            def plugin = new TagPlugin()
+            plugin.withTag('key1', 'value1')
+            plugin.withTag('key2', 'value2')
+
+            def result = plugin.getTagsAsString()
+
+            assertEquals('{"key1":"value1","key2":"value2"}', result)
         }
     }
 }
