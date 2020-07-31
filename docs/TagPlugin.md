@@ -25,6 +25,7 @@ TagPlugin.withTag('simple', 'sometag') // Simple static tags
          .withTag('repo', Jenkinsfile.getScmUrl()) // Dynamic tags from your git configuration
          .withTag('team', '$TEAM') // Dynamic tags from an environment variable
          .withEnvironmentTag('environment') // Dynamic tags from TerraformEnvironmentStage
+         .withTagFromFile('changeId', 'change-id.txt') // Dyanmic tags from file
          .init()
 
 def validate = new TerraformValidateStage()
@@ -64,6 +65,7 @@ TagPlugin.withVariableName('myCustomTags')
          .withTag('repo', Jenkinsfile.getScmUrl()) // Dynamic tags from your git configuration
          .withTag('team', '$TEAM') // Dynamic tags from an environment variable
          .withEnvironmentTag('environment') // Dynamic tags from TerraformEnvironmentStage
+         .withTagFromFile('changeId', 'change-id.txt') // Dyanmic tags from file
          .init()
 
 def validate = new TerraformValidateStage()
