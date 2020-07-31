@@ -13,18 +13,18 @@ class TagPlugin implements TerraformPlanCommandPlugin,
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        def tags = getTagsAsString()
+        def tagString = getTagsAsString()
         def variableName = getVariableName()
-        def tagArgument = "-var=\'${variableName}=${tags}\'"
+        def tagArgument = "-var=\'${variableName}=${tagString}\'"
 
         command.withArgument(tagArgument)
     }
 
     @Override
     public void apply(TerraformApplyCommand command) {
-        def tags = getTagsAsString()
+        def tagString = getTagsAsString()
         def variableName = getVariableName()
-        def tagArgument = "-var=\'${variableName}=${tags}\'"
+        def tagArgument = "-var=\'${variableName}=${tagString}\'"
 
         command.withArgument(tagArgument)
     }
