@@ -30,7 +30,6 @@ class TargetPluginTest {
         void resetPlugins() {
             TerraformPlanCommand.resetPlugins()
             TerraformApplyCommand.resetPlugins()
-            TerraformEnvironmentStage.reset()
         }
 
         @Test
@@ -46,14 +45,6 @@ class TargetPluginTest {
             TargetPlugin.init()
 
             Collection actualPlugins = TerraformApplyCommand.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(TargetPlugin.class)))
-        }
-
-        @Test
-        void modifiesTerraformEnvironmentStageCommand() {
-            TargetPlugin.init()
-
-            Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(TargetPlugin.class)))
         }
 

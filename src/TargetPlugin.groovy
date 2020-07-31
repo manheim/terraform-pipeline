@@ -1,4 +1,4 @@
-class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
+class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin {
     public static void init() {
         TargetPlugin plugin = new TargetPlugin()
 
@@ -11,7 +11,6 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
 
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
-        TerraformEnvironmentStage.addPlugin(plugin)
     }
 
     @Override
@@ -31,7 +30,4 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
                .findAll { item -> item != '' }
                .each { item -> command.withArgument("-target ${item}") }
     }
-
-    @Override
-    public void apply(TerraformEnvironmentStage stage) { }
 }
