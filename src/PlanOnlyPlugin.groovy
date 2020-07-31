@@ -32,6 +32,9 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin, TerraformPlanCo
     @Override
     public void apply(TerraformPlanCommand command) {
         if (Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES == 'true') {
+            // set -e:          fail on error
+            // set -o pipefail: return non-zero exit code if any command fails.
+            //                  useful when commands are piped together (ie. `terraform plan | landscape`)
             command.withPrefix('set -e; set -o pipefail;')
             command.withArgument('-detailed-exitcode')
         }
