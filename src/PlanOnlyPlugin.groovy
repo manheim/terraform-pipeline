@@ -6,6 +6,13 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin, TerraformPlanCo
     public static void init() {
         PlanOnlyPlugin plugin = new PlanOnlyPlugin()
 
+        Jenkinsfile.instance.addParam([
+            $class: 'hudson.model.BooleanParameterDefinition',
+            name: 'FAIL_PLAN_ON_CHANGES',
+            defaultValue: false,
+            description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
+        ])
+
         TerraformPlanCommand.addPlugin(plugin)
         TerraformEnvironmentStage.addPlugin(plugin)
     }
@@ -24,7 +31,9 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin, TerraformPlanCo
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        command.withPrefix('set -e; set -o pipefail;')
-        command.withArgument('-detailed-exitcode')
+        if (Jenkinsfile.instance.getEnv().FAIL_PLAN_ON_CHANGES == 'true') {
+            command.withPrefix('set -e; set -o pipefail;')
+            command.withArgument('-detailed-exitcode')
+        }
     }
 }
