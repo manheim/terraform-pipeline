@@ -3,12 +3,6 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.times;
-import static TerraformEnvironmentStage.ALL;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
@@ -36,7 +30,6 @@ class TargetPluginTest {
         void resetPlugins() {
             TerraformPlanCommand.resetPlugins()
             TerraformApplyCommand.resetPlugins()
-            TerraformEnvironmentStage.reset()
         }
 
         @Test
@@ -56,11 +49,16 @@ class TargetPluginTest {
         }
 
         @Test
-        void modifiesTerraformEnvironmentStageCommand() {
+        void addsParameter() {
             TargetPlugin.init()
 
-            Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(TargetPlugin.class)))
+            Collection actualParms = Jenkinsfile.instance.params
+            assertThat(actualParms, hasItem([
+                $class: 'hudson.model.StringParameterDefinition',
+                name: "RESOURCE_TARGETS",
+                defaultValue: '',
+                description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
+            ]))
         }
     }
 
@@ -121,31 +119,6 @@ class TargetPluginTest {
             assertThat(result, not(containsString("-target")))
         }
 
-        @Test
-        void decoratesTheTerraformEnvironmentStage()  {
-            TargetPlugin plugin = new TargetPlugin()
-            def environment = spy(new TerraformEnvironmentStage())
-            configureJenkins(env: [
-                'RESOURCE_TARGETS': 'aws_dynamodb_table.test-table-2,aws_dynamodb_table.test-table-3'
-            ])
-
-            plugin.apply(environment)
-
-            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.ALL), any(Closure.class))
-        }
     }
 
-    class AddBuildParams {
-        @Test
-        void runsInnerClosure() {
-            def addParamsClosure = TargetPlugin.addBuildParams()
-            def innerClosure = spy { -> }
-            def jenkinsfile = new DummyJenkinsfile()
-
-            addParamsClosure.delegate = jenkinsfile
-            addParamsClosure(innerClosure)
-
-            verify(innerClosure).call()
-        }
-    }
 }

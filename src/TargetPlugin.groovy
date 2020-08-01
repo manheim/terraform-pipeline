@@ -1,12 +1,16 @@
-import static TerraformEnvironmentStage.ALL
-
-class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
+class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin {
     public static void init() {
         TargetPlugin plugin = new TargetPlugin()
 
+        Jenkinsfile.instance.addParam([
+            $class: 'hudson.model.StringParameterDefinition',
+            name: "RESOURCE_TARGETS",
+            defaultValue: '',
+            description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
+        ])
+
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
-        TerraformEnvironmentStage.addPlugin(plugin)
     }
 
     @Override
@@ -26,24 +30,4 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
                .findAll { item -> item != '' }
                .each { item -> command.withArgument("-target ${item}") }
     }
-
-    @Override
-    public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(ALL, addBuildParams())
-    }
-
-    public static Closure addBuildParams() {
-        return { closure ->
-            def params = [
-                string(name: 'RESOURCE_TARGETS', defaultValue: '', description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'),
-            ]
-            def props = [
-                parameters(params)
-            ]
-            properties(props)
-
-            closure()
-        }
-    }
-
 }
