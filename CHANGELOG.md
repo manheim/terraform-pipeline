@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #275](https://github.com/manheim/terraform-pipeline/issues/275) Alphabetize Plugins in the README
 * [Issue #272](https://github.com/manheim/terraform-pipeline/issues/272) Create a new BuildWithParametersPlugin
 * [Issue #256](https://github.com/manheim/terraform-pipeline/issues/256) Make it easy to apply "standard tags"
 * [Issue #268](https://github.com/manheim/terraform-pipeline/issues/268) Fix broken README links
