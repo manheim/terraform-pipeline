@@ -112,5 +112,42 @@ class BuildWithParametersPluginTest {
             verify(stage, times(1)).decorate(expectedClosure)
         }
     }
+
+    class AddParameterToFirstStageOnly {
+        class WithNoParameters {
+            @Test
+            void runsTheInnerClosure() {
+                def innerClosure = spy { -> }
+                def plugin = new BuildWithParametersPlugin()
+                def decoration = plugin.addParameterToFirstStageOnly()
+
+                decoration.call(innerClosure)
+
+                verify(innerClosure, times(1)).call()
+            }
+        }
+
+        /*
+        class WithParameters {
+            @Test
+            void runsTheInnerClosure() {
+            }
+
+            @Test
+            void addsParametersToAOneStagePipeline() {
+
+            }
+
+            @Test
+            void addsParametersToTheFirstOfAMultiStagePipeline() {
+            }
+
+            @Test
+            void skipsEveryStageAfterTheFirst() {
+
+            }
+        }
+        */
+    }
 }
 

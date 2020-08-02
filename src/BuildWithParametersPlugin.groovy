@@ -37,6 +37,8 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
     }
 
     public Closure addParameterToFirstStageOnly() {
-        return { -> }
+        return { innerClosure ->
+            innerClosure()
+        }
     }
 }
