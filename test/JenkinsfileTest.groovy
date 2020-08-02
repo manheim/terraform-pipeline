@@ -365,6 +365,22 @@ class JenkinsfileTest {
         }
     }
 
+    class GetEnv {
+        @Test
+        void returnsThe7StageTemplateFor7Stages() {
+            def expected = [key: 'value']
+            def original = spy(new DummyJenkinsfile())
+            original.env = expected
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+
+            def actual = instance.getEnv()
+
+            assertEquals(expected, actual)
+        }
+
+    }
+
     public class GetNodeName {
         @After
         void reset() {
