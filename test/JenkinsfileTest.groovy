@@ -5,6 +5,8 @@ import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.times
+import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
 import org.junit.After
@@ -219,6 +221,39 @@ class JenkinsfileTest {
             Jenkinsfile.init(original)
 
             assertEquals(original, Jenkinsfile.original)
+        }
+    }
+
+    public class Build {
+        private class DummyJenkinsfileWithTemplates extends DummyJenkinsfile {
+            public Pipeline2Stage = { args -> }
+        }
+
+        class Declarative {
+            @Test
+            void usesDefaultTemplatesIfNonProvided() {
+                def original = new DummyJenkinsfileWithTemplates()
+                original.Pipeline2Stage = spy(original.Pipeline2Stage)
+                def stages = [mock(Stage.class), mock(Stage.class)]
+                Jenkinsfile.declarative = true
+                Jenkinsfile.original = original
+
+                Jenkinsfile.build(stages)
+
+                verify(original.Pipeline2Stage, times(1)).call(stages)
+            }
+
+            @Test
+            void usesTheGivenPipelineTemplateToBuildTheStages() {
+                def stages = [mock(Stage.class)]
+                Closure newTemplate = spy { args -> }
+                Jenkinsfile.pipelineTemplate = newTemplate
+                Jenkinsfile.declarative = true
+
+                Jenkinsfile.build(stages)
+
+                verify(newTemplate, times(1)).call(stages)
+            }
         }
     }
 

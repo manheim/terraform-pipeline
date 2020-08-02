@@ -135,5 +135,7 @@ class Jenkinsfile {
         original = null
         defaultNodeName = null
         docker = null
+        pipelineTemplate = null
+        declarative = false
     }
 }
