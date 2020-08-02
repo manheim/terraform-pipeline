@@ -134,5 +134,6 @@ class Jenkinsfile {
         instance = new Jenkinsfile()
         original = null
         defaultNodeName = null
+        docker = null
     }
 }

@@ -25,7 +25,7 @@ class JenkinsfileTest {
     @Before
     @After
     void reset() {
-        Jenkinsfile.original = null
+        Jenkinsfile.reset()
     }
 
     class StandardizedRepoSlug {
@@ -209,6 +209,16 @@ class JenkinsfileTest {
             def result = instance.getOrganization()
 
             assertEquals(expectedOrg, result)
+        }
+    }
+
+    public class Init {
+        @Test
+        void storesTheOriginalJenkinsfileReference() {
+            def original = new DummyJenkinsfile()
+            Jenkinsfile.init(original)
+
+            assertEquals(original, Jenkinsfile.original)
         }
     }
 
