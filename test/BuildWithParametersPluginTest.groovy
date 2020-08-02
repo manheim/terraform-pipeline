@@ -1,9 +1,11 @@
+import static org.hamcrest.Matchers.contains
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -156,7 +158,6 @@ class BuildWithParametersPluginTest {
                 def innerClosure = spy { -> }
                 def plugin = spy(new BuildWithParametersPlugin())
                 doReturn(true).when(plugin).hasParameters()
-                doReturn(['some params']).when(plugin).getParameters()
                 def decoration = plugin.addParameterToFirstStageOnly()
 
                 decoration.delegate = original
@@ -227,29 +228,114 @@ class BuildWithParametersPluginTest {
     }
 
     class WithBooleanParameter {
-        @Test(expected = RuntimeException.class)
-        void raisesErrorIfMissingName() {
-            BuildWithParametersPlugin.withBooleanParameter([
-                description: 'Some true-or-false',
-                defaultValue: false
-            ])
+        @Test
+        void usesTheGivenName() {
+            def expectedName = 'someBooleanName'
+            BuildWithParametersPlugin.withBooleanParameter([name: expectedName])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedName, parameters['name'])
         }
 
-        @Test(expected = RuntimeException.class)
-        void raisesErrorIfMissingDescription() {
-            BuildWithParametersPlugin.withBooleanParameter([
-                name: 'SomeName',
-                defaultValue: false
-            ])
+        @Test
+        void usesTheGivenDefaultValue() {
+            def expectedDefaultValue = true
+            BuildWithParametersPlugin.withBooleanParameter([defaultValue: expectedDefaultValue])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedDefaultValue, parameters['defaultValue'])
+        }
+
+        @Test
+        void defaultsTheParameterClassToBoolean() {
+            def expectedClass = 'hudson.model.BooleanParameterDefinition'
+            BuildWithParametersPlugin.withBooleanParameter([:])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedClass, parameters['$class'])
+        }
+
+        @Test
+        void defaultsToFalse() {
+            def expectedDefault = false
+            BuildWithParametersPlugin.withBooleanParameter([:])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedDefault, parameters['defaultValue'])
         }
     }
 
-    /*
     class WithStringParameter {
+        @Test
+        void usesTheGivenName() {
+            def expectedName = 'someStringName'
+            BuildWithParametersPlugin.withStringParameter([name: expectedName])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedName, parameters['name'])
+        }
+
+        @Test
+        void usesTheGivenDefaultValue() {
+            def expectedDefaultValue = 'newDefault'
+            BuildWithParametersPlugin.withStringParameter([defaultValue: expectedDefaultValue])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedDefaultValue, parameters['defaultValue'])
+        }
+
+        @Test
+        void defaultsTheParameterClassToString() {
+            def expectedClass = 'hudson.model.StringParameterDefinition'
+            BuildWithParametersPlugin.withStringParameter([:])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedClass, parameters['$class'])
+        }
+
+        @Test
+        void defaultsToBlank() {
+            def expectedDefault = ''
+            BuildWithParametersPlugin.withStringParameter([:])
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()[0]
+
+            assertEquals(expectedDefault, parameters['defaultValue'])
+        }
+
     }
 
     class WithParameter {
+        @Test
+        void addsTheGivenParameter() {
+            def expectedParameter = [
+                $class: 'hudson.model.StringParameterDefinition',
+                name: 'someName',
+                description: 'some description',
+                defaultValue: ''
+            ]
+            BuildWithParametersPlugin.withParameter(expectedParameter)
+            def plugin = new BuildWithParametersPlugin()
+
+            def parameters = plugin.getParameters()
+
+            assertThat(parameters, contains(expectedParameter))
+        }
     }
-    */
 }
 

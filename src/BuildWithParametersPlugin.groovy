@@ -53,21 +53,22 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
     }
 
     public static withBooleanParameter(Map options) {
-        if (options['name'] == null) {
-            throw new RuntimeException('A "name" option is required for BuildWithParametersPlugin.withBooleanParameter(). Your options: ${options.toString()}')
-        }
+        def optionDefaults = [
+            defaultValue: false,
+            $class: 'hudson.model.BooleanParameterDefinition'
+        ]
 
-        if (options['description'] == null) {
-            throw new RuntimeException('A "description" option is required for BuildWithParametersPlugin.withBooleanParameter(). Your options: ${options.toString()}')
-        }
-
-        globalBuildParameters << options
+        globalBuildParameters << (optionDefaults + options)
     }
 
-    /*
     public static withStringParameter(Map options) {
+        def optionDefaults = [
+            defaultValue: '',
+            $class: 'hudson.model.StringParameterDefinition'
+        ]
+
+        globalBuildParameters << (optionDefaults + options)
     }
-    */
 
     public static withParameter(Map options) {
         globalBuildParameters << options
@@ -78,7 +79,7 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
     }
 
     public List getParameters() {
-        return globalBuildParameters()
+        return globalBuildParameters
     }
 
     public static reset() {
