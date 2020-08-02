@@ -10,12 +10,12 @@ Eg:
 @Library(['terraform-pipeline@v5.1']) _
 
 Jenkinsfile.init(this)
-BuildWithParametersPlugin.addBooleanParam([
+BuildWithParametersPlugin.withBooleanParameter([
        name: 'PIPELINE_PREFERENCE',
        description: 'Do you like pipelines?',
        defaultValue: true
      ])
-BuildWithParametersPlugin.addStringParam([
+BuildWithParametersPlugin.withStringParameter([
        name: 'PIPELINE_THOUGHTS',
        description: 'What do you think about pipelines?',
        defaultValue: 'They make deployments so easy'
