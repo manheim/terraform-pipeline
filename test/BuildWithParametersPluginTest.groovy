@@ -1,6 +1,8 @@
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -10,11 +12,18 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Test
 import org.junit.After
+import org.junit.Before
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class BuildWithParametersPluginTest {
+    @Before
+    @After
+    void reset() {
+        BuildWithParametersPlugin.reset()
+    }
+
     private createJenkinsfileSpy() {
         def dummyJenkinsfile = spy(new DummyJenkinsfile())
         dummyJenkinsfile.docker = dummyJenkinsfile
@@ -140,27 +149,107 @@ class BuildWithParametersPluginTest {
             }
         }
 
-        /*
         class WithParameters {
             @Test
             void runsTheInnerClosure() {
+                def original = spy(new DummyJenkinsfile())
+                def innerClosure = spy { -> }
+                def plugin = spy(new BuildWithParametersPlugin())
+                doReturn(true).when(plugin).hasParameters()
+                doReturn(['some params']).when(plugin).getParameters()
+                def decoration = plugin.addParameterToFirstStageOnly()
+
+                decoration.delegate = original
+                decoration.call(innerClosure)
+
+                verify(innerClosure, times(1)).call()
             }
 
             @Test
-            void addsParametersToAOneStagePipeline() {
+            void addsTheParameters() {
+                def expectedParameters = ['myparams']
+                def original = spy(new DummyJenkinsfile())
+                def plugin = spy(new BuildWithParametersPlugin())
+                doReturn(true).when(plugin).hasParameters()
+                doReturn(expectedParameters).when(plugin).getParameters()
+                def decoration = plugin.addParameterToFirstStageOnly()
 
+                decoration.delegate = original
+                decoration.call { -> }
+
+                verify(original, times(1)).parameters(expectedParameters)
+                verify(original, times(1)).properties(any(List.class))
             }
 
             @Test
-            void addsParametersToTheFirstOfAMultiStagePipeline() {
-            }
+            void addParametersOnlyOnceAfterMultipleCalls() {
+                def original = spy(new DummyJenkinsfile())
+                def plugin = spy(new BuildWithParametersPlugin())
+                doReturn(true).when(plugin).hasParameters()
+                doReturn(['myparams']).when(plugin).getParameters()
+                def decoration = plugin.addParameterToFirstStageOnly()
 
-            @Test
-            void skipsEveryStageAfterTheFirst() {
+                decoration.delegate = original
+                decoration.call { -> }
+                decoration.call { -> }
 
+                verify(original, times(1)).parameters(any(List.class))
+                verify(original, times(1)).properties(any(List.class))
             }
         }
-        */
     }
+
+    class HasParameters {
+        @Before
+        @After
+        void reset() {
+            BuildWithParametersPlugin.reset()
+        }
+
+        @Test
+        void returnsFalseByDefault() {
+            def plugin = new BuildWithParametersPlugin()
+
+            assertFalse(plugin.hasParameters())
+        }
+
+        @Test
+        void returnsTrueAfterABooleanParameterIsAdded() {
+            BuildWithParametersPlugin.withBooleanParameter([
+                name: 'MY_BOOLEAN_PARAM',
+                description: 'Some true-or-false',
+                defaultValue: false
+            ])
+            def plugin = new BuildWithParametersPlugin()
+
+            assertTrue(plugin.hasParameters())
+        }
+    }
+
+    class WithBooleanParameter {
+        @Test(expected = RuntimeException.class)
+        void raisesErrorIfMissingName() {
+            BuildWithParametersPlugin.withBooleanParameter([
+                description: 'Some true-or-false',
+                defaultValue: false
+            ])
+        }
+
+        @Test(expected = RuntimeException.class)
+        void raisesErrorIfMissingDescription() {
+            BuildWithParametersPlugin.withBooleanParameter([
+                name: 'SomeName',
+                defaultValue: false
+            ])
+        }
+    }
+
+    /*
+    class WithStringParameter {
+    }
+
+    class WithParameter {
+    }
+    */
 }
 

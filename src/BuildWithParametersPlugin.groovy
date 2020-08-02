@@ -3,6 +3,9 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
                                                   TerraformEnvironmentStagePlugin,
                                                   RegressionStagePlugin {
 
+    private static globalBuildParameters = []
+    private static appliedOnce = false
+
     public static void init() {
         def plugin = new BuildWithParametersPlugin()
 
@@ -38,7 +41,48 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
 
     public Closure addParameterToFirstStageOnly() {
         return { innerClosure ->
+            if (hasParameters() && !appliedOnce) {
+                properties([
+                    parameters(getParameters())
+                ])
+                appliedOnce = true
+            }
+
             innerClosure()
         }
+    }
+
+    public static withBooleanParameter(Map options) {
+        if (options['name'] == null) {
+            throw new RuntimeException('A "name" option is required for BuildWithParametersPlugin.withBooleanParameter(). Your options: ${options.toString()}')
+        }
+
+        if (options['description'] == null) {
+            throw new RuntimeException('A "description" option is required for BuildWithParametersPlugin.withBooleanParameter(). Your options: ${options.toString()}')
+        }
+
+        globalBuildParameters << options
+    }
+
+    /*
+    public static withStringParameter(Map options) {
+    }
+    */
+
+    public static withParameter(Map options) {
+        globalBuildParameters << options
+    }
+
+    public boolean hasParameters() {
+        return !globalBuildParameters.isEmpty()
+    }
+
+    public List getParameters() {
+        return globalBuildParameters()
+    }
+
+    public static reset() {
+        globalBuildParameters = []
+        appliedOnce = false
     }
 }
