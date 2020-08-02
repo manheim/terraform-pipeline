@@ -272,6 +272,99 @@ class JenkinsfileTest {
         }
     }
 
+    class GetPipelineTemplate {
+        private class DummyJenkinsfileWithTemplates extends DummyJenkinsfile {
+            public Pipeline2Stage = { args -> }
+            public Pipeline3Stage = { args -> }
+            public Pipeline4Stage = { args -> }
+            public Pipeline5Stage = { args -> }
+            public Pipeline6Stage = { args -> }
+            public Pipeline7Stage = { args -> }
+        }
+
+        private getNumberOfStages(int number) {
+            def stages = []
+            number.times {
+                stages << mock(Stage.class)
+            }
+
+            return stages
+        }
+
+        @Test(expected = RuntimeException.class)
+        void throwsAnErrorFor1Stage() {
+            def stages = getNumberOfStages(1)
+
+            Jenkinsfile.getPipelineTemplate(stages)
+        }
+
+        @Test
+        void returnsThe2StageTemplateFor2Stages() {
+            def stages = getNumberOfStages(2)
+            def original = spy(new DummyJenkinsfileWithTemplates())
+            Jenkinsfile.original = original
+
+            def actual = Jenkinsfile.getPipelineTemplate(stages)
+
+            assertEquals(original.Pipeline2Stage, actual)
+        }
+
+        @Test
+        void returnsThe3StageTemplateFor3Stages() {
+            def stages = getNumberOfStages(3)
+            def original = spy(new DummyJenkinsfileWithTemplates())
+            Jenkinsfile.original = original
+
+            def actual = Jenkinsfile.getPipelineTemplate(stages)
+
+            assertEquals(original.Pipeline3Stage, actual)
+        }
+
+        @Test
+        void returnsThe4StageTemplateFor4Stages() {
+            def stages = getNumberOfStages(4)
+            def original = spy(new DummyJenkinsfileWithTemplates())
+            Jenkinsfile.original = original
+
+            def actual = Jenkinsfile.getPipelineTemplate(stages)
+
+            assertEquals(original.Pipeline4Stage, actual)
+        }
+
+        @Test
+        void returnsThe5StageTemplateFor5Stages() {
+            def stages = getNumberOfStages(5)
+            def original = spy(new DummyJenkinsfileWithTemplates())
+            Jenkinsfile.original = original
+
+            def actual = Jenkinsfile.getPipelineTemplate(stages)
+
+            assertEquals(original.Pipeline5Stage, actual)
+        }
+
+        @Test
+        void returnsThe6StageTemplateFor6Stages() {
+            def stages = getNumberOfStages(6)
+            def original = spy(new DummyJenkinsfileWithTemplates())
+            Jenkinsfile.original = original
+
+            def actual = Jenkinsfile.getPipelineTemplate(stages)
+
+            assertEquals(original.Pipeline6Stage, actual)
+        }
+
+        @Test
+        void returnsThe7StageTemplateFor7Stages() {
+            def stages = getNumberOfStages(7)
+            def original = spy(new DummyJenkinsfileWithTemplates())
+            Jenkinsfile.original = original
+
+            def actual = Jenkinsfile.getPipelineTemplate(stages)
+
+            assertEquals(original.Pipeline7Stage, actual)
+        }
+    }
+
     public class GetNodeName {
         @After
         void reset() {
