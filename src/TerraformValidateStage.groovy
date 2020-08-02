@@ -1,4 +1,4 @@
-class TerraformValidateStage implements Stage {
+class TerraformValidateStage implements Stage, DecoratableStage {
     private Jenkinsfile jenkinsfile
     private StageDecorations decorations
 
@@ -41,7 +41,7 @@ class TerraformValidateStage implements Stage {
         }
     }
 
-    public decorate(Closure decoration) {
+    public void decorate(Closure decoration) {
         decorations.add(ALL, decoration)
     }
 

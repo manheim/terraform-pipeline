@@ -1,7 +1,11 @@
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test
 import org.junit.After
@@ -56,6 +60,56 @@ class BuildWithParametersPluginTest {
 
             Collection actualPlugins = RegressionStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(BuildWithParametersPlugin.class)))
+        }
+    }
+
+    class Apply {
+        @Test
+        void worksForBuildStage() {
+            def expectedClosure = { -> }
+            def plugin = spy(new BuildWithParametersPlugin())
+            doReturn(expectedClosure).when(plugin).addParameterToFirstStageOnly()
+            def stage = mock(BuildStage.class)
+
+            plugin.apply(stage)
+
+            verify(stage, times(1)).decorate(expectedClosure)
+        }
+
+        @Test
+        void worksForTerraformValidateStage() {
+            def expectedClosure = { -> }
+            def plugin = spy(new BuildWithParametersPlugin())
+            doReturn(expectedClosure).when(plugin).addParameterToFirstStageOnly()
+            def stage = mock(TerraformValidateStage.class)
+
+            plugin.apply(stage)
+
+            verify(stage, times(1)).decorate(expectedClosure)
+        }
+
+        @Test
+        void worksForTerraformEnvironmentStage() {
+            def expectedClosure = { -> }
+            def plugin = spy(new BuildWithParametersPlugin())
+            doReturn(expectedClosure).when(plugin).addParameterToFirstStageOnly()
+            def stage = mock(TerraformEnvironmentStage.class)
+
+            plugin.apply(stage)
+
+            verify(stage, times(1)).decorate(expectedClosure)
+        }
+
+        @Test
+        void worksForRegressionStage() {
+            def expectedClosure = { -> }
+            def plugin = spy(new BuildWithParametersPlugin())
+            doReturn(expectedClosure).when(plugin).addParameterToFirstStageOnly()
+            def stage = mock(RegressionStage.class)
+
+            plugin.apply(stage)
+
+            verify(stage, times(1)).decorate(expectedClosure)
         }
     }
 }

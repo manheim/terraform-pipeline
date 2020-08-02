@@ -1,4 +1,4 @@
-class TerraformEnvironmentStage implements Stage {
+class TerraformEnvironmentStage implements Stage, DecoratableStage {
     private Jenkinsfile jenkinsfile
     private String environment
     private StageDecorations decorations

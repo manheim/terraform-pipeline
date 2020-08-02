@@ -14,21 +14,29 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
 
     @Override
     public void apply(BuildStage stage) {
-        println "do the thing"
+        applyToAllStages(stage)
     }
 
     @Override
     public void apply(TerraformValidateStage stage) {
-        println "do the thing"
+        applyToAllStages(stage)
     }
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        println "do the thing"
+        applyToAllStages(stage)
     }
 
     @Override
     public void apply(RegressionStage stage) {
-        println "do the thing"
+        applyToAllStages(stage)
+    }
+
+    private void applyToAllStages(DecoratableStage stage) {
+        stage.decorate(addParameterToFirstStageOnly())
+    }
+
+    public Closure addParameterToFirstStageOnly() {
+        return { -> }
     }
 }
