@@ -184,6 +184,34 @@ class JenkinsfileTest {
         }
     }
 
+    public class GetRepoName {
+        @Test
+        void returnsTheUnmodifiedRepoName() {
+            def expectedRepo = "MyRepoName"
+            def original = spy(new DummyJenkinsfile())
+            original.scm = mockScm("https://github.com/MyOrg/${expectedRepo}.git")
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+            def result = instance.getRepoName()
+
+            assertEquals(expectedRepo, result)
+        }
+    }
+
+    public class GetOrganization {
+        @Test
+        void returnsTheUnmodifiedOrgName() {
+            def expectedOrg = "MyOrgName"
+            def original = spy(new DummyJenkinsfile())
+            original.scm = mockScm("https://github.com/${expectedOrg}/MyRepo.git")
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+            def result = instance.getOrganization()
+
+            assertEquals(expectedOrg, result)
+        }
+    }
+
     public class GetNodeName {
         @After
         void reset() {
