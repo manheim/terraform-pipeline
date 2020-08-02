@@ -2,10 +2,8 @@ class TargetPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandP
     public static void init() {
         TargetPlugin plugin = new TargetPlugin()
 
-        Jenkinsfile.instance.addParam([
-            $class: 'hudson.model.StringParameterDefinition',
+        BuildWithParametersPlugin.withStringParameter([
             name: "RESOURCE_TARGETS",
-            defaultValue: '',
             description: 'comma-separated list of resource addresses to pass to plan and apply "-target=" parameters'
         ])
 
