@@ -2,6 +2,7 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -124,6 +125,18 @@ class BuildWithParametersPluginTest {
                 decoration.call(innerClosure)
 
                 verify(innerClosure, times(1)).call()
+            }
+
+            @Test
+            void doesNotAddAnyParameters() {
+                def original = spy(new DummyJenkinsfile())
+                def plugin = new BuildWithParametersPlugin()
+                def decoration = plugin.addParameterToFirstStageOnly()
+
+                decoration.delegate = original
+                decoration.call { -> }
+
+                verify(original, times(0)).properties(any(Object.class))
             }
         }
 
