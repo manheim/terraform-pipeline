@@ -93,10 +93,10 @@ validate.then(deployQa)
 The example above gives you a bare-bones pipeline, and there may be Jenkinsfile features that you'd like to take advantage of.  Some of these features have been pre-defined as Plugins for this library.  Pre-defined plugins can be enabled by simply calling their static `init()` method.
 
 ### Default Plugins
+* [BuildWithParametersPlugin](./docs/BuildWithParametersPlugin.md): use this plugin to manage the "Build with Parameters" feature of pipelines.
 * [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md): pause and review the plan, before applying any changes.
 * [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on master branch.
 * [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md): automatically set `TF_VAR_environment` variable.
-* [BuildWithParametersPlugin](./docs/BuildWithParametersPlugin.md): use this plugin to manage the "Build with Parameters" feature of pipelines.
 * [TerraformPlugin](./docs/TerraformPlugin.md): apply version-specific terraform behavior based on the version of terraform in use.
 ### Credentials and Configuration Management
 * [CredentialsPlugin](./docs/CredentialsPlugin.md): Inject Jenkins credentials into your stages.
@@ -115,12 +115,12 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [AgentNodePlugin](./docs/AgentNodePlugin.md): Run your pipeline on agents that are configured with Docker.
 * [AnsiColorPlugin](./docs/AnsiColorPlugin.md): Enable ansi-color output.
 * [CrqPlugin](./docs/CrqPlugin.md): Use the manheim_remedier gem to open automated Change Requests.
+* [DestroyPlugin](./docs/DestroyPlugin.md): Use this to change the pipeline functionality to `terraform destroy`. (Requires manual confirmation)
 * [GithubPRPlanPlugin](./docs/GithubPRPlanPlugin.md): Use this to post Terraform plan results in the comments of a Github PullRequest.
+* [PlanOnlyPlugin](./docs/PlanOnlyPlugin.md): Use this to change the pipeline functionality to `terraform plan` only.
 * [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
-* [DestroyPlugin](./docs/DestroyPlugin.md): Use this to change the pipeline functionality to `terraform destroy`. (Requires manual confirmation)
-* [PlanOnlyPlugin](./docs/PlanOnlyPlugin.md): Use this to change the pipeline functionality to `terraform plan` only.
 
 ## Write your own Plugin
 
