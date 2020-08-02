@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #272](https://github.com/manheim/terraform-pipeline/issues/272) Create a new BuildWithParametersPlugin
 * [Issue #256](https://github.com/manheim/terraform-pipeline/issues/256) Make it easy to apply "standard tags"
 * [Issue #268](https://github.com/manheim/terraform-pipeline/issues/268) Fix broken README links
 * [Issue #265](https://github.com/manheim/terraform-pipeline/issues/265) Make code coverage more visible - add codecov badge to README
