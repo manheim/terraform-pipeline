@@ -2,6 +2,7 @@ import static TerraformEnvironmentStage.CONFIRM
 
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
+    public static parameters = []
     public static enabled = true
     public static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?'
     public static String okMessage = 'Run terraform apply now'
@@ -21,22 +22,36 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
         }
     }
 
-    public static Closure addConfirmation() {
+    public Closure addConfirmation() {
         return { closure ->
             // ask for human input
             try {
                 timeout(time: 15, unit: 'MINUTES') {
-                    input(
-                        message: confirmMessage,
-                        ok: okMessage,
-                        submitterParameter: submitter
-                    )
+                    input(getInputOptions())
                 }
             } catch (ex) {
                 throw ex
             }
             closure()
         }
+    }
+
+    private Map getInputOptions() {
+        Map inputOptions = [
+            message: confirmMessage,
+            ok: okMessage,
+            submitterParameter: submitter
+        ]
+
+        if (!parameters.isEmpty()) {
+            inputOptions['parameters'] = parameters
+        }
+
+        return inputOptions
+    }
+
+    public static void withParameter(Map parameterOptions) {
+        parameters << parameterOptions
     }
 
     public static void withConfirmMessage(String newMessage) {
@@ -59,5 +74,10 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
     public static enable() {
         this.enabled = true
         return this
+    }
+
+    public static reset() {
+        this.enabled = true
+        this.parameters = []
     }
 }
