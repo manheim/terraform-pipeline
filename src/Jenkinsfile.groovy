@@ -67,6 +67,7 @@ class Jenkinsfile {
 
     def static void initializeDefaultPlugins() {
         TerraformPlugin.init()
+        BuildWithParametersPlugin.init()
     }
 
     def static String getNodeName() {
