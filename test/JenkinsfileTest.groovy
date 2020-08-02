@@ -229,6 +229,21 @@ class JenkinsfileTest {
             public Pipeline2Stage = { args -> }
         }
 
+        class Scripted {
+            @Test
+            void usesDefaultTemplatesIfNonProvided() {
+                def stage1 = mock(Stage.class)
+                def stage2 = mock(Stage.class)
+                def stages = [stage1, stage2]
+
+                Jenkinsfile.declarative = null
+                Jenkinsfile.build(stages)
+
+                verify(stage1, times(1)).build()
+                verify(stage2, times(1)).build()
+            }
+        }
+
         class Declarative {
             @Test
             void usesDefaultTemplatesIfNonProvided() {
