@@ -172,7 +172,7 @@ class BuildWithParametersPluginTest {
                 def original = spy(new DummyJenkinsfile())
                 def plugin = spy(new BuildWithParametersPlugin())
                 doReturn(true).when(plugin).hasParameters()
-                doReturn(expectedParameters).when(plugin).getParameters()
+                doReturn(expectedParameters).when(plugin).getBuildParameters()
                 def decoration = plugin.addParameterToFirstStageOnly()
 
                 decoration.delegate = original
@@ -187,7 +187,7 @@ class BuildWithParametersPluginTest {
                 def original = spy(new DummyJenkinsfile())
                 def plugin = spy(new BuildWithParametersPlugin())
                 doReturn(true).when(plugin).hasParameters()
-                doReturn(['myparams']).when(plugin).getParameters()
+                doReturn(['myparams']).when(plugin).getBuildParameters()
                 def decoration = plugin.addParameterToFirstStageOnly()
 
                 decoration.delegate = original
@@ -234,7 +234,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withBooleanParameter([name: expectedName])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedName, parameters['name'])
         }
@@ -245,7 +245,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withBooleanParameter([defaultValue: expectedDefaultValue])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedDefaultValue, parameters['defaultValue'])
         }
@@ -256,7 +256,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withBooleanParameter([:])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedClass, parameters['$class'])
         }
@@ -267,7 +267,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withBooleanParameter([:])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedDefault, parameters['defaultValue'])
         }
@@ -280,7 +280,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withStringParameter([name: expectedName])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedName, parameters['name'])
         }
@@ -291,7 +291,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withStringParameter([defaultValue: expectedDefaultValue])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedDefaultValue, parameters['defaultValue'])
         }
@@ -302,7 +302,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withStringParameter([:])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedClass, parameters['$class'])
         }
@@ -313,7 +313,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withStringParameter([:])
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()[0]
+            def parameters = plugin.getBuildParameters()[0]
 
             assertEquals(expectedDefault, parameters['defaultValue'])
         }
@@ -332,7 +332,7 @@ class BuildWithParametersPluginTest {
             BuildWithParametersPlugin.withParameter(expectedParameter)
             def plugin = new BuildWithParametersPlugin()
 
-            def parameters = plugin.getParameters()
+            def parameters = plugin.getBuildParameters()
 
             assertThat(parameters, contains(expectedParameter))
         }

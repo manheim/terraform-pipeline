@@ -53,7 +53,7 @@ class TargetPluginTest {
             TargetPlugin.init()
 
             def parametersPlugin = new BuildWithParametersPlugin()
-            Collection actualParms = parametersPlugin.getParameters()
+            Collection actualParms = parametersPlugin.getBuildParameters()
 
             assertThat(actualParms, hasItem([
                 $class: 'hudson.model.StringParameterDefinition',

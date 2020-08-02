@@ -43,7 +43,7 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
         return { innerClosure ->
             if (hasParameters() && !appliedOnce) {
                 properties([
-                    parameters(getParameters())
+                    parameters(getBuildParameters())
                 ])
                 appliedOnce = true
             }
@@ -78,7 +78,7 @@ public class BuildWithParametersPlugin implements BuildStagePlugin,
         return !globalBuildParameters.isEmpty()
     }
 
-    public List getParameters() {
+    public List getBuildParameters() {
         return globalBuildParameters
     }
 
