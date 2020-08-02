@@ -1,4 +1,7 @@
+import static org.hamcrest.Matchers.endsWith
+import static org.hamcrest.Matchers.startsWith
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
@@ -17,6 +20,62 @@ class JenkinsfileTest {
     @Before
     public void setup() {
         jenkinsfile = new Jenkinsfile()
+    }
+
+    @Before
+    @After
+    void reset() {
+        Jenkinsfile.original = null
+    }
+
+    class StandardizedRepoSlug {
+        @Test
+        void startsWithTheRepoOrganization() {
+            def expectedOrg = "my_org"
+            def original = spy(new DummyJenkinsfile())
+            original.scm = mockScm("https://github.com/${expectedOrg}/myRepo.git")
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+            def result = instance.getStandardizedRepoSlug()
+
+            assertThat(result, startsWith(expectedOrg))
+        }
+
+        @Test
+        void convertsOrgFromTitleCaseToSnakeCase() {
+            def expectedOrg = "my_org"
+            def original = spy(new DummyJenkinsfile())
+            original.scm = mockScm("https://github.com/MyOrg/myRepo.git")
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+            def result = instance.getStandardizedRepoSlug()
+
+            assertThat(result, startsWith(expectedOrg))
+        }
+
+        @Test
+        void endsWithTheRepoOrganization() {
+            def expectedRepo = "my_repo"
+            def original = spy(new DummyJenkinsfile())
+            original.scm = mockScm("https://github.com/MyOrg/my_repo.git")
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+            def result = instance.getStandardizedRepoSlug()
+
+            assertThat(result, endsWith("/${expectedRepo}"))
+        }
+
+        @Test
+        void convertsRepoFromTitleCaseToSnakeCase() {
+            def expectedRepo = "my_repo"
+            def original = spy(new DummyJenkinsfile())
+            original.scm = mockScm("https://github.com/MyOrg/MyRepo.git")
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+            def result = instance.getStandardizedRepoSlug()
+
+            assertThat(result, endsWith("/${expectedRepo}"))
+        }
     }
 
     public class ParseScmUrl {
@@ -197,5 +256,28 @@ class JenkinsfileTest {
 
             assertEquals(expectedContent, result)
         }
+    }
+
+    private class MockRepo {
+        String url
+        public MockRepo(String url) {
+            this.url = url
+        }
+    }
+
+    private class MockScm {
+        private List repos =  []
+
+        public MockScm(String repoUrl) {
+            repos << new MockRepo(repoUrl)
+        }
+
+        public List getUserRemoteConfigs() {
+            return repos
+        }
+    }
+
+    private mockScm(String url) {
+        return new MockScm(url)
     }
 }
