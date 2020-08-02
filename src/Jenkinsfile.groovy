@@ -6,7 +6,6 @@ class Jenkinsfile {
     public static instance = new Jenkinsfile()
     public static declarative = false
     public static pipelineTemplate
-    public static List params = []
 
     def String getStandardizedRepoSlug() {
         if (repoSlug != null) {
@@ -68,6 +67,7 @@ class Jenkinsfile {
 
     def static void initializeDefaultPlugins() {
         TerraformPlugin.init()
+        BuildWithParametersPlugin.init()
     }
 
     def static String getNodeName() {
@@ -79,13 +79,6 @@ class Jenkinsfile {
     }
 
     public static void build(List<Stage> stages) {
-        // Decorate the first stage with the list of parameters
-        // The stage must have the decorate() method available
-        if (stages.size() > 0 && stages[0].metaClass.respondsTo(stages[0], 'decorate', String, Closure)) {
-            Stage first_stage = stages[0]
-            first_stage.decorate(TerraformEnvironmentStage.ALL, createParamClosure())
-        }
-
         if (!declarative) {
             stages.each { Stage stage -> stage.build() }
         } else {
@@ -94,14 +87,6 @@ class Jenkinsfile {
             }
 
             pipelineTemplate.call(stages)
-        }
-    }
-
-    private static Closure createParamClosure() {
-        return { ->
-            properties([
-                parameters(params)
-            ])
         }
     }
 
@@ -145,14 +130,12 @@ class Jenkinsfile {
         this.instance = newInstance
     }
 
-    public static addParam(newParam) {
-        params << newParam
-    }
-
     public static reset() {
         instance = new Jenkinsfile()
         original = null
-        params = []
         defaultNodeName = null
+        docker = null
+        pipelineTemplate = null
+        declarative = false
     }
 }

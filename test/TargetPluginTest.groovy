@@ -52,7 +52,9 @@ class TargetPluginTest {
         void addsParameter() {
             TargetPlugin.init()
 
-            Collection actualParms = Jenkinsfile.instance.params
+            def parametersPlugin = new BuildWithParametersPlugin()
+            Collection actualParms = parametersPlugin.getBuildParameters()
+
             assertThat(actualParms, hasItem([
                 $class: 'hudson.model.StringParameterDefinition',
                 name: "RESOURCE_TARGETS",

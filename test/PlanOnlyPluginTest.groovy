@@ -48,7 +48,9 @@ class PlanOnlyPluginTest {
         void addsParameter() {
             PlanOnlyPlugin.init()
 
-            Collection actualParms = Jenkinsfile.instance.params
+            def parametersPlugin = new BuildWithParametersPlugin()
+            Collection actualParms = parametersPlugin.getBuildParameters()
+
             assertThat(actualParms, hasItem([
                 $class: 'hudson.model.BooleanParameterDefinition',
                 name: "FAIL_PLAN_ON_CHANGES",

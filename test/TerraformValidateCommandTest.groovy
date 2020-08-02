@@ -6,12 +6,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformValidateCommandTest {
+    @Before
+    @After
+    public void reset() {
+        TerraformValidateCommand.resetPlugins()
+    }
+
     public class WithDirectory {
         @Test
         void addsDirectoryArgument() {
