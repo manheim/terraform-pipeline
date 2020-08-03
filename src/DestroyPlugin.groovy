@@ -17,6 +17,9 @@ class DestroyPlugin implements TerraformPlanCommandPlugin,
                 name: 'CONFIRM_DESTROY',
                 description: "Type \"destroy ${appName} \${environment}\" to confirm and continue."
             ])
+        ConfirmApplyPlugin.withConfirmCondition { options ->
+            "destroy ${appName} ${options['environment']}".toString().equals(options['input']['CONFIRM_DESTROY'])
+        }
 
         TerraformEnvironmentStage.withStageNamePattern { options -> "${options['command']}-DESTROY-${options['environment']}" }
 

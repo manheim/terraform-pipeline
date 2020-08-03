@@ -8,12 +8,14 @@ import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class ConfirmApplyPluginTest {
+    @Before
     @After
     void reset() {
         ConfirmApplyPlugin.reset()
@@ -84,6 +86,59 @@ class ConfirmApplyPluginTest {
             def description = plugin.getInputOptions(environment)['parameters'][0]['description']
 
             assertEquals("confirm for foo", description)
+        }
+    }
+
+    class CheckConfirmConditions {
+        @Test
+        void doesNothingByDefault() {
+            def plugin = new ConfirmApplyPlugin()
+
+            plugin.checkConfirmConditions('someInput', 'foo')
+        }
+
+        @Test
+        void doesNothingIfAllConditionsReturnTrue() {
+            def plugin = new ConfirmApplyPlugin()
+            ConfirmApplyPlugin.withConfirmCondition { options -> true }
+                              .withConfirmCondition { options -> true }
+                              .withConfirmCondition { options -> true }
+
+            plugin.checkConfirmConditions('someInput', 'foo')
+        }
+
+        @Test(expected = RuntimeException.class)
+        void raisesAnExceptionIfAnyConditionReturnsFalse() {
+            def plugin = new ConfirmApplyPlugin()
+            ConfirmApplyPlugin.withConfirmCondition { options -> true }
+                              .withConfirmCondition { options -> false }
+                              .withConfirmCondition { options -> true }
+
+            plugin.checkConfirmConditions('someInput', 'foo')
+        }
+
+        @Test
+        void passesTheCorrectEnvironmentToConditions() {
+            def expectedEnvironment = 'foo'
+            def actualEnvironment
+            def plugin = new ConfirmApplyPlugin()
+            ConfirmApplyPlugin.withConfirmCondition { options -> actualEnvironment = options['environment'] }
+
+            plugin.checkConfirmConditions('someInput', expectedEnvironment)
+
+            assertEquals(expectedEnvironment, actualEnvironment)
+        }
+
+        @Test
+        void passesTheCorrectUserInput() {
+            def expectedUserInput = 'someInput'
+            def actualUserInput
+            def plugin = new ConfirmApplyPlugin()
+            ConfirmApplyPlugin.withConfirmCondition { options -> actualUserInput = options['input'] }
+
+            plugin.checkConfirmConditions(expectedUserInput, 'someEnv')
+
+            assertEquals(expectedUserInput, actualUserInput)
         }
     }
 }

@@ -3,6 +3,7 @@ import static TerraformEnvironmentStage.CONFIRM
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     public static parameters = []
+    public static confirmConditions = []
     public static enabled = true
     public static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?'
     public static String okMessage = 'Run terraform apply now'
@@ -21,15 +22,16 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
     public Closure addConfirmation(String environment) {
         return { closure ->
-            // ask for human input
+            def userInput
             try {
                 timeout(time: 15, unit: 'MINUTES') {
-                    def inputOptions = getInputOptions(environment)
-                    input(inputOptions)
+                    userInput = input(getInputOptions(environment))
+                    checkConfirmConditions(userInput, environment)
                 }
             } catch (ex) {
                 throw ex
             }
+
             closure()
         }
     }
@@ -53,6 +55,25 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
             memo[key] = value.replaceAll('\\$\\{environment\\}', environment)
             memo
         }
+    }
+
+    public void checkConfirmConditions(userInput, environment) {
+        if (confirmConditions.isEmpty()) {
+            return
+        }
+
+        def options = [ input: userInput, environment: environment ]
+        def hasFailures = confirmConditions.collect { condition -> condition.call(options) }
+                                           .contains(false)
+
+        if (hasFailures) {
+            throw new RuntimeException('Confirmation Failed')
+        }
+    }
+
+    public static withConfirmCondition(Closure condition) {
+        confirmConditions << condition
+        return this
     }
 
     public static void withParameter(Map parameterOptions) {
@@ -84,5 +105,6 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
     public static reset() {
         this.enabled = true
         this.parameters = []
+        this.confirmConditions = []
     }
 }
