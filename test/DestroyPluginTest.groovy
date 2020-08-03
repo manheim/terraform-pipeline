@@ -2,9 +2,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn
+import static org.mockito.Mockito.mock
 
 import org.junit.Test
 import org.junit.Before
@@ -14,19 +14,21 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class DestroyPluginTest {
-
     @Before
-    void resetJenkinsEnv() {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
+    @After
+    void reset() {
+        Jenkinsfile.reset()
+        ConfirmApplyPlugin.reset()
+        TerraformEnvironmentStage.reset()
+        TerraformPlanCommand.resetPlugins()
+        TerraformApplyCommand.resetPlugins()
     }
 
     public class Init {
-        @After
-        void resetPlugins() {
-            TerraformEnvironmentStage.reset()
-            TerraformPlanCommand.resetPlugins()
-            TerraformApplyCommand.resetPlugins()
+        @Before
+        void setup() {
+            Jenkinsfile.instance = mock(Jenkinsfile.class)
+            doReturn('repoName').when(Jenkinsfile.instance).getRepoName()
         }
 
         @Test

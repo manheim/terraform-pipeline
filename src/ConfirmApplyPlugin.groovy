@@ -8,9 +8,6 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
     public static String okMessage = 'Run terraform apply now'
     public static String submitter = 'approver'
 
-    ConfirmApplyPlugin() {
-    }
-
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new ConfirmApplyPlugin())
     }
@@ -18,16 +15,17 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
     @Override
     public void apply(TerraformEnvironmentStage stage) {
         if (enabled) {
-            stage.decorate(CONFIRM, addConfirmation())
+            stage.decorate(CONFIRM, addConfirmation(stage.getEnvironment()))
         }
     }
 
-    public Closure addConfirmation() {
+    public Closure addConfirmation(String environment) {
         return { closure ->
             // ask for human input
             try {
                 timeout(time: 15, unit: 'MINUTES') {
-                    input(getInputOptions())
+                    def inputOptions = getInputOptions(environment)
+                    input(inputOptions)
                 }
             } catch (ex) {
                 throw ex
@@ -36,18 +34,25 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
         }
     }
 
-    private Map getInputOptions() {
-        Map inputOptions = [
+    private Map getInputOptions(String environment) {
+        Map inputOptions = interpolateMap([
             message: confirmMessage,
             ok: okMessage,
             submitterParameter: submitter
-        ]
+        ], environment)
 
         if (!parameters.isEmpty()) {
-            inputOptions['parameters'] = parameters
+            inputOptions['parameters'] = parameters.collect { item -> interpolateMap(item, environment) }
         }
 
         return inputOptions
+    }
+
+    public Map interpolateMap(Map input, String environment) {
+        return input.inject([:]) { memo, key, value ->
+            memo[key] = value.replaceAll('\\$\\{environment\\}', environment)
+            memo
+        }
     }
 
     public static void withParameter(Map parameterOptions) {
