@@ -1,15 +1,20 @@
 # Unreleased
 
-* [Issue #261](https://github.com/manheim/terraform-pipeline/issues/261) Require the user to type a confirmation to use the DestroyPlugin
-* [Issue #275](https://github.com/manheim/terraform-pipeline/issues/275) Alphabetize Plugins in the README
-* [Issue #272](https://github.com/manheim/terraform-pipeline/issues/272) Create a new BuildWithParametersPlugin
-* [Issue #256](https://github.com/manheim/terraform-pipeline/issues/256) Make it easy to apply "standard tags"
-* [Issue #268](https://github.com/manheim/terraform-pipeline/issues/268) Fix broken README links
-* [Issue #265](https://github.com/manheim/terraform-pipeline/issues/265) Make code coverage more visible - add codecov badge to README
-* [Issue #257](https://github.com/manheim/terraform-pipeline/issues/257) Fix codecov reporting
-* [Issue #88](https://github.com/manheim/terraform-pipeline/issues/88) Add an optional TerraformDestroyStage
-* [Issue #24](https://github.com/manheim/terraform-pipeline/issues/24) ConfirmApplyPlugin - allow customization
-* [Issue #162](https://github.com/manheim/terraform-pipeline/issues/162) Support "plan only" on master
+# v5.9
+
+* Docs
+  * [Issue #268](https://github.com/manheim/terraform-pipeline/issues/268) Fix broken README links
+  * [Issue #275](https://github.com/manheim/terraform-pipeline/issues/275) Alphabetize Plugins in the README
+* Terraform Workflow
+  * [Issue #88](https://github.com/manheim/terraform-pipeline/issues/88) Add an optional DestroyPlugin to perform "terraform destroy"
+  * [Issue #261](https://github.com/manheim/terraform-pipeline/issues/261) Require the user to type a confirmation to use the DestroyPlugin
+  * [Issue #256](https://github.com/manheim/terraform-pipeline/issues/256) Make it easy to apply "standard tags"
+  * [Issue #162](https://github.com/manheim/terraform-pipeline/issues/162) Support "plan only" on master
+* terraform-pipeline enhancements
+  * [Issue #272](https://github.com/manheim/terraform-pipeline/issues/272) Create a new BuildWithParametersPlugin
+  * [Issue #257](https://github.com/manheim/terraform-pipeline/issues/257) Fix codecov reporting
+  * [Issue #265](https://github.com/manheim/terraform-pipeline/issues/265) Make code coverage more visible - add codecov badge to README
+  * [Issue #24](https://github.com/manheim/terraform-pipeline/issues/24) ConfirmApplyPlugin - allow customization
 
 # v5.8
 
