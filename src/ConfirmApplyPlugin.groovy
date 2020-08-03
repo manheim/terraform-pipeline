@@ -2,12 +2,13 @@ import static TerraformEnvironmentStage.CONFIRM
 
 class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
 
+    public static final String DEFAULT_SUBMITTER_PARAMETER = 'approver'
     public static parameters = []
     public static confirmConditions = []
     public static enabled = true
     public static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?'
     public static String okMessage = 'Run terraform apply now'
-    public static String submitter = 'approver'
+    public static String submitter
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new ConfirmApplyPlugin())
@@ -40,7 +41,7 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
         Map inputOptions = interpolateMap([
             message: confirmMessage,
             ok: okMessage,
-            submitterParameter: submitter
+            submitterParameter: submitter ?: DEFAULT_SUBMITTER_PARAMETER
         ], environment)
 
         if (!parameters.isEmpty()) {
@@ -76,20 +77,24 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
         return this
     }
 
-    public static void withParameter(Map parameterOptions) {
+    public static withParameter(Map parameterOptions) {
         parameters << parameterOptions
+        return this
     }
 
-    public static void withConfirmMessage(String newMessage) {
+    public static withConfirmMessage(String newMessage) {
         this.confirmMessage = newMessage
+        return this
     }
 
-    public static void withOkMessage(String newMessage) {
+    public static withOkMessage(String newMessage) {
         this.okMessage = newMessage
+        return this
     }
 
-    public static void withSubmitterParameter(String newParam) {
-        this.submitterParameter = newParam
+    public static withSubmitterParameter(String newParam) {
+        this.submitter = newParam
+        return this
     }
 
     public static disable() {
@@ -106,5 +111,6 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
         this.enabled = true
         this.parameters = []
         this.confirmConditions = []
+        this.submitter = null
     }
 }

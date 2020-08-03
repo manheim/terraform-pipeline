@@ -44,6 +44,26 @@ class ConfirmApplyPluginTest {
 
     class GetInputOptions {
         @Test
+        void defaultsToASubmitterParameterOfApprover() {
+            def plugin = new ConfirmApplyPlugin()
+
+            def actual = plugin.getInputOptions('env')['submitterParameter']
+
+            assertEquals(ConfirmApplyPlugin.DEFAULT_SUBMITTER_PARAMETER, actual)
+        }
+
+        @Test
+        void usesTheGivenSubmitterParameter() {
+            def expected = 'submitterOverride'
+            def plugin = new ConfirmApplyPlugin()
+            ConfirmApplyPlugin.withSubmitterParameter(expected)
+
+            def actual = plugin.getInputOptions('env')['submitterParameter']
+
+            assertEquals(expected, actual)
+        }
+
+        @Test
         void defaultsToNoExtraParameters() {
             def plugin = new ConfirmApplyPlugin()
 
@@ -139,6 +159,42 @@ class ConfirmApplyPluginTest {
             plugin.checkConfirmConditions(expectedUserInput, 'someEnv')
 
             assertEquals(expectedUserInput, actualUserInput)
+        }
+    }
+
+    class WithParameter {
+        @Test
+        void isFluent() {
+            def result = ConfirmApplyPlugin.withParameter([:])
+
+            assertEquals(ConfirmApplyPlugin.class, result)
+        }
+    }
+
+    class WithConfirmMessage {
+        @Test
+        void isFluent() {
+            def result = ConfirmApplyPlugin.withConfirmMessage('someMessage')
+
+            assertEquals(ConfirmApplyPlugin.class, result)
+        }
+    }
+
+    class WithOkMessage {
+        @Test
+        void isFluent() {
+            def result = ConfirmApplyPlugin.withOkMessage('someMessage')
+
+            assertEquals(ConfirmApplyPlugin.class, result)
+        }
+    }
+
+    class WithSubmitterParameter {
+        @Test
+        void isFluent() {
+            def result = ConfirmApplyPlugin.withSubmitterParameter('someParam')
+
+            assertEquals(ConfirmApplyPlugin.class, result)
         }
     }
 }
