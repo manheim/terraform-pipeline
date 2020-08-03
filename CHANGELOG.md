@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #261](https://github.com/manheim/terraform-pipeline/issues/261) Require the user to type a confirmation to use the DestroyPlugin
 * [Issue #275](https://github.com/manheim/terraform-pipeline/issues/275) Alphabetize Plugins in the README
 * [Issue #272](https://github.com/manheim/terraform-pipeline/issues/272) Create a new BuildWithParametersPlugin
 * [Issue #256](https://github.com/manheim/terraform-pipeline/issues/256) Make it easy to apply "standard tags"
