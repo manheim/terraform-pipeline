@@ -1,8 +1,10 @@
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 
@@ -137,6 +139,22 @@ class DestroyPluginTest {
             def result = DestroyPlugin.withArgument('-arg1')
 
             assertEquals(DestroyPlugin.class, result)
+        }
+    }
+
+    class ConfirmCondition {
+        @Test
+        void returnsTrueIfConfirmationInputDoesNotMatch() {
+            def condition = DestroyPlugin.getConfirmCondition('myApp')
+
+            assertTrue(condition.call(['environment': 'foo', 'input': ['CONFIRM_DESTROY': 'destroy myApp foo']]))
+        }
+
+        @Test
+        void returnsFalseIfConfirmationInputDoesNotMatch() {
+            def condition = DestroyPlugin.getConfirmCondition('myApp')
+
+            assertFalse(condition.call(['environment': 'foo', 'input': ['CONFIRM_DESTROY': 'anythingElse']]))
         }
     }
 }

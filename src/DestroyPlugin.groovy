@@ -17,9 +17,7 @@ class DestroyPlugin implements TerraformPlanCommandPlugin,
                 name: 'CONFIRM_DESTROY',
                 description: "Type \"destroy ${appName} \${environment}\" to confirm and continue."
             ])
-        ConfirmApplyPlugin.withConfirmCondition { options ->
-            "destroy ${appName} ${options['environment']}".toString() == options['input']['CONFIRM_DESTROY']
-        }
+        ConfirmApplyPlugin.withConfirmCondition(getConfirmCondition(appName))
 
         TerraformEnvironmentStage.withStageNamePattern { options -> "${options['command']}-DESTROY-${options['environment']}" }
 
@@ -41,6 +39,12 @@ class DestroyPlugin implements TerraformPlanCommandPlugin,
     public static withArgument(String arg) {
         arguments << arg
         return this
+    }
+
+    public static getConfirmCondition(String appName) {
+        return { options ->
+            "destroy ${appName} ${options['environment']}".toString() == options['input']['CONFIRM_DESTROY']
+        }
     }
 
     public static reset() {
