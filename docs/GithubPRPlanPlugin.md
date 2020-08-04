@@ -26,3 +26,18 @@ validate.then(deployQa)
         .then(deployProd)
         .build()
 ```
+
+## Changing Repo Host
+
+By default, this plugin will examime the SCM URL configured for a given pipeline to determine how to post comments. 
+If you wish to change the repo host url, use the `withRepoHost()` option.
+
+Example:
+```
+...
+
+// Change the repo host
+GithubPRPlanPlugin.withRepoHost("https://mygithubenterprise.company.com")
+                  .init()
+...
+~``
