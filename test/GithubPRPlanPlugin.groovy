@@ -173,6 +173,18 @@ class GithubPRPlanPluginTest {
 
             assertEquals('http://my.github.com', actualHost)
         }
+
+        @Test
+        void changesGitProtocolToHttps() {
+            def plugin = new GithubPRPlanPlugin()
+            def jenkinsfileInstance = mock(Jenkinsfile.class)
+            doReturn([protocol: 'git', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
+            Jenkinsfile.withInstance(jenkinsfileInstance)
+
+            String actualHost = plugin.getRepoHost()
+
+            assertEquals('https://my.github.com', actualHost)
+        }
     }
 
     class IsPullRequest {
