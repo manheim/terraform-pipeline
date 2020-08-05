@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #254](https://github.com/manheim/terraform-pipeline/issues/254) Auto-convert git/ssh-urls to https with GithubPRPlanPlugin
+
 # v5.9
 
 * Docs
