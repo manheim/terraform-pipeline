@@ -76,6 +76,11 @@ class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnviron
         def protocol = parsedScmUrl['protocol']
         def domain = parsedScmUrl['domain']
 
+        // We cannot post using the git protocol, change to https
+        if (protocol == "git") {
+            protocol = "https"
+        }
+
         return "${protocol}://${domain}"
     }
 
