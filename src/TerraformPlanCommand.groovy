@@ -41,6 +41,11 @@ class TerraformPlanCommand implements TerraformCommand {
         return this
     }
 
+    public TerraformPlanCommand withVariable(String key, String value) {
+        this.arguments << "-var '${key}=${value}'"
+        return this
+    }
+
     public TerraformPlanCommand withStandardErrorRedirection(String errorFile) {
         this.errorFile = errorFile
         return this

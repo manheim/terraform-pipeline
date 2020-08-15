@@ -118,6 +118,28 @@ class TerraformPlanCommandTest {
         }
     }
 
+    public class WithVariable {
+        @Test
+        void addsArgument() {
+            def expectedKey = 'myKey'
+            def expectedValue = 'myValue'
+            def command = new TerraformPlanCommand().withVariable(expectedKey, expectedValue)
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var '${expectedKey}=${expectedValue}'"))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformPlanCommand().withVariable('key1', 'val1')
+                                                    .withVariable('key2', 'val2')
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var 'key1=val1'"))
+            assertThat(actualCommand, containsString("-var 'key2=val2'"))
+        }
+    }
+
     public class WithStandardErrorRedirection {
         @Test
         void sendsStandardErrorToTheGivenFile() {
