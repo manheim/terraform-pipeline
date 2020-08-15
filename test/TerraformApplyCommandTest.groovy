@@ -59,6 +59,39 @@ class TerraformApplyCommandTest {
         }
     }
 
+    public class WithVariable {
+        @Test
+        void addsArgument() {
+            def expectedKey = 'myKey'
+            def expectedValue = 'myValue'
+            def command = new TerraformApplyCommand().withVariable(expectedKey, expectedValue)
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var '${expectedKey}=${expectedValue}'"))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformApplyCommand().withVariable('key1', 'val1')
+                                                    .withVariable('key2', 'val2')
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var 'key1=val1'"))
+            assertThat(actualCommand, containsString("-var 'key2=val2'"))
+        }
+
+        class WithVariablePattern {
+            @Test
+            void usesTheNewPattern() {
+                def command = new TerraformApplyCommand().withVariablePattern { key, value -> "boop-${key}-${value}-boop" }
+                                                         .withVariable('foo', 'bar')
+
+                def actualCommand = command.toString()
+                assertThat(actualCommand, containsString("boop-foo-bar-boop"))
+            }
+        }
+    }
+
     public class WithDirectory {
         @Test
         void addsDirectoryArgument() {
@@ -109,8 +142,8 @@ class TerraformApplyCommandTest {
 
         @Test
         void isCumulative() {
-            def command = new TerraformPlanCommand().withSuffix("fooSuffix")
-                                                    .withSuffix("> /dev/null")
+            def command = new TerraformApplyCommand().withSuffix("fooSuffix")
+                                                     .withSuffix("> /dev/null")
 
             def actualCommand = command.toString()
             assertThat(actualCommand, endsWith("fooSuffix > /dev/null"))

@@ -9,6 +9,7 @@ class TerraformApplyCommand implements TerraformCommand {
     private static plugins = []
     private appliedPlugins = []
     private String directory
+    private Closure variablePattern
 
     public TerraformApplyCommand(String environment) {
         this.environment = environment
@@ -26,6 +27,17 @@ class TerraformApplyCommand implements TerraformCommand {
 
     public TerraformApplyCommand withArgument(String arg) {
         this.args << arg
+        return this
+    }
+
+    public TerraformApplyCommand withVariable(String key, String value) {
+        def pattern = variablePattern ?: { myKey, myValue -> "-var '${myKey}=${myValue}'" }
+        this.args << pattern.call(key, value).toString()
+        return this
+    }
+
+    public TerraformApplyCommand withVariablePattern(Closure pattern) {
+        this.variablePattern = pattern
         return this
     }
 
