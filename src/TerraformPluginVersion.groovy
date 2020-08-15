@@ -1,4 +1,7 @@
-abstract class TerraformPluginVersion implements TerraformValidateStagePlugin, TerraformValidateCommandPlugin {
+abstract class TerraformPluginVersion implements TerraformValidateStagePlugin,
+                                                 TerraformValidateCommandPlugin,
+                                                 TerraformPlanCommandPlugin,
+                                                 TerraformApplyCommandPlugin {
     @Override
     public void apply(TerraformValidateStage validateStage) {
     }
@@ -7,4 +10,11 @@ abstract class TerraformPluginVersion implements TerraformValidateStagePlugin, T
     public void apply(TerraformValidateCommand command) {
     }
 
+    @Override
+    public void apply(TerraformPlanCommand command) {
+    }
+
+    @Override
+    public void apply(TerraformApplyCommand command) {
+    }
 }

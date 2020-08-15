@@ -32,5 +32,33 @@ class TerraformPluginVersion12Test {
             verify(validateStage).decorate(eq(TerraformValidateStage.VALIDATE), any())
         }
     }
+
+    class ModifiesTerraformPlanCommand {
+        @Test
+        void toUseTerraform12CliSyntaxForVariables() {
+            def plan = new TerraformPlanCommand()
+            def version12 = new TerraformPluginVersion12()
+
+            version12.apply(plan)
+            plan.withVariable('key', 'value')
+            def result = plan.toString()
+
+            assertThat(result, containsString("-var='key=value'"))
+        }
+    }
+
+    class ModifiesTerraformApplyCommand {
+        @Test
+        void toUseTerraform12CliSyntaxForVariables() {
+            def applyCommand = new TerraformApplyCommand()
+            def version12 = new TerraformPluginVersion12()
+
+            version12.apply(applyCommand)
+            applyCommand.withVariable('key', 'value')
+            def result = applyCommand.toString()
+
+            assertThat(result, containsString("-var='key=value'"))
+        }
+    }
 }
 
