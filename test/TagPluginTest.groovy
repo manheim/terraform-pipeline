@@ -1,4 +1,3 @@
-import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
@@ -6,6 +5,7 @@ import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test
 import org.junit.Before
@@ -80,15 +80,15 @@ class TagPluginTest {
     public class ApplyForPlanCommand {
         @Test
         public void addsTheTagArgument() {
+            def expectedVariableName = 'tags'
             def expectedTags = '{"key1":"value1","key2":"value2"}'
-            def command = new TerraformPlanCommand()
+            def command = spy(new TerraformPlanCommand())
             def plugin = spy(new TagPlugin())
             doReturn(expectedTags).when(plugin).getTagsAsString(command)
 
             plugin.apply(command)
-            def result = command.toString()
 
-            assertThat(result, containsString("-var=\'tags=${expectedTags}\'"))
+            verify(command).withVariable(expectedVariableName, expectedTags)
         }
 
         class WithVariableName {
@@ -96,13 +96,14 @@ class TagPluginTest {
             void overridesTheDefaultVariableName() {
                 def expectedVariableName = 'myVar'
                 TagPlugin.withVariableName(expectedVariableName)
-                def command = new TerraformPlanCommand()
-                def plugin = new TagPlugin()
+                def command = spy(new TerraformPlanCommand())
+                def plugin = spy(new TagPlugin())
+                def expectedTags = '{"key1":"value1","key2":"value2"}'
+                doReturn(expectedTags).when(plugin).getTagsAsString(command)
 
                 plugin.apply(command)
-                def result = command.toString()
 
-                assertThat(result, containsString("-var=\'${expectedVariableName}={}'"))
+                verify(command).withVariable(expectedVariableName, expectedTags)
             }
         }
     }
@@ -110,32 +111,32 @@ class TagPluginTest {
     public class ApplyForApplyCommand {
         @Test
         public void addsTheTagArgument() {
+            def expectedVariableName = 'tags'
             def expectedTags = '{"key1":"value1","key2":"value2"}'
-            def command = new TerraformApplyCommand()
+            def command = spy(new TerraformApplyCommand())
             def plugin = spy(new TagPlugin())
             doReturn(expectedTags).when(plugin).getTagsAsString(command)
 
             plugin.apply(command)
-            def result = command.toString()
 
-            assertThat(result, containsString("-var=\'tags=${expectedTags}\'"))
+            verify(command).withVariable(expectedVariableName, expectedTags)
         }
 
         class WithVariableName {
             @Test
             void overridesTheDefaultVariableName() {
                 def expectedVariableName = 'myVar'
+                def expectedTags = '{"key1":"value1","key2":"value2"}'
                 TagPlugin.withVariableName(expectedVariableName)
-                def command = new TerraformApplyCommand()
-                def plugin = new TagPlugin()
+                def command = spy(new TerraformApplyCommand())
+                def plugin = spy(new TagPlugin())
+                doReturn(expectedTags).when(plugin).getTagsAsString(command)
 
                 plugin.apply(command)
-                def result = command.toString()
 
-                assertThat(result, containsString("-var=\'${expectedVariableName}={}'"))
+                verify(command).withVariable(expectedVariableName, expectedTags)
             }
         }
-
     }
 
     public class GetTagsAsString {

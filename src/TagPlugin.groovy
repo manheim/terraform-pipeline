@@ -22,11 +22,10 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     }
 
     private void applyToCommand(command) {
-        def tagString = getTagsAsString(command)
         def variableName = getVariableName()
-        def tagArgument = "-var=\'${variableName}=${tagString}\'"
+        def tagString = getTagsAsString(command)
 
-        command.withArgument(tagArgument)
+        command.withVariable(variableName, tagString)
     }
 
     public static withVariableName(String variableName) {
