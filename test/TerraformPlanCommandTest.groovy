@@ -138,6 +138,17 @@ class TerraformPlanCommandTest {
             assertThat(actualCommand, containsString("-var 'key1=val1'"))
             assertThat(actualCommand, containsString("-var 'key2=val2'"))
         }
+
+        class WithVariablePattern {
+            @Test
+            void usesTheNewPattern() {
+                def command = new TerraformPlanCommand().withVariablePattern { key, value -> "boop-${key}-${value}-boop" }
+                                                        .withVariable('foo', 'bar')
+
+                def actualCommand = command.toString()
+                assertThat(actualCommand, containsString("boop-foo-bar-boop"))
+            }
+        }
     }
 
     public class WithStandardErrorRedirection {
