@@ -73,7 +73,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
         this.version = userVersion
     }
 
-    static  void resetVersion() {
+    static  void reset() {
         this.version = null
     }
 

@@ -19,8 +19,8 @@ class TerraformPluginTest {
 
     class VersionDetection {
         @After
-        void resetVersion() {
-            TerraformPlugin.resetVersion()
+        void reset() {
+            TerraformPlugin.reset()
         }
 
         @Test
@@ -48,8 +48,8 @@ class TerraformPluginTest {
 
     class WithVersion {
         @After
-        void resetVersion() {
-            TerraformPlugin.resetVersion()
+        void reset() {
+            TerraformPlugin.reset()
         }
 
         @Test
@@ -61,8 +61,8 @@ class TerraformPluginTest {
 
     class Strategyfor {
         @After
-        void resetVersion() {
-            TerraformPlugin.resetVersion()
+        void reset() {
+            TerraformPlugin.reset()
         }
 
         @Test
