@@ -3,12 +3,19 @@ import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify;
 
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPluginVersion11Test {
+    @Before
+    @After
+    void reset() {
+        TerraformPlugin.reset()
+    }
 
     class ModifiesTerraformValidateCommand {
         @Test
