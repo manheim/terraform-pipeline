@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
@@ -54,6 +55,22 @@ class TerraformPluginTest {
             def foundVersion = plugin.detectVersion()
 
             assertEquals(expectedVersion, foundVersion)
+        }
+    }
+
+    class CheckVersion {
+        @Before
+        @After
+        void reset() {
+            TerraformPlugin.reset()
+            Jenkinsfile.reset()
+        }
+
+        // This can be fleshed out.  For now, jusst make sure it runs
+        @Test
+        void doesNotError() {
+            Jenkinsfile.original = new DummyJenkinsfile()
+            TerraformPlugin.checkVersion()
         }
     }
 

@@ -31,6 +31,10 @@ class DummyJenkinsfile {
         println "DummyJenkinsfile.node(${nodeName})"
         closure()
     }
+    public node(Closure closure) {
+        println "DummyJenkinsfile.node { }"
+        closure()
+    }
     public deleteDir() { println "DummyJenkinsfile.deleteDir" }
     public checkout(scm) { println "DummyJenkinsfile.checkout(${scm})" }
     public withEnv(Collection env, Closure closure) {
@@ -47,5 +51,10 @@ class DummyJenkinsfile {
     }
     public input(options) {
         println "DummyJenkinsfile.input(${options})"
+    }
+    public ApplyJenkinsfileClosure(Closure closure) {
+        println "DummyJenkinsfile.ApplyJenkinsfileClosure"
+        closure.delegate = this
+        closure()
     }
 }
