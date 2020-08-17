@@ -81,10 +81,10 @@ class TagPluginTest {
         @Test
         public void addsTheTagArgument() {
             def expectedVariableName = 'tags'
-            def expectedTags = '{"key1":"value1","key2":"value2"}'
+            def expectedTags = [key1:'value1', key2: 'value2']
             def command = spy(new TerraformPlanCommand())
             def plugin = spy(new TagPlugin())
-            doReturn(expectedTags).when(plugin).getTagsAsString(command)
+            doReturn(expectedTags).when(plugin).getTags(command)
 
             plugin.apply(command)
 
@@ -98,8 +98,8 @@ class TagPluginTest {
                 TagPlugin.withVariableName(expectedVariableName)
                 def command = spy(new TerraformPlanCommand())
                 def plugin = spy(new TagPlugin())
-                def expectedTags = '{"key1":"value1","key2":"value2"}'
-                doReturn(expectedTags).when(plugin).getTagsAsString(command)
+                def expectedTags = [key1: 'value1', key2: 'value2']
+                doReturn(expectedTags).when(plugin).getTags(command)
 
                 plugin.apply(command)
 
@@ -112,10 +112,10 @@ class TagPluginTest {
         @Test
         public void addsTheTagArgument() {
             def expectedVariableName = 'tags'
-            def expectedTags = '{"key1":"value1","key2":"value2"}'
+            def expectedTags = [key1:'value1', key2:'value2']
             def command = spy(new TerraformApplyCommand())
             def plugin = spy(new TagPlugin())
-            doReturn(expectedTags).when(plugin).getTagsAsString(command)
+            doReturn(expectedTags).when(plugin).getTags(command)
 
             plugin.apply(command)
 
@@ -126,11 +126,11 @@ class TagPluginTest {
             @Test
             void overridesTheDefaultVariableName() {
                 def expectedVariableName = 'myVar'
-                def expectedTags = '{"key1":"value1","key2":"value2"}'
+                def expectedTags = [key1:'value1', key2:'value2']
                 TagPlugin.withVariableName(expectedVariableName)
                 def command = spy(new TerraformApplyCommand())
                 def plugin = spy(new TagPlugin())
-                doReturn(expectedTags).when(plugin).getTagsAsString(command)
+                doReturn(expectedTags).when(plugin).getTags(command)
 
                 plugin.apply(command)
 
@@ -139,24 +139,24 @@ class TagPluginTest {
         }
     }
 
-    public class GetTagsAsString {
+    public class GetTags {
         @Test
-        void returnsAndEmptyMapStringIfNoKeyValuePairsWereAdded() {
+        void returnsAndEmptyMapIfNoKeyValuePairsWereAdded() {
             def plugin = new TagPlugin()
 
-            def result = plugin.getTagsAsString()
+            def result = plugin.getTags()
 
-            assertEquals("{}", result)
+            assertEquals([:], result)
         }
 
         @Test
         void constructMapStringUsingASingleKeyValuePair() {
             def plugin = new TagPlugin()
-            plugin.withTag('key', 'value')
+            plugin.withTag('mykey', 'myvalue')
 
-            def result = plugin.getTagsAsString()
+            def result = plugin.getTags()
 
-            assertEquals('{"key":"value"}', result)
+            assertEquals([mykey: 'myvalue'], result)
         }
 
         @Test
@@ -165,9 +165,9 @@ class TagPluginTest {
             plugin.withTag('key1', 'value1')
             plugin.withTag('key2', 'value2')
 
-            def result = plugin.getTagsAsString()
+            def result = plugin.getTags()
 
-            assertEquals('{"key1":"value1","key2":"value2"}', result)
+            assertEquals([key1: 'value1', key2: 'value2'], result)
         }
 
         @Test
@@ -177,9 +177,9 @@ class TagPluginTest {
             def command = mock(TerraformCommand.class)
             doReturn('myenv').when(command).getEnvironment()
 
-            def result = plugin.getTagsAsString(command)
+            def result = plugin.getTags(command)
 
-            assertEquals('{"environment":"myenv"}', result)
+            assertEquals([ environment: 'myenv' ], result)
         }
 
         @Test
@@ -190,9 +190,11 @@ class TagPluginTest {
             def command = mock(TerraformCommand.class)
             doReturn('myenv').when(command).getEnvironment()
 
-            def result = plugin.getTagsAsString(command)
+            def result = plugin.getTags(command)
 
-            assertEquals("{\"${expectedTagKey}\":\"myenv\"}".toString(), result)
+            Map expectedResult = [:]
+            expectedResult[expectedTagKey] = 'myenv'
+            assertEquals(expectedResult, result)
         }
 
         @Test
@@ -208,18 +210,17 @@ class TagPluginTest {
             doReturn(fileContent).when(original).readFile(file)
             Jenkinsfile.original = original
 
-            def result = plugin.getTagsAsString(command)
+            def result = plugin.getTags(command)
 
-            assertEquals("{\"${key}\":\"${fileContent}\"}".toString(), result)
+            assertEquals(['change-id': "${fileContent}".toString()], result)
         }
 
         @Test
         void constructsTagsFromEnvironmentVariables() {
-            def key = 'someTagName'
             def variable = 'MY_ENV'
             def expectedValue = 'valueOfMY_ENV'
             def plugin = new TagPlugin()
-            plugin.withTagFromEnvironmentVariable(key, variable)
+            plugin.withTagFromEnvironmentVariable('someTagName', variable)
             def command = mock(TerraformCommand.class)
             def original = new DummyJenkinsfile()
             original.env = [:]
@@ -227,9 +228,9 @@ class TagPluginTest {
 
             Jenkinsfile.original = original
 
-            def result = plugin.getTagsAsString(command)
+            def result = plugin.getTags(command)
 
-            assertEquals("{\"${key}\":\"${expectedValue}\"}".toString(), result)
+            assertEquals([ 'someTagName': expectedValue ], result)
         }
 
         @Test
@@ -241,9 +242,9 @@ class TagPluginTest {
             def command = mock(TerraformCommand.class)
             doReturn('myenv').when(command).getEnvironment()
 
-            def result = plugin.getTagsAsString(command)
+            def result = plugin.getTags(command)
 
-            assertEquals('{"key1":"value1","environment":"myenv","key2":"value2"}', result)
+            assertEquals([key1: 'value1', environment: 'myenv', key2: 'value2'], result)
         }
     }
 }

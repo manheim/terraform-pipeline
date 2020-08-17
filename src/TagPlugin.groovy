@@ -22,10 +22,10 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     }
 
     private void applyToCommand(command) {
-        def variableName = getVariableName()
-        def tagString = getTagsAsString(command)
+        String variableName = getVariableName()
+        Map tags = getTags(command)
 
-        command.withVariable(variableName, tagString)
+        command.withVariable(variableName, tags)
     }
 
     public static withVariableName(String variableName) {
@@ -33,22 +33,38 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     }
 
     public static withEnvironmentTag(String tagKey = 'environment') {
-        tagClosures << { command -> "\"${tagKey}\":\"${command.getEnvironment()}\"" }
+        tagClosures << { command ->
+            Map tag = [:]
+            tag[tagKey] = command.getEnvironment()
+            tag
+        }
         return this
     }
 
     public static withTag(String key, String value) {
-        tagClosures << { command -> "\"${key}\":\"${value}\"" }
+        tagClosures << { command ->
+            Map tag = [:]
+            tag[key] = value
+            tag
+        }
         return this
     }
 
     public static withTagFromFile(String key, String filename) {
-        tagClosures << { command -> "\"${key}\":\"${Jenkinsfile.readFile(filename)}\"" }
+        tagClosures << { command ->
+            Map tag = [:]
+            tag[key] = Jenkinsfile.readFile(filename)
+            tag
+        }
         return this
     }
 
     public static withTagFromEnvironmentVariable(String key, String variable) {
-        tagClosures << { command -> "\"${key}\":\"${Jenkinsfile.getEnvironmentVariable(variable)}\"" }
+        tagClosures << { command ->
+            Map tag = [:]
+            tag[key] = Jenkinsfile.getEnvironmentVariable(variable)
+            tag
+        }
         return this
     }
 
@@ -56,9 +72,10 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         return variableName ?: 'tags'
     }
 
-    public String getTagsAsString(TerraformCommand command) {
-        def result = tagClosures.collect { it.call(command) }.join(',')
-        return "{${result}}"
+    public Map getTags(TerraformCommand command) {
+        return tagClosures.inject([:]) { memo, tagClosure ->
+            memo + tagClosure.call(command)
+        }
     }
 
     public static reset() {

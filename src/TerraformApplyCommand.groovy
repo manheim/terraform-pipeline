@@ -30,6 +30,10 @@ class TerraformApplyCommand implements TerraformCommand {
         return this
     }
 
+    public TerraformApplyCommand withVariable(String key, Map value) {
+        return withVariable(key, convertMapToCliString(value))
+    }
+
     public TerraformApplyCommand withVariable(String key, String value) {
         def pattern = variablePattern ?: { myKey, myValue -> "-var '${myKey}=${myValue}'" }
         this.args << pattern.call(key, value).toString()
@@ -39,6 +43,10 @@ class TerraformApplyCommand implements TerraformCommand {
     public TerraformApplyCommand withVariablePattern(Closure pattern) {
         this.variablePattern = pattern
         return this
+    }
+
+    public String convertMapToCliString(Map value) {
+        return value.toString()
     }
 
     public TerraformApplyCommand withPrefix(String prefix) {
