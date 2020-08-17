@@ -75,6 +75,11 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
 
     static  void reset() {
         this.version = null
+
+        TerraformValidateCommand.resetPlugins()
+        TerraformPlanCommand.resetPlugins()
+        TerraformApplyCommand.resetPlugins()
+        TerraformValidateStage.resetPlugins()
     }
 
     public boolean fileExists(String filename) {
