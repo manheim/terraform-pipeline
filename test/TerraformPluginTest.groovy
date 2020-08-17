@@ -24,6 +24,17 @@ class TerraformPluginTest {
         }
 
         @Test
+        void usesExplicitVersionIfProvided() {
+            def expectedVersion = 'foo'
+            def plugin = new TerraformPlugin()
+            TerraformPlugin.withVersion(expectedVersion)
+
+            def foundVersion = plugin.detectVersion()
+
+            assertEquals(expectedVersion, foundVersion)
+        }
+
+        @Test
         void usesDefaultIfNoFilePresent() {
             def plugin = spy(new TerraformPlugin())
             doReturn(false).when(plugin).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
