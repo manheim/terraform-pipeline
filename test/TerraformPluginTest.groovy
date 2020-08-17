@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
@@ -19,8 +20,19 @@ class TerraformPluginTest {
 
     class VersionDetection {
         @After
-        void resetVersion() {
-            TerraformPlugin.resetVersion()
+        void reset() {
+            TerraformPlugin.reset()
+        }
+
+        @Test
+        void usesExplicitVersionIfProvided() {
+            def expectedVersion = 'foo'
+            def plugin = new TerraformPlugin()
+            TerraformPlugin.withVersion(expectedVersion)
+
+            def foundVersion = plugin.detectVersion()
+
+            assertEquals(expectedVersion, foundVersion)
         }
 
         @Test
@@ -46,10 +58,26 @@ class TerraformPluginTest {
         }
     }
 
+    class CheckVersion {
+        @Before
+        @After
+        void reset() {
+            TerraformPlugin.reset()
+            Jenkinsfile.reset()
+        }
+
+        // This can be fleshed out.  For now, jusst make sure it runs
+        @Test
+        void doesNotError() {
+            Jenkinsfile.original = new DummyJenkinsfile()
+            TerraformPlugin.checkVersion()
+        }
+    }
+
     class WithVersion {
         @After
-        void resetVersion() {
-            TerraformPlugin.resetVersion()
+        void reset() {
+            TerraformPlugin.reset()
         }
 
         @Test
@@ -61,8 +89,8 @@ class TerraformPluginTest {
 
     class Strategyfor {
         @After
-        void resetVersion() {
-            TerraformPlugin.resetVersion()
+        void reset() {
+            TerraformPlugin.reset()
         }
 
         @Test
@@ -176,6 +204,36 @@ class TerraformPluginTest {
             plugin.apply(validateCommand)
 
             verify(strategy, times(1)).apply(validateCommand)
+        }
+    }
+
+    class ApplyTerraformPlanCommand {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformPlanCommand() {
+            def planCommand = mock(TerraformPlanCommand.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn('someVersion').when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor('someVersion')
+
+            plugin.apply(planCommand)
+
+            verify(strategy, times(1)).apply(planCommand)
+        }
+    }
+
+    class ApplyTerraformApplyCommand {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformApplyCommand() {
+            def applyCommand = mock(TerraformApplyCommand.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn('someVersion').when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor('someVersion')
+
+            plugin.apply(applyCommand)
+
+            verify(strategy, times(1)).apply(applyCommand)
         }
     }
 

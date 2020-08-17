@@ -9,7 +9,10 @@
  * See TerraformPluginVersion11 or TerraformPluginVersion12 for an example
  * before strating on your own.
  */
-class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValidateStagePlugin {
+class TerraformPlugin implements TerraformValidateCommandPlugin,
+                                 TerraformPlanCommandPlugin,
+                                 TerraformApplyCommandPlugin,
+                                 TerraformValidateStagePlugin {
 
     static String version
     static final String DEFAULT_VERSION = '0.11.0'
@@ -19,6 +22,8 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         def plugin = new TerraformPlugin()
 
         TerraformValidateCommand.addPlugin(plugin)
+        TerraformPlanCommand.addPlugin(plugin)
+        TerraformApplyCommand.addPlugin(plugin)
         TerraformValidateStage.addPlugin(plugin)
     }
 
@@ -68,8 +73,13 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
         this.version = userVersion
     }
 
-    static  void resetVersion() {
+    static  void reset() {
         this.version = null
+
+        TerraformValidateCommand.resetPlugins()
+        TerraformPlanCommand.resetPlugins()
+        TerraformApplyCommand.resetPlugins()
+        TerraformValidateStage.resetPlugins()
     }
 
     public boolean fileExists(String filename) {
@@ -87,6 +97,20 @@ class TerraformPlugin implements TerraformValidateCommandPlugin, TerraformValida
 
     @Override
     void apply(TerraformValidateCommand command) {
+        applyToCommand(command)
+    }
+
+    @Override
+    void apply(TerraformPlanCommand command) {
+        applyToCommand(command)
+    }
+
+    @Override
+    void apply(TerraformApplyCommand command) {
+        applyToCommand(command)
+    }
+
+    void applyToCommand(command) {
         def version = detectVersion()
 
         def strategy = strategyFor(version)

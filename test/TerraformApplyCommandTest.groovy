@@ -2,8 +2,11 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.not
 import static org.hamcrest.Matchers.startsWith
+import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
@@ -59,6 +62,85 @@ class TerraformApplyCommandTest {
         }
     }
 
+    public class WithVariableString {
+        @Test
+        void addsArgument() {
+            def expectedKey = 'myKey'
+            def expectedValue = 'myValue'
+            def command = new TerraformApplyCommand().withVariable(expectedKey, expectedValue)
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var '${expectedKey}=${expectedValue}'"))
+        }
+
+        @Test
+        void isCumulative() {
+            def command = new TerraformApplyCommand().withVariable('key1', 'val1')
+                                                    .withVariable('key2', 'val2')
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var 'key1=val1'"))
+            assertThat(actualCommand, containsString("-var 'key2=val2'"))
+        }
+
+        class WithVariablePattern {
+            @Test
+            void usesTheNewPattern() {
+                def command = new TerraformApplyCommand().withVariablePattern { key, value -> "boop-${key}-${value}-boop" }
+                                                         .withVariable('foo', 'bar')
+
+                def actualCommand = command.toString()
+                assertThat(actualCommand, containsString("boop-foo-bar-boop"))
+            }
+        }
+    }
+
+    public class WithVariableMap {
+        @Test
+        void convertsMapToStringAndTreatsLikeAStringVariable() {
+            def expectedKey = 'myKey'
+            def expectedMap = [mapKey: 'mapValue']
+            def command = spy(new TerraformApplyCommand())
+            doReturn('someMapString').when(command).convertMapToCliString(expectedMap)
+
+            command.withVariable(expectedKey, expectedMap)
+
+            verify(command).withVariable(expectedKey, 'someMapString')
+        }
+    }
+
+    public class ConvertMapToCliString {
+        @Test
+        void handlesSingleKeyPair() {
+            def map = [mapKey: 'mapValue']
+            def command = new TerraformApplyCommand()
+
+            def result = command.convertMapToCliString(map)
+            assertEquals('{mapKey=\"mapValue\"}', result)
+        }
+
+        @Test
+        void handlesMultipleKeyPairs() {
+            def map = [mapKey1: 'mapValue1', mapKey2: 'mapValue2']
+            def command = new TerraformApplyCommand()
+
+            def result = command.convertMapToCliString(map)
+            assertEquals('{mapKey1=\"mapValue1\",mapKey2=\"mapValue2\"}', result)
+        }
+
+        @Test
+        void usesMapPatternIfGiven() {
+            def command = new TerraformApplyCommand().withMapPattern { map ->
+                def result = map.collect { key, value -> "${value}|${key}" }.join(';')
+                return "[${result}]"
+            }
+            def map = [mapKey1: 'mapValue1', mapKey2: 'mapValue2']
+
+            def result = command.convertMapToCliString(map)
+            assertEquals('[mapValue1|mapKey1;mapValue2|mapKey2]', result)
+        }
+    }
+
     public class WithDirectory {
         @Test
         void addsDirectoryArgument() {
@@ -109,8 +191,8 @@ class TerraformApplyCommandTest {
 
         @Test
         void isCumulative() {
-            def command = new TerraformPlanCommand().withSuffix("fooSuffix")
-                                                    .withSuffix("> /dev/null")
+            def command = new TerraformApplyCommand().withSuffix("fooSuffix")
+                                                     .withSuffix("> /dev/null")
 
             def actualCommand = command.toString()
             assertThat(actualCommand, endsWith("fooSuffix > /dev/null"))

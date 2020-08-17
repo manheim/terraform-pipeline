@@ -11,6 +11,8 @@ class TerraformPlanCommand implements TerraformCommand {
     private appliedPlugins = []
     private String directory
     private String errorFile
+    private Closure variablePattern
+    private Closure mapPattern
 
     public TerraformPlanCommand(String environment) {
         this.environment = environment
@@ -38,6 +40,35 @@ class TerraformPlanCommand implements TerraformCommand {
 
     public TerraformPlanCommand withArgument(String argument) {
         this.arguments << argument
+        return this
+    }
+
+    public TerraformPlanCommand withVariable(String key, Map value) {
+        return withVariable(key, convertMapToCliString(value))
+    }
+
+    public TerraformPlanCommand withVariable(String key, String value) {
+        def pattern = variablePattern ?: { myKey, myValue -> "-var '${myKey}=${myValue}'" }
+        this.arguments << pattern.call(key, value).toString()
+        return this
+    }
+
+    public TerraformPlanCommand withVariablePattern(Closure pattern) {
+        this.variablePattern = pattern
+        return this
+    }
+
+    public String convertMapToCliString(Map newMap) {
+        def pattern = mapPattern ?: { map ->
+            def result = map.collect { key, value -> "${key}=\"${value}\"" }.join(',')
+            return "{${result}}"
+        }
+
+        return pattern.call(newMap)
+    }
+
+    public TerraformPlanCommand withMapPattern(Closure pattern) {
+        this.mapPattern = pattern
         return this
     }
 

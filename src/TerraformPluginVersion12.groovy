@@ -17,4 +17,20 @@ class TerraformPluginVersion12 extends TerraformPluginVersion {
     public static TerraformInitCommand initCommandForValidate() {
         return TerraformInitCommand.instanceFor('validate').withoutBackend()
     }
+
+    public void apply(TerraformPlanCommand command) {
+        command.withVariablePattern { key, value -> "-var='${key}=${value}'" }
+               .withMapPattern { map ->
+                def result = map.collect { key, value -> "\"${key}\":\"${value}\"" }.join(',')
+                return "{${result}}"
+               }
+    }
+
+    public void apply(TerraformApplyCommand command) {
+        command.withVariablePattern { key, value -> "-var='${key}=${value}'" }
+               .withMapPattern { map ->
+                def result = map.collect { key, value -> "\"${key}\":\"${value}\"" }.join(',')
+                return "{${result}}"
+               }
+    }
 }
