@@ -10,6 +10,7 @@ class TerraformApplyCommand implements TerraformCommand {
     private appliedPlugins = []
     private String directory
     private Closure variablePattern
+    private Closure mapPattern
 
     public TerraformApplyCommand(String environment) {
         this.environment = environment
@@ -45,8 +46,18 @@ class TerraformApplyCommand implements TerraformCommand {
         return this
     }
 
-    public String convertMapToCliString(Map value) {
-        return value.toString()
+    public String convertMapToCliString(Map newMap) {
+        def pattern = mapPattern ?: { map ->
+            def result = map.collect { key, value -> "${key}=\"${value}\"" }.join(',')
+            return "{${result}}"
+        }
+
+        return pattern.call(newMap)
+    }
+
+    public TerraformApplyCommand withMapPattern(Closure pattern) {
+        this.mapPattern = pattern
+        return this
     }
 
     public TerraformApplyCommand withPrefix(String prefix) {

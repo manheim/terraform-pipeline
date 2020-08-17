@@ -2,11 +2,14 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.not
 import static org.hamcrest.Matchers.startsWith
+import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doReturn
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.times
+import static org.mockito.Mockito.verify
 
 import org.junit.After
 import org.junit.Test
@@ -118,7 +121,7 @@ class TerraformPlanCommandTest {
         }
     }
 
-    public class WithVariable {
+    public class WithVariableString {
         @Test
         void addsArgument() {
             def expectedKey = 'myKey'
@@ -148,6 +151,52 @@ class TerraformPlanCommandTest {
                 def actualCommand = command.toString()
                 assertThat(actualCommand, containsString("boop-foo-bar-boop"))
             }
+        }
+    }
+
+    public class WithVariableMap {
+        @Test
+        void convertsMapToStringAndTreatsLikeAStringVariable() {
+            def expectedKey = 'myKey'
+            def expectedMap = [mapKey: 'mapValue']
+            def command = spy(new TerraformPlanCommand())
+            doReturn('someMapString').when(command).convertMapToCliString(expectedMap)
+
+            command.withVariable(expectedKey, expectedMap)
+
+            verify(command).withVariable(expectedKey, 'someMapString')
+        }
+    }
+
+    public class ConvertMapToCliString {
+        @Test
+        void handlesSingleKeyPair() {
+            def map = [mapKey: 'mapValue']
+            def command = new TerraformPlanCommand()
+
+            def result = command.convertMapToCliString(map)
+            assertEquals('{mapKey=\"mapValue\"}', result)
+        }
+
+        @Test
+        void handlesMultipleKeyPairs() {
+            def map = [mapKey1: 'mapValue1', mapKey2: 'mapValue2']
+            def command = new TerraformPlanCommand()
+
+            def result = command.convertMapToCliString(map)
+            assertEquals('{mapKey1=\"mapValue1\",mapKey2=\"mapValue2\"}', result)
+        }
+
+        @Test
+        void usesMapPatternIfGiven() {
+            def command = new TerraformPlanCommand().withMapPattern { map ->
+                def result = map.collect { key, value -> "${value}|${key}" }.join(';')
+                return "[${result}]"
+            }
+            def map = [mapKey1: 'mapValue1', mapKey2: 'mapValue2']
+
+            def result = command.convertMapToCliString(map)
+            assertEquals('[mapValue1|mapKey1;mapValue2|mapKey2]', result)
         }
     }
 
