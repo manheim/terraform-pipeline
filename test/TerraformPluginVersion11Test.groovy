@@ -26,6 +26,7 @@ class TerraformPluginVersion11Test {
         @Test
         void toPreserveTerraform11CliSyntaxForVariables() {
             def plan = new TerraformPlanCommand()
+            println "plugins for plan: ${plan.getPlugins()}"
             def version11 = new TerraformPluginVersion11()
 
             version11.apply(plan)

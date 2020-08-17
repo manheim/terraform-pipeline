@@ -179,6 +179,36 @@ class TerraformPluginTest {
         }
     }
 
+    class ApplyTerraformPlanCommand {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformPlanCommand() {
+            def planCommand = mock(TerraformPlanCommand.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn('someVersion').when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor('someVersion')
+
+            plugin.apply(planCommand)
+
+            verify(strategy, times(1)).apply(planCommand)
+        }
+    }
+
+    class ApplyTerraformApplyCommand {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformApplyCommand() {
+            def applyCommand = mock(TerraformApplyCommand.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn('someVersion').when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor('someVersion')
+
+            plugin.apply(applyCommand)
+
+            verify(strategy, times(1)).apply(applyCommand)
+        }
+    }
+
     class ApplyTerraformValidateStage {
         @Test
         void shouldDecorateTheGivenStage() {
