@@ -33,6 +33,8 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         return { closure ->
             closure()
 
+            echo pwd()
+
             String planAbsolutePath = new File(pwd(), "tfplan").getParent() + "/tfplan"
         }
     }
