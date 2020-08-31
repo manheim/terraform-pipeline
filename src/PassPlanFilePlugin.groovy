@@ -33,8 +33,7 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         return { closure ->
             closure()
 
-            String workspace = Jenkinsfile.instance.getEnv()['WORKSPACE']
-            String planAbsolutePath = new File(workspace, "tfplan").getParent() + "/tfplan"
+            String planAbsolutePath = new File(pwd(), "tfplan").getParent() + "/tfplan"
         }
     }
 
