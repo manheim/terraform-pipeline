@@ -6,7 +6,7 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin {
     private String branch
 
     ConditionalApplyPlugin() {
-        branch = 'master'
+        branch = 'issue_175'  // TODO: change back to master
     }
 
     @Override
