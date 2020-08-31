@@ -21,7 +21,8 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
 
     @Override
     public void apply(TerraformPlanCommand command) {
-        command.withArgument("-out=tfplan")
+        String env = command.getEnvironment()
+        command.withArgument("-out=tfplan-" + env)
     }
 
     @Override
@@ -33,12 +34,12 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         return { closure ->
             closure()
             String workingDir = pwd()
-            setAbsolutePath(workingDir)
+            setAbsolutePath(workingDir, env)
         }
     }
 
-    public void setAbsolutePath(String workingDir) {
-        this.planAbsolutePath = workingDir + "/tfplan"
+    public void setAbsolutePath(String workingDir, String env) {
+        this.planAbsolutePath = workingDir + "/tfplan-" + env
     }
 
 
