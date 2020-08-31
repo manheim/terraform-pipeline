@@ -32,10 +32,15 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     public Closure savePlanFile(String env) {
         return { closure ->
             closure()
-
-            String planAbsolutePath = pwd() + "/tfplan"
+            String workingDir = pwd()
+            setAbsolutePath(workingDir)
         }
     }
+
+    public void setAbsolutePath(String workingDir) {
+        this.planAbsolutePath = workingDir + "/tfplan"
+    }
+
 
     public static void reset() {
         planAbsolutePath = null
