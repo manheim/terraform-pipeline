@@ -46,10 +46,10 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     public Closure downloadArchive(String env) {
         return { closure ->
             String jenkinsUrl  = Jenkinsfile.instance.getEnv()['JENKINS_URL']
-            String jobBaseName = Jenkinsfile.instance.getEnv()['JOB_BASE_NAME']
+            String jobName     = Jenkinsfile.instance.getEnv()['JOB_NAME']
             String branch      = Jenkinsfile.instance.getEnv()['BRANCH_NAME']
             String buildNumber = Jenkinsfile.instance.getEnv()['BUILD_NUMBER']
-            String url = jenkinsUrl + "/job/" + jobBaseName + "/" + branch + "/" + buildNumber + "/artifact/tfplan-" + env
+            String url = jenkinsUrl + "job/" + jobName + "/" + branch + "/" + buildNumber + "/artifact/tfplan-" + env
             echo url
             sh "wget ${url}"
 
