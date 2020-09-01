@@ -16,7 +16,8 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(PLAN, savePlanFile(stage.getEnvironment()))
+        stage.decorate(PLAN,  archivePlanFile(stage.getEnvironment()))
+        stage.decorate(APPLY, downloadArchive(stage.getEnvironment()))
     }
 
     @Override
@@ -27,16 +28,32 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
 
     @Override
     public void apply(TerraformApplyCommand command) {
-        command.withArgument(planAbsolutePath)
+        String env = command.getEnvironment()
+        command.withArgument("tfplan-" + env)
     }
 
-    public Closure savePlanFile(String env) {
+    public Closure archivePlanFile(String env) {
         return { closure ->
             closure()
             String workingDir = pwd()
             String planFileName = workingDir + "/tfplan-" + env
             archiveArtifacts artifacts: "tfplan-" + env
             setAbsolutePath(planFileName)
+        }
+    }
+
+    public Closure downloadArchive(String env) {
+        return { closure ->
+            String jenkinsUrl  = Jenkinsfile.instance.getEnv()['JENKINS_URL']
+            String jobBaseName = Jenkinsfile.instance.getEnv()['JOB_BASE_NAME']
+            String branch      = Jenkinsfile.instance.getEnv()['BRANCH_NAME']
+            String buildNumber = Jenkinsfile.instance.getEnv()['BUILD_NUMBER']
+            String url = jenkinsUrl + "/job/" + jobBaseName + "/" + branch + "/" + buildNumber + "/artifact/tfplan-" + env
+            echo url
+            sh "wget ${url}"
+
+            closure()
+
         }
     }
 
