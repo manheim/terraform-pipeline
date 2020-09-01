@@ -1,7 +1,6 @@
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.hamcrest.Matchers.not
 import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -62,7 +61,7 @@ class PassPlanFilePluginTest {
         @Test
         void addsArgumentToTerraformPlan() {
             PassPlanFilePlugin plugin = new PassPlanFilePlugin()
-            TerraformPlanCommand command = new TerraformPlanCommand()
+            TerraformPlanCommand command = new TerraformPlanCommand("dev")
             configureJenkins(env: [
                 'FAIL_PLAN_ON_CHANGES': 'true'
             ])
@@ -71,13 +70,13 @@ class PassPlanFilePluginTest {
 
             String result = command.toString()
             String environment = command.getEnvironment()
-            assertThat(result, containsString("-out=tfplan-" + environment))
+            assertThat(result, containsString("-out=tfplan-dev"))
         }
 
         @Test
         void addsArgumentToTerraformApply() {
             PassPlanFilePlugin plugin = new PassPlanFilePlugin()
-            TerraformApplyCommand command = new TerraformApplyCommand()
+            TerraformApplyCommand command = new TerraformApplyCommand("dev")
             configureJenkins(env: [
                 'FAIL_PLAN_ON_CHANGES': 'true'
             ])
@@ -85,8 +84,7 @@ class PassPlanFilePluginTest {
             plugin.apply(command)
 
             String result = command.toString()
-            String environment = command.getEnvironment()
-            assertThat(result, containsString("tfplan-" + environment))
+            assertThat(result, containsString("tfplan-dev"))
         }
 
     }

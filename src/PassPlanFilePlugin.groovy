@@ -1,7 +1,5 @@
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 
 class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
 
@@ -50,7 +48,6 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
             sh "wget -O tfplan-${env} ${url}"
 
             closure()
-
         }
     }
 
