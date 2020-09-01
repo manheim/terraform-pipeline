@@ -26,7 +26,7 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     @Override
     public void apply(TerraformApplyCommand command) {
         String env = command.getEnvironment()
-        command.withArgument("tfplan-" + env)
+        command.withDirectory("tfplan-" + env)
     }
 
     public Closure archivePlanFile(String env) {
