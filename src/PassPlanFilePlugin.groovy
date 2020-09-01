@@ -5,8 +5,6 @@ import groovy.json.JsonSlurper
 
 class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
 
-    private static String planAbsolutePath
-
     public static void init() {
         PassPlanFilePlugin plugin = new PassPlanFilePlugin()
 
@@ -36,10 +34,8 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     public Closure archivePlanFile(String env) {
         return { closure ->
             closure()
-            String workingDir = pwd()
-            String planFileName = workingDir + "/tfplan-" + env
+            echo "Archiving tfplan-${env} file"
             archiveArtifacts artifacts: "tfplan-" + env
-            setAbsolutePath(planFileName)
         }
     }
 
@@ -49,7 +45,7 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
             String jobName     = Jenkinsfile.instance.getEnv()['JOB_NAME']
             String buildNumber = Jenkinsfile.instance.getEnv()['BUILD_NUMBER']
             String url = getArtifactUrl(jenkinsUrl, jobName, buildNumber, env)
-            echo "Downloading archive plan file from ${url}"
+            echo "Downloading tfplan-${env} file from ${url}"
 
             sh "wget -O tfplan-${env} ${url}"
 
@@ -75,12 +71,4 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         return url
     }
 
-    public void setAbsolutePath(String planFileName) {
-        this.planAbsolutePath = planFileName
-    }
-
-
-    public static void reset() {
-        planAbsolutePath = null
-    }
 }
