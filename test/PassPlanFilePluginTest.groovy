@@ -97,20 +97,4 @@ class PassPlanFilePluginTest {
 
     }
 
-    public class GetArtifactUrl {
-
-        @Test
-        void returnsCorrectUrl() {
-            PassPlanFilePlugin plugin =  new PassPlanFilePlugin()
-            String jenkinsUrl = "https://localhost:8080/"
-            String jobName = "Organization/terraform-pipeline-example/branch"
-            String buildNumber = "2"
-            String env = "dev"
-
-            String resultUrl = plugin.getArtifactUrl(jenkinsUrl, jobName, buildNumber, env)
-
-            assertEquals(resultUrl, "https://localhost:8080/job/Organization/job/terraform-pipeline-example/job/branch/2/artifact/tfplan-dev")
-        }
-    }
-
 }
