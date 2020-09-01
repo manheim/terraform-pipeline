@@ -13,8 +13,8 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(PLAN,  archivePlanFile(stage.getEnvironment()))
-        stage.decorate(APPLY, downloadArchive(stage.getEnvironment()))
+        stage.decorate(PLAN,  stashPlan(stage.getEnvironment()))
+        stage.decorate(APPLY, unstashPlan(stage.getEnvironment()))
     }
 
     @Override
@@ -29,7 +29,7 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         command.withDirectory("tfplan-" + env)
     }
 
-    public Closure archivePlanFile(String env) {
+    public Closure stashPlan(String env) {
         return { closure ->
             closure()
             String planFile = "tfplan-" + env
@@ -38,35 +38,12 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         }
     }
 
-    public Closure downloadArchive(String env) {
+    public Closure unstashPlan(String env) {
         return { closure ->
-            String jenkinsUrl  = Jenkinsfile.instance.getEnv()['JENKINS_URL']
-            String jobName     = Jenkinsfile.instance.getEnv()['JOB_NAME']
-            String buildNumber = Jenkinsfile.instance.getEnv()['BUILD_NUMBER']
-            String url = getArtifactUrl(jenkinsUrl, jobName, buildNumber, env)
-            echo "Unstashing tfplan-${env} file from ${url}"
-
+            echo "Unstashing tfplan-${env} file"
             unstash 'tfplan'
-
             closure()
         }
-    }
-
-    public String getArtifactUrl(String jenkinsUrl, String jobName, String buildNumber, String env) {
-        String[] jobNameArr = jobName.split("/")
-
-        String newJobName = ""
-        for (int i = 0; i < jobNameArr.length; i++) {
-            if (i == jobNameArr.length - 1) { // Last element
-                newJobName += jobNameArr[i]
-            }
-            else {
-                newJobName += jobNameArr[i] + "/job/"
-            }
-        }
-
-        String url = jenkinsUrl + "job/" + newJobName + "/" + buildNumber + "/artifact/tfplan-" + env
-        return url
     }
 
 }
