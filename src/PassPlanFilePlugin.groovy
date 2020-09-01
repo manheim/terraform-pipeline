@@ -52,11 +52,12 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
 
             String newJobName = ""
             for (int i = 0; i < jobNameArr.length; i++) {
+
                 if (i == jobNameArr.length - 1) { // Last element
-                    newJobName += part
+                    newJobName += jobNameArr[i]
                 }
                 else {
-                    newJobName += part + "/job/"
+                    newJobName += jobNameArr[i] + "/job/"
                 }
             }
 
