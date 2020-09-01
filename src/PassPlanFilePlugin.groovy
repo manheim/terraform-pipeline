@@ -7,8 +7,6 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         PassPlanFilePlugin plugin = new PassPlanFilePlugin()
 
         TerraformEnvironmentStage.addPlugin(plugin)
-        TerraformPlanCommand.addPlugin(plugin)
-        TerraformApplyCommand.addPlugin(plugin)
     }
 
     @Override
