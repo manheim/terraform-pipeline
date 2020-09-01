@@ -34,12 +34,14 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         return { closure ->
             closure()
             String workingDir = pwd()
-            setAbsolutePath(workingDir, env)
+            String planFileName = workingDir + "/tfplan-" + env
+            archiveArtifacts artifacts: planFileName
+            setAbsolutePath(planFileName)
         }
     }
 
-    public void setAbsolutePath(String workingDir, String env) {
-        this.planAbsolutePath = workingDir + "/tfplan-" + env
+    public void setAbsolutePath(String planFileName) {
+        this.planAbsolutePath = planFileName
     }
 
 
