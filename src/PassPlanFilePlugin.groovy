@@ -1,4 +1,5 @@
 import static TerraformEnvironmentStage.PLAN
+import static TerraformEnvironmentStage.APPLY
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
