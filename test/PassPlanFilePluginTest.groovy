@@ -2,6 +2,7 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
@@ -78,14 +79,9 @@ class PassPlanFilePluginTest {
         void addsArgumentToTerraformPlan() {
             PassPlanFilePlugin plugin = new PassPlanFilePlugin()
             TerraformPlanCommand command = new TerraformPlanCommand("dev")
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'true'
-            ])
-
             plugin.apply(command)
 
             String result = command.toString()
-            String environment = command.getEnvironment()
             assertThat(result, containsString("-out=tfplan-dev"))
         }
 
@@ -93,16 +89,28 @@ class PassPlanFilePluginTest {
         void addsArgumentToTerraformApply() {
             PassPlanFilePlugin plugin = new PassPlanFilePlugin()
             TerraformApplyCommand command = new TerraformApplyCommand("dev")
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'true'
-            ])
-
             plugin.apply(command)
 
             String result = command.toString()
             assertThat(result, containsString("tfplan-dev"))
         }
 
+    }
+
+    public class GetArtifactUrl {
+
+        @Test
+        void returnsCorrectUrl() {
+            PassPlanFilePlugin plugin =  new PassPlanFilePlugin()
+            String jenkinsUrl = "https://localhost:8080/"
+            String jobName = "Organization/terraform-pipeline-example/branch"
+            String buildNumber = "2"
+            String env = "dev"
+
+            String resultUrl = plugin.getArtifactUrl(jenkinsUrl, jobName, buildNumber, env)
+
+            assertEquals(resultUrl, "https://localhost:8080/job/Organization/job/terraform-pipeline-example/job/branch/2/artifact/tfplan-dev")
+        }
     }
 
 }
