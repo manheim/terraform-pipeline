@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #293](https://github.com/manheim/terraform-pipeline/issues/293) withEnv & withGlobalEnv docs
+
 # v5.10
 
 * [Issue #289](https://github.com/manheim/terraform-pipeline/issues/289) TagPlugin should work with both terraform 0.11.x and 0.12.x
