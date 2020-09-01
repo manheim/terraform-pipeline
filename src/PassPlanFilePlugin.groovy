@@ -48,10 +48,12 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
             String jenkinsUrl  = Jenkinsfile.instance.getEnv()['JENKINS_URL']
 
             String jobName     = Jenkinsfile.instance.getEnv()['JOB_NAME']
-            echo jobName
 
-            String jobBaseName = Jenkinsfile.instance.getEnv()['JOB_BASE_NAME']
-            echo jobBaseName
+            String newJobName = ""
+            for (String part : jobName.split("/"))
+                newJobName += part + "/job/"
+
+            echo newJobName
 
             String branch      = Jenkinsfile.instance.getEnv()['BRANCH_NAME']
             String buildNumber = Jenkinsfile.instance.getEnv()['BUILD_NUMBER']
