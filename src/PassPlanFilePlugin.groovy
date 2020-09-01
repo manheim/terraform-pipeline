@@ -32,8 +32,9 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     public Closure archivePlanFile(String env) {
         return { closure ->
             closure()
-            echo "Archiving tfplan-${env} file"
-            archiveArtifacts artifacts: "tfplan-" + env
+            String planFile = "tfplan-" + env
+            echo "Stashing ${planFile} file"
+            stash name: 'tfplan', includes: planFile
         }
     }
 
@@ -43,9 +44,9 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
             String jobName     = Jenkinsfile.instance.getEnv()['JOB_NAME']
             String buildNumber = Jenkinsfile.instance.getEnv()['BUILD_NUMBER']
             String url = getArtifactUrl(jenkinsUrl, jobName, buildNumber, env)
-            echo "Downloading tfplan-${env} file from ${url}"
+            echo "Unstashing tfplan-${env} file from ${url}"
 
-            sh "wget -O tfplan-${env} ${url}"
+            unstash 'tfplan'
 
             closure()
         }
