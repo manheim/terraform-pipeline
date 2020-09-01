@@ -35,7 +35,7 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
             closure()
             String workingDir = pwd()
             String planFileName = workingDir + "/tfplan-" + env
-            archiveArtifacts artifacts: planFileName
+            archiveArtifacts artifacts: "tfplan-" + env
             setAbsolutePath(planFileName)
         }
     }
