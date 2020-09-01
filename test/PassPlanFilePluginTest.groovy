@@ -44,6 +44,22 @@ class PassPlanFilePluginTest {
             assertThat(actualPlugins, hasItem(instanceOf(PassPlanFilePlugin.class)))
         }
 
+        @Test
+        void modifiesTerraformPlanCommand() {
+            PassPlanFilePlugin.init()
+
+            Collection actualPlugins = TerraformPlanCommand.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(PassPlanFilePlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformApplyCommand() {
+            PassPlanFilePlugin.init()
+
+            Collection actualPlugins = TerraformApplyCommand.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(PassPlanFilePlugin.class)))
+        }
+
     }
 
     public class Apply {
