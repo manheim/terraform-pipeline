@@ -46,33 +46,33 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     public Closure downloadArchive(String env) {
         return { closure ->
             String jenkinsUrl  = Jenkinsfile.instance.getEnv()['JENKINS_URL']
-
             String jobName     = Jenkinsfile.instance.getEnv()['JOB_NAME']
-            String[] jobNameArr = jobName.split("/")
-
-            String newJobName = ""
-            for (int i = 0; i < jobNameArr.length; i++) {
-
-                if (i == jobNameArr.length - 1) { // Last element
-                    newJobName += jobNameArr[i]
-                }
-                else {
-                    newJobName += jobNameArr[i] + "/job/"
-                }
-            }
-
-            echo newJobName
-
-            String branch      = Jenkinsfile.instance.getEnv()['BRANCH_NAME']
             String buildNumber = Jenkinsfile.instance.getEnv()['BUILD_NUMBER']
+            String url = getArtifactUrl(jenkinsUrl, jobName, buildNumber, env)
+            echo "Downloading archive plan file from ${url}"
 
-            String url = jenkinsUrl + "job/" + newJobName + "/" + buildNumber + "/artifact/tfplan-" + env
-            echo url
-            sh "wget ${url}"
+            sh "wget -O tfplan-${env} ${url}"
 
             closure()
 
         }
+    }
+
+    public String getArtifactUrl(String jenkinsUrl, String jobName, String buildNumber, String env) {
+        String[] jobNameArr = jobName.split("/")
+
+        String newJobName = ""
+        for (int i = 0; i < jobNameArr.length; i++) {
+            if (i == jobNameArr.length - 1) { // Last element
+                newJobName += jobNameArr[i]
+            }
+            else {
+                newJobName += jobNameArr[i] + "/job/"
+            }
+        }
+
+        String url = jenkinsUrl + "job/" + newJobName + "/" + buildNumber + "/artifact/tfplan-" + env
+        return url
     }
 
     public void setAbsolutePath(String planFileName) {
