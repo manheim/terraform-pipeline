@@ -57,4 +57,10 @@ class DummyJenkinsfile {
         closure.delegate = this
         closure()
     }
+    public stash(args) {
+        println "DummyJenkinsfile.stash(${args})"
+    }
+    public unstash(args) {
+        println "DummyJenkinsfile.unstash(${args})"
+    }
 }
