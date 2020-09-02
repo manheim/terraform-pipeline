@@ -2,8 +2,8 @@
 
 Enable this plugin to pass the plan file output to `terraform apply`.
 
-This plugin saves the plan file via Jenkins Archived Artficats during the `plan` step.
-When `apply` is called, the plan file is downloaded from Jenkins and passed as an argument.
+This plugin stashes the plan file during the `plan` step.
+When `apply` is called, the plan file is unstashed and passed as an argument.
 
 
 ```
