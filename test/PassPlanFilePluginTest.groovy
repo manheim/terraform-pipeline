@@ -2,11 +2,10 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -77,30 +76,6 @@ class PassPlanFilePluginTest {
         }
 
         @Test
-        void runsStashPlan() {
-            def expectedClosure = { -> }
-            def plugin = spy(new PassPlanFilePlugin())
-            doReturn(expectedClosure).when(plugin).stashPlan()
-            def stage = mock(TerraformEnvironmentStage.class)
-
-            plugin.apply(stage)
-
-            verify(stage).decorate(anyString(), eq(expectedClosure))
-        }
-
-        @Test
-        void runsUnstashPlan() {
-            def expectedClosure = { -> }
-            def plugin = spy(new PassPlanFilePlugin())
-            doReturn(expectedClosure).when(plugin).unstashPlan()
-            def stage = mock(TerraformEnvironmentStage.class)
-
-            plugin.apply(stage)
-
-            verify(stage).decorate(anyString(), eq(expectedClosure))
-        }
-
-        @Test
         void addsArgumentToTerraformPlan() {
             PassPlanFilePlugin plugin = new PassPlanFilePlugin()
             TerraformPlanCommand command = new TerraformPlanCommand("dev")
@@ -118,6 +93,38 @@ class PassPlanFilePluginTest {
 
             String result = command.toString()
             assertThat(result, containsString("tfplan-dev"))
+        }
+
+    }
+
+    public class StashPlan {
+
+        @Test
+        void runsStashPlan() {
+            def wasCalled = false
+            def passedClosure = { -> wasCalled = true }
+            def plugin = new PassPlanFilePlugin()
+
+            def stashClosure = plugin.stashPlan('dev')
+            stashClosure.call(passedClosure)
+
+            assertTrue(wasCalled)
+        }
+
+    }
+
+    public class UnstashPlan {
+
+        @Test
+        void runsUnstashPlan() {
+            def wasCalled = false
+            def passedClosure = { -> wasCalled = true }
+            def plugin = new PassPlanFilePlugin()
+
+            def stashClosure = plugin.unstashPlan('dev')
+            stashClosure.call(passedClosure)
+
+            assertTrue(wasCalled)
         }
 
     }
