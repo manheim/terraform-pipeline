@@ -1,4 +1,4 @@
-## [TerraformEnvironmentStagePlugin](../src/TerraformEnvironmentStagePlugin.groovy)
+## [TerraformEnvironmentStage](../src/TerraformEnvironmentStage.groovy)
 
 ### Pass in Global Environment variable
 
