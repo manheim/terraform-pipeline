@@ -121,8 +121,8 @@ class PassPlanFilePluginTest {
             def passedClosure = { -> wasCalled = true }
             def plugin = new PassPlanFilePlugin()
 
-            def stashClosure = plugin.unstashPlan('dev')
-            stashClosure.call(passedClosure)
+            def unstashClosure = plugin.unstashPlan('dev')
+            unstashClosure.call(passedClosure)
 
             assertTrue(wasCalled)
         }
