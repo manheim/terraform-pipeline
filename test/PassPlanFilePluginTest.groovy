@@ -2,10 +2,11 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -73,6 +74,30 @@ class PassPlanFilePluginTest {
 
             verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN), any(Closure.class))
             verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.APPLY), any(Closure.class))
+        }
+
+        @Test
+        void runsStashPlan() {
+            def expectedClosure = { -> }
+            def plugin = spy(new PassPlanFilePlugin())
+            doReturn(expectedClosure).when(plugin).stashPlan()
+            def stage = mock(TerraformEnvironmentStage.class)
+
+            plugin.apply(stage)
+
+            verify(stage).decorate(anyString(), eq(expectedClosure))
+        }
+
+        @Test
+        void runsUnstashPlan() {
+            def expectedClosure = { -> }
+            def plugin = spy(new PassPlanFilePlugin())
+            doReturn(expectedClosure).when(plugin).unstashPlan()
+            def stage = mock(TerraformEnvironmentStage.class)
+
+            plugin.apply(stage)
+
+            verify(stage).decorate(anyString(), eq(expectedClosure))
         }
 
         @Test
