@@ -205,8 +205,9 @@ Jenkinsfile.defaultNodeName = 'myNode'
 
 Alternatively, you can assign all of your pipelines to a particular Jenkins slave label without using code, by setting a `DEFAULT_NODE_NAME` environment variable on your Jenkins master.
 
-# Additional Pipeline Stages
+# Pipeline Stages
 
+* [TerraformEnvironmentStage](./docs/TerraformEnvironmentStage.md) - run terraform plan & apply
 * [BuildStage](./docs/BuildStage.md) - build a deployment artifact that will subsequently be used by TerraformEnvironmentStage.
 * [RegressionStage](./docs/RegressionStage.md) - run automated tests against an environment
 
