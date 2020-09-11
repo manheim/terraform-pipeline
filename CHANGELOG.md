@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #296](https://github.com/manheim/terraform-pipeline/issues/296) Allow TagPlugin to be disabled on apply
 * [Issue #293](https://github.com/manheim/terraform-pipeline/issues/293) withEnv & withGlobalEnv docs
 * [Issue #175](https://github.com/manheim/terraform-pipeline/issues/175) Pass terraform plan output to apply
 
