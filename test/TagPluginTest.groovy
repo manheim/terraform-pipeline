@@ -6,6 +6,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.anyMap;
 
 import org.junit.Test
 import org.junit.Before
@@ -120,6 +123,17 @@ class TagPluginTest {
             plugin.apply(command)
 
             verify(command).withVariable(expectedVariableName, expectedTags)
+        }
+
+        @Test
+        public void doesNotAddVariablesWhenPluginIsDisabled() {
+            def command = spy(new TerraformApplyCommand())
+            def plugin = new TagPlugin()
+
+            TagPlugin.disableOnApply()
+            plugin.apply(command)
+
+            verify(command, times(0)).withVariable(anyString(), anyMap())
         }
 
         class WithVariableName {

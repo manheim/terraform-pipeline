@@ -2,6 +2,7 @@ class TagPlugin implements TerraformPlanCommandPlugin,
                            TerraformApplyCommandPlugin {
 
     private static variableName
+    private static disableOnApply = false
     private static List tagClosures = []
 
     public static init() {
@@ -18,6 +19,10 @@ class TagPlugin implements TerraformPlanCommandPlugin,
 
     @Override
     public void apply(TerraformApplyCommand command) {
+        if (disableOnApply) {
+            return
+        }
+
         applyToCommand(command)
     }
 
@@ -68,6 +73,10 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         return this
     }
 
+    public static disableOnApply() {
+        disableOnApply = true
+    }
+
     private static getVariableName() {
         return variableName ?: 'tags'
     }
@@ -81,5 +90,6 @@ class TagPlugin implements TerraformPlanCommandPlugin,
     public static reset() {
         tagClosures = []
         variableName = null
+        disableOnApply = false
     }
 }
