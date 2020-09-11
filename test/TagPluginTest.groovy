@@ -261,4 +261,13 @@ class TagPluginTest {
             assertEquals([key1: 'value1', environment: 'myenv', key2: 'value2'], result)
         }
     }
+
+    class DisableOnApply {
+        @Test
+        void isFluent() {
+            def result = TagPlugin.disableOnApply()
+
+            assertEquals(result, TagPlugin.class)
+        }
+    }
 }

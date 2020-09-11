@@ -75,6 +75,7 @@ class TagPlugin implements TerraformPlanCommandPlugin,
 
     public static disableOnApply() {
         disableOnApply = true
+        return this
     }
 
     private static getVariableName() {
