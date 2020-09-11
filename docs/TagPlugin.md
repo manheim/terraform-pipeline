@@ -82,3 +82,34 @@ validate.then(deployQa)
 ```
 
 
+If using a plan file, you can disable passing variables on the CLI for that command.
+
+```
+// Jenkinsfile
+@Library(['terraform-pipeline']) _
+
+Jenkinsfile.init(this, env)
+TagPlugin.withTag('simple', 'sometag') // Simple static tags
+         .withTag('repo', Jenkinsfile.instance.getScmUrl()) // Dynamic tags from your git configuration
+         .withEnvironmentTag('environment') // Dynamic tags from TerraformEnvironmentStage
+         .withTagFromEnvironmentVariable('team', 'TEAM') // Dynamic tags from an environment variable
+         .withTagFromFile('changeId', 'change-id.txt') // Dynamic tags from file
+         .disableOnApply()
+         .init()
+
+def validate = new TerraformValidateStage()
+
+// Tag variables only passsed on plan, and skipped on apply
+// -var='tags={"simple":"sometag","repo":"<repo>","environment":"qa","team":"<team>","changeId":"<changeId>"}'
+def deployQa = new TerraformEnvironmentStage('qa')
+// -var='tags={"simple":"sometag","repo":"<repo>","environment":"uat","team":"<team>","changeId":"<changeId>"}'
+def deployUat = new TerraformEnvironmentStage('uat')
+// -var='tags={"simple":"sometag","repo":"<repo>","environment":"prod","team":"<team>","changeId":"<changeId>"}'
+def deployProd = new TerraformEnvironmentStage('prod')
+
+validate.then(deployQa)
+        .then(deployUat)
+        .then(deployProd)
+        .build()
+```
+
