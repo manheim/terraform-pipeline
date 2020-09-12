@@ -93,6 +93,39 @@ class TerraformFormatCommandTest {
 
                 assertEquals(actual, 'terraform fmt')
             }
+
+            public class WithPatternOverride {
+                @Test
+                void usesThePatternWhenCheckIsFalse() {
+                    def command = new TerraformFormatCommand()
+
+                    TerraformFormatCommand.withRecursiveOptionPattern { "valueFor(${it})" }
+                    TerraformFormatCommand.withRecursive(false)
+                    def actual = command.toString()
+
+                    assertThat(actual, containsString('valueFor(false)'))
+                }
+
+                @Test
+                void usesThePatternWhenCheckIsTrue() {
+                    def command = new TerraformFormatCommand()
+
+                    TerraformFormatCommand.withRecursiveOptionPattern { "valueFor(${it})" }
+                    TerraformFormatCommand.withRecursive(true)
+                    def actual = command.toString()
+
+                    assertThat(actual, containsString('valueFor(true)'))
+                }
+            }
+        }
+
+        public class RecursiveOptionPattern {
+            @Test
+            void isFluent() {
+                def result = TerraformFormatCommand.withRecursiveOptionPattern { 'somevalue' }
+
+                assertEquals(TerraformFormatCommand.class, result)
+            }
         }
 
         public class WithDiff {
