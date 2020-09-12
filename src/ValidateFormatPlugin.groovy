@@ -1,6 +1,6 @@
-class FormatPlugin implements TerraformValidateStagePlugin {
+class ValidateFormatPlugin implements TerraformValidateStagePlugin {
     public static init() {
-        TerraformValidateStage.addPlugin(new FormatPlugin())
+        TerraformValidateStage.addPlugin(new ValidateFormatPlugin())
         TerraformFormatCommand.withCheck()
     }
 

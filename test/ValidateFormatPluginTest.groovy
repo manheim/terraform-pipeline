@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
-class FormatPluginTest {
+class ValidateFormatPluginTest {
     @Before
     @After
     public void reset() {
@@ -24,15 +24,15 @@ class FormatPluginTest {
     public class Init {
         @Test
         void modifiesTerraformValidateStage() {
-            FormatPlugin.init()
+            ValidateFormatPlugin.init()
 
             Collection actualPlugins = TerraformValidateStage.getPlugins()
-            assertThat(actualPlugins, hasItem(instanceOf(FormatPlugin.class)))
+            assertThat(actualPlugins, hasItem(instanceOf(ValidateFormatPlugin.class)))
         }
 
         @Test
         void enablesCheckOnTerraformFormat() {
-            FormatPlugin.init()
+            ValidateFormatPlugin.init()
 
             assertTrue(TerraformFormatCommand.isCheckEnabled())
         }
@@ -43,7 +43,7 @@ class FormatPluginTest {
         void addsClosureToRunTerraformFormat() {
             def expectedClosure = { -> }
             def validateStage = spy(new TerraformValidateStage())
-            def plugin = spy(new FormatPlugin())
+            def plugin = spy(new ValidateFormatPlugin())
             doReturn(expectedClosure).when(plugin).formatClosure()
 
             plugin.apply(validateStage)
@@ -58,7 +58,7 @@ class FormatPluginTest {
             def wasRun = false
             def innerClosure = { -> wasRun = true }
             def dummyJenkinsfile = spy(new DummyJenkinsfile())
-            def plugin = new FormatPlugin()
+            def plugin = new ValidateFormatPlugin()
 
             def formatClosure = plugin.formatClosure()
             formatClosure.delegate = dummyJenkinsfile
@@ -71,7 +71,7 @@ class FormatPluginTest {
         void runsTerraformFormatCommandInAShell() {
             def expectedFormatCommand = 'terraform fmt'
             def dummyJenkinsfile = spy(new DummyJenkinsfile())
-            def plugin = new FormatPlugin()
+            def plugin = new ValidateFormatPlugin()
 
             def formatClosure = plugin.formatClosure()
             formatClosure.delegate = dummyJenkinsfile

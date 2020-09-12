@@ -1,4 +1,4 @@
-## [FormatPlugin](../src/FormatPlugin.groovy)
+## [ValidateFormatPlugin](../src/ValidateFormatPlugin.groovy)
 
 Enable this plugin to run `terraform fmt -check` as part of the TerraformValidateStage.  If no changes are necessary, TerraformValidateStage will pass.  If any format changes are necessary, the TerraformValidateStage will fail.
 
@@ -8,7 +8,7 @@ Enable this plugin to run `terraform fmt -check` as part of the TerraformValidat
 
 Jenkinsfile.init(this)
 
-FormatPlugin.init()
+ValidateFormatPlugin.init()
 
 // Runs `terraform fmt -check` in addition to `terraform validate`.
 // TerraformValidateStage fails if code requires validation.
@@ -31,9 +31,9 @@ Additonal options are available, to search directories recusively, and to displa
 
 Jenkinsfile.init(this)
 
-FormatPlugin.withRecursive()
-            .withDiff()
-            .init()
+ValidateFormatPlugin.withRecursive()
+                    .withDiff()
+                    .init()
 
 // Runs `terraform fmt -check` in addition to `terraform validate`.
 // TerraformValidateStage fails if code requires validation.
