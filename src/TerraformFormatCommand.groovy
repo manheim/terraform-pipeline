@@ -1,24 +1,26 @@
 class TerraformFormatCommand {
     private static boolean check = false
+    private static Closure checkOptionPattern
     private static boolean recursive = false
+    private static Closure recursiveOptionPattern
     private static boolean diff = false
+    private static Closure diffOptionPattern
 
     public String toString() {
+        def pattern
         def parts = []
         parts << 'terraform fmt'
 
-        if (check) {
-            parts << '-check=true'
-        }
+        pattern = checkOptionPattern ?: { it ? '-check=true' : null }
+        parts << pattern(check)
 
-        if (recursive) {
-            println "recursive is default in Terraform 0.11.x - this is an unsupported option"
-        }
+        pattern = recursiveOptionPattern ?: { println "recursive is default in Terraform 0.11.x  - this is an unsupported option" }
+        parts << pattern(recursive)
 
-        if (diff) {
-            parts << '-diff=true'
-        }
+        pattern = diffOptionPattern ?: { it ? '-diff=true' : null }
+        parts << pattern(diff)
 
+        parts.removeAll { it == null }
         return parts.join(' ')
     }
 
@@ -45,5 +47,8 @@ class TerraformFormatCommand {
         check = false
         recursive = false
         diff = false
+        checkOptionPattern = null
+        recursiveOptionPattern = null
+        diffOptionPattern = null
     }
 }
