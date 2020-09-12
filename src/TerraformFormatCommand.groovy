@@ -14,6 +14,7 @@ class TerraformFormatCommand {
 
     public static withRecursive() {
         recursive = true
+        return this
     }
 
     public static reset() {

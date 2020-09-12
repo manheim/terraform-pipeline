@@ -1,3 +1,4 @@
+import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.endsWith
@@ -46,6 +47,15 @@ class TerraformFormatCommandTest {
 
                 assertThat(actual, containsString('-recursive'))
             }
+        }
+    }
+
+    public class Recursive {
+        @Test
+        void isFluent() {
+            def result = TerraformFormatCommand.withRecursive()
+
+            assertEquals(result, TerraformFormatCommand.class)
         }
     }
 }
