@@ -10,7 +10,8 @@ class FormatPlugin implements TerraformValidateStagePlugin {
     public Closure formatClosure() {
         return { closure ->
             closure()
-            sh 'terraform fmt -check'
+            def formatCommand = new TerraformFormatCommand()
+            sh formatCommand.toString()
         }
     }
 }
