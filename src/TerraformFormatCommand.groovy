@@ -8,15 +8,15 @@ class TerraformFormatCommand {
         parts << 'terraform fmt'
 
         if (check) {
-            parts << '-check'
+            parts << '-check=true'
         }
 
         if (recursive) {
-            parts << '-recursive'
+            println "recursive is default in Terraform 0.11.x - this is an unsupported option"
         }
 
         if (diff) {
-            parts << '-diff'
+            parts << '-diff=true'
         }
 
         return parts.join(' ')

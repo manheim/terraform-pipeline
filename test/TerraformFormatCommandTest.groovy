@@ -36,7 +36,7 @@ class TerraformFormatCommandTest {
                 TerraformFormatCommand.withCheck()
                 def actual = command.toString()
 
-                assertThat(actual, containsString('-check'))
+                assertThat(actual, containsString('-check=true'))
             }
 
             @Test
@@ -52,23 +52,13 @@ class TerraformFormatCommandTest {
 
         public class WithRecursive {
             @Test
-            void addsRecursiveOptionByDefault() {
+            void doesNothingByDefaultUnsupportedByTerraformm11() {
                 def command = new TerraformFormatCommand()
 
                 TerraformFormatCommand.withRecursive()
                 def actual = command.toString()
 
-                assertThat(actual, containsString('-recursive'))
-            }
-
-            @Test
-            void doesNotAddRecursiveOptionWhenFalse() {
-                def command = new TerraformFormatCommand()
-
-                TerraformFormatCommand.withRecursive(false)
-                def actual = command.toString()
-
-                assertThat(actual, not(containsString('-recursive')))
+                assertEquals(actual, 'terraform fmt')
             }
         }
 
@@ -80,7 +70,7 @@ class TerraformFormatCommandTest {
                 TerraformFormatCommand.withDiff()
                 def actual = command.toString()
 
-                assertThat(actual, containsString('-diff'))
+                assertThat(actual, containsString('-diff=true'))
             }
 
             @Test
