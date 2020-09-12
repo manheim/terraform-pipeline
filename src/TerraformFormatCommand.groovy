@@ -29,6 +29,11 @@ class TerraformFormatCommand {
         return this
     }
 
+    public static withCheckOptionPattern(Closure pattern) {
+        checkOptionPattern = pattern
+        return this
+    }
+
     public static boolean isCheckEnabled() {
         return check
     }

@@ -48,6 +48,39 @@ class TerraformFormatCommandTest {
 
                 assertThat(actual, not(containsString('-check')))
             }
+
+            public class WithPatternOverride {
+                @Test
+                void usesThePatternWhenCheckIsFalse() {
+                    def command = new TerraformFormatCommand()
+
+                    TerraformFormatCommand.withCheckOptionPattern { "valueFor(${it})" }
+                    TerraformFormatCommand.withCheck(false)
+                    def actual = command.toString()
+
+                    assertThat(actual, containsString('valueFor(false)'))
+                }
+
+                @Test
+                void usesThePatternWhenCheckIsTrue() {
+                    def command = new TerraformFormatCommand()
+
+                    TerraformFormatCommand.withCheckOptionPattern { "valueFor(${it})" }
+                    TerraformFormatCommand.withCheck(true)
+                    def actual = command.toString()
+
+                    assertThat(actual, containsString('valueFor(true)'))
+                }
+            }
+        }
+
+        public class WithCheckOptionPattern {
+            @Test
+            void isFluent() {
+                def result = TerraformFormatCommand.withCheckOptionPattern { "somevalue" }
+
+                assertEquals(result, TerraformFormatCommand.class)
+            }
         }
 
         public class WithRecursive {
