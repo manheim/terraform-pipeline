@@ -53,6 +53,11 @@ class TerraformFormatCommand {
         return this
     }
 
+    public static withDiffOptionPattern(Closure pattern) {
+        diffOptionPattern = pattern
+        return this
+    }
+
     public static reset() {
         check = false
         recursive = false

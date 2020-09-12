@@ -74,15 +74,6 @@ class TerraformFormatCommandTest {
             }
         }
 
-        public class WithCheckOptionPattern {
-            @Test
-            void isFluent() {
-                def result = TerraformFormatCommand.withCheckOptionPattern { "somevalue" }
-
-                assertEquals(result, TerraformFormatCommand.class)
-            }
-        }
-
         public class WithRecursive {
             @Test
             void doesNothingByDefaultUnsupportedByTerraformm11() {
@@ -119,15 +110,6 @@ class TerraformFormatCommandTest {
             }
         }
 
-        public class RecursiveOptionPattern {
-            @Test
-            void isFluent() {
-                def result = TerraformFormatCommand.withRecursiveOptionPattern { 'somevalue' }
-
-                assertEquals(TerraformFormatCommand.class, result)
-            }
-        }
-
         public class WithDiff {
             @Test
             void addsDiffOptionByDefault() {
@@ -148,6 +130,30 @@ class TerraformFormatCommandTest {
 
                 assertThat(actual, not(containsString('-diff')))
             }
+
+            public class WithPatternOverride {
+                @Test
+                void usesThePatternWhenCheckIsFalse() {
+                    def command = new TerraformFormatCommand()
+
+                    TerraformFormatCommand.withDiffOptionPattern { "valueFor(${it})" }
+                    TerraformFormatCommand.withDiff(false)
+                    def actual = command.toString()
+
+                    assertThat(actual, containsString('valueFor(false)'))
+                }
+
+                @Test
+                void usesThePatternWhenCheckIsTrue() {
+                    def command = new TerraformFormatCommand()
+
+                    TerraformFormatCommand.withDiffOptionPattern { "valueFor(${it})" }
+                    TerraformFormatCommand.withDiff(true)
+                    def actual = command.toString()
+
+                    assertThat(actual, containsString('valueFor(true)'))
+                }
+            }
         }
     }
 
@@ -155,6 +161,15 @@ class TerraformFormatCommandTest {
         @Test
         void isFluent() {
             def result = TerraformFormatCommand.withCheck()
+
+            assertEquals(result, TerraformFormatCommand.class)
+        }
+    }
+
+    public class WithCheckOptionPattern {
+        @Test
+        void isFluent() {
+            def result = TerraformFormatCommand.withCheckOptionPattern { "somevalue" }
 
             assertEquals(result, TerraformFormatCommand.class)
         }
@@ -169,12 +184,30 @@ class TerraformFormatCommandTest {
         }
     }
 
+    public class WithRecursiveOptionPattern {
+        @Test
+        void isFluent() {
+            def result = TerraformFormatCommand.withRecursiveOptionPattern { 'somevalue' }
+
+            assertEquals(TerraformFormatCommand.class, result)
+        }
+    }
+
     public class WithDiff {
         @Test
         void isFluent() {
             def result = TerraformFormatCommand.withDiff()
 
             assertEquals(result, TerraformFormatCommand.class)
+        }
+    }
+
+    public class WithDiffOptionPattern {
+        @Test
+        void isFluent() {
+            def result = TerraformFormatCommand.withDiffOptionPattern { 'somevalue' }
+
+            assertEquals(TerraformFormatCommand.class, result)
         }
     }
 }
