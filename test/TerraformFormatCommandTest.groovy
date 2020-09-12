@@ -39,7 +39,7 @@ class TerraformFormatCommandTest {
 
         public class WithRecursive {
             @Test
-            void includesCheckOptionByDefault() {
+            void addsRecursiveOption() {
                 def command = new TerraformFormatCommand()
 
                 TerraformFormatCommand.withRecursive()
@@ -48,12 +48,33 @@ class TerraformFormatCommandTest {
                 assertThat(actual, containsString('-recursive'))
             }
         }
+
+        public class WithDiff {
+            @Test
+            void addsDiffOption() {
+                def command = new TerraformFormatCommand()
+
+                TerraformFormatCommand.withDiff()
+                def actual = command.toString()
+
+                assertThat(actual, containsString('-diff'))
+            }
+        }
     }
 
-    public class Recursive {
+    public class WithRecursive {
         @Test
         void isFluent() {
             def result = TerraformFormatCommand.withRecursive()
+
+            assertEquals(result, TerraformFormatCommand.class)
+        }
+    }
+
+    public class WithDiff {
+        @Test
+        void isFluent() {
+            def result = TerraformFormatCommand.withDiff()
 
             assertEquals(result, TerraformFormatCommand.class)
         }
