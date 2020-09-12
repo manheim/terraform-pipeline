@@ -8,6 +8,9 @@ class FormatPlugin implements TerraformValidateStagePlugin {
     }
 
     public Closure formatClosure() {
-        return { -> }
+        return { closure ->
+            closure()
+            sh 'terraform fmt -check'
+        }
     }
 }
