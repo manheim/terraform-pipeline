@@ -6,12 +6,21 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class FormatPluginTest {
+    @Before
+    @After
+    public void reset() {
+        TerraformValidateStage.resetPlugins()
+        TerraformFormatCommand.reset()
+    }
+
     public class Init {
         @Test
         void modifiesTerraformValidateStage() {
@@ -19,6 +28,13 @@ class FormatPluginTest {
 
             Collection actualPlugins = TerraformValidateStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(FormatPlugin.class)))
+        }
+
+        @Test
+        void enablesCheckOnTerraformFormat() {
+            FormatPlugin.init()
+
+            assertTrue(TerraformFormatCommand.isCheckEnabled())
         }
     }
 
@@ -53,7 +69,7 @@ class FormatPluginTest {
 
         @Test
         void runsTerraformFormatCommandInAShell() {
-            def expectedFormatCommand = 'terraform fmt -check'
+            def expectedFormatCommand = 'terraform fmt'
             def dummyJenkinsfile = spy(new DummyJenkinsfile())
             def plugin = new FormatPlugin()
 
