@@ -33,4 +33,8 @@ class TerraformPluginVersion12 extends TerraformPluginVersion {
                 return "{${result}}"
                }
     }
+
+    public void apply(TerraformFormatCommand command) {
+        command.withCheckOptionPattern { it ? '-check' : null }
+    }
 }

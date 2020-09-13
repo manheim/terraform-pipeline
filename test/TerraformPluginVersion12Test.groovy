@@ -1,16 +1,24 @@
 import static org.hamcrest.Matchers.containsString
+import static org.hamcrest.Matchers.endsWith
 import static org.junit.Assert.assertThat
 import static org.mockito.Matchers.any
 import static org.mockito.Matchers.eq
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify;
 
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
 
 @RunWith(HierarchicalContextRunner.class)
 class TerraformPluginVersion12Test {
+    @Before
+    @After
+    void reset() {
+        TerraformFormatCommand.reset()
+    }
 
     class InitCommandForValidate {
         @Test
@@ -82,6 +90,34 @@ class TerraformPluginVersion12Test {
             def result = applyCommand.toString()
 
             assertThat(result, containsString("-var='myMap={\"key1\":\"value1\",\"key2\":\"value2\"}'"))
+        }
+    }
+
+    class ModifiesTerraformFormatCommand {
+        class WithCheck {
+            @Test
+            void usesCheckFlagWhenCheckIsEnabled() {
+                def formatCommand = new TerraformFormatCommand()
+                def version12 = new TerraformPluginVersion12()
+
+                TerraformFormatCommand.withCheck(true)
+                version12.apply(formatCommand)
+                def result = formatCommand.toString()
+
+                assertThat(result, endsWith('-check'))
+            }
+
+            @Test
+            void doesNotIncludeCheckFlagIfSetToFalse() {
+                def formatCommand = new TerraformFormatCommand()
+                def version12 = new TerraformPluginVersion12()
+
+                TerraformFormatCommand.withCheck(true)
+                version12.apply(formatCommand)
+                def result = formatCommand.toString()
+
+                assertThat(result, endsWith('-check'))
+            }
         }
     }
 }
