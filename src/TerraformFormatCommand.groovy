@@ -36,7 +36,7 @@ class TerraformFormatCommand {
     private applyPluginsOnce() {
         def remainingPlugins = globalPlugins - appliedPlugins
 
-        for (TerraformValidateCommandPlugin plugin in remainingPlugins) {
+        for (TerraformFormatCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
             appliedPlugins << plugin
         }
