@@ -30,13 +30,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
     }
 
     public String detectVersion() {
-        if (version == null) {
-            if (fileExists(TERRAFORM_VERSION_FILE)) {
-                version = readFile(TERRAFORM_VERSION_FILE)
-            } else {
-                version = DEFAULT_VERSION
-            }
-        }
+        version = version ?: Jenkinsfile.original.readFile(TERRAFORM_VERSION_FILE) ?: DEFAULT_VERSION
 
         return version
     }
@@ -83,19 +77,6 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
         TerraformPlanCommand.resetPlugins()
         TerraformApplyCommand.resetPlugins()
         TerraformValidateStage.resetPlugins()
-    }
-
-    public boolean fileExists(String filename) {
-        return getJenkinsOriginal().fileExists(filename)
-    }
-
-    public String readFile(String filename) {
-        def content = (getJenkinsOriginal().readFile(filename) as String)
-        return content.trim()
-    }
-
-    public getJenkinsOriginal() {
-        return  Jenkinsfile.instance.original
     }
 
     @Override
