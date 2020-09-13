@@ -1,4 +1,6 @@
 class TerraformFormatCommand {
+    private static globalPlugins = []
+    private appliedPlugins = []
     private static boolean check = false
     private static boolean recursive = false
     private static boolean diff = false
@@ -8,6 +10,8 @@ class TerraformFormatCommand {
     private Closure diffOptionPattern
 
     public String toString() {
+        applyPluginsOnce()
+
         def pattern
         def parts = []
         parts << 'terraform fmt'
@@ -23,6 +27,19 @@ class TerraformFormatCommand {
 
         parts.removeAll { it == null }
         return parts.join(' ')
+    }
+
+    public static addPlugin(TerraformFormatCommandPlugin plugin) {
+        this.globalPlugins << plugin
+    }
+
+    private applyPluginsOnce() {
+        def remainingPlugins = globalPlugins - appliedPlugins
+
+        for (TerraformValidateCommandPlugin plugin in remainingPlugins) {
+            plugin.apply(this)
+            appliedPlugins << plugin
+        }
     }
 
     public static withCheck(newValue = true) {
@@ -63,5 +80,6 @@ class TerraformFormatCommand {
         check = false
         recursive = false
         diff = false
+        globalPlugins = []
     }
 }

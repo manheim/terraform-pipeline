@@ -207,6 +207,21 @@ class TerraformPluginTest {
         }
     }
 
+    class ApplyTerraformFormatCommand {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformFormatCommand() {
+            def formatCommand = mock(TerraformFormatCommand.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn('someVersion').when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor('someVersion')
+
+            plugin.apply(formatCommand)
+
+            verify(strategy, times(1)).apply(formatCommand)
+        }
+    }
+
     class ApplyTerraformPlanCommand {
         @Test
         void shouldApplyTheCorrectStrategyToTerraformPlanCommand() {
