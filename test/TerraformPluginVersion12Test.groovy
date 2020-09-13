@@ -146,6 +146,32 @@ class TerraformPluginVersion12Test {
                 assertThat(result, not(containsString('-recursive')))
             }
         }
+
+        class WithDiff {
+            @Test
+            void usesDiffFlagWhenDiffIsEnabled() {
+                def formatCommand = new TerraformFormatCommand()
+                def version12 = new TerraformPluginVersion12()
+
+                TerraformFormatCommand.withDiff(true)
+                version12.apply(formatCommand)
+                def result = formatCommand.toString()
+
+                assertThat(result, endsWith('-diff'))
+            }
+
+            @Test
+            void doesNotIncludeDiffFlagIfSetToFalse() {
+                def formatCommand = new TerraformFormatCommand()
+                def version12 = new TerraformPluginVersion12()
+
+                TerraformFormatCommand.withDiff(false)
+                version12.apply(formatCommand)
+                def result = formatCommand.toString()
+
+                assertThat(result, not(containsString('-diff')))
+            }
+        }
     }
 }
 
