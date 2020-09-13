@@ -1,5 +1,6 @@
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.endsWith
+import static org.hamcrest.Matchers.not
 import static org.junit.Assert.assertThat
 import static org.mockito.Matchers.any
 import static org.mockito.Matchers.eq
@@ -112,11 +113,37 @@ class TerraformPluginVersion12Test {
                 def formatCommand = new TerraformFormatCommand()
                 def version12 = new TerraformPluginVersion12()
 
-                TerraformFormatCommand.withCheck(true)
+                TerraformFormatCommand.withCheck(false)
                 version12.apply(formatCommand)
                 def result = formatCommand.toString()
 
-                assertThat(result, endsWith('-check'))
+                assertThat(result, not(containsString('-check')))
+            }
+        }
+
+        class WithRecursive {
+            @Test
+            void usesRecursiveFlagWhenRecursiveIsEnabled() {
+                def formatCommand = new TerraformFormatCommand()
+                def version12 = new TerraformPluginVersion12()
+
+                TerraformFormatCommand.withRecursive(true)
+                version12.apply(formatCommand)
+                def result = formatCommand.toString()
+
+                assertThat(result, endsWith('-recursive'))
+            }
+
+            @Test
+            void doesNotIncludeRecursiveFlagIfSetToFalse() {
+                def formatCommand = new TerraformFormatCommand()
+                def version12 = new TerraformPluginVersion12()
+
+                TerraformFormatCommand.withRecursive(false)
+                version12.apply(formatCommand)
+                def result = formatCommand.toString()
+
+                assertThat(result, not(containsString('-recursive')))
             }
         }
     }

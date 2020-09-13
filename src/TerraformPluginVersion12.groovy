@@ -36,5 +36,6 @@ class TerraformPluginVersion12 extends TerraformPluginVersion {
 
     public void apply(TerraformFormatCommand command) {
         command.withCheckOptionPattern { it ? '-check' : null }
+        command.withRecursiveOptionPattern { it ? '-recursive' : null }
     }
 }
