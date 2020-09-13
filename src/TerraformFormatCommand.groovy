@@ -1,10 +1,11 @@
 class TerraformFormatCommand {
     private static boolean check = false
-    private static Closure checkOptionPattern
     private static boolean recursive = false
-    private static Closure recursiveOptionPattern
     private static boolean diff = false
-    private static Closure diffOptionPattern
+
+    private Closure checkOptionPattern
+    private Closure recursiveOptionPattern
+    private Closure diffOptionPattern
 
     public String toString() {
         def pattern
@@ -29,11 +30,6 @@ class TerraformFormatCommand {
         return this
     }
 
-    public static withCheckOptionPattern(Closure pattern) {
-        checkOptionPattern = pattern
-        return this
-    }
-
     public static boolean isCheckEnabled() {
         return check
     }
@@ -43,17 +39,22 @@ class TerraformFormatCommand {
         return this
     }
 
-    public static withRecursiveOptionPattern(Closure pattern) {
-        recursiveOptionPattern = pattern
-        return this
-    }
-
     public static withDiff(newValue = true) {
         diff = newValue
         return this
     }
 
-    public static withDiffOptionPattern(Closure pattern) {
+    public withCheckOptionPattern(Closure pattern) {
+        checkOptionPattern = pattern
+        return this
+    }
+
+    public withRecursiveOptionPattern(Closure pattern) {
+        recursiveOptionPattern = pattern
+        return this
+    }
+
+    public withDiffOptionPattern(Closure pattern) {
         diffOptionPattern = pattern
         return this
     }
@@ -62,8 +63,5 @@ class TerraformFormatCommand {
         check = false
         recursive = false
         diff = false
-        checkOptionPattern = null
-        recursiveOptionPattern = null
-        diffOptionPattern = null
     }
 }
