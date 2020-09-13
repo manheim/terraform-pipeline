@@ -2,6 +2,7 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.not
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Matchers.any
 import static org.mockito.Matchers.eq
 import static org.mockito.Mockito.spy
@@ -19,6 +20,21 @@ class TerraformPluginVersion12Test {
     @After
     void reset() {
         TerraformFormatCommand.reset()
+    }
+
+    class AddInitBefore {
+        @Test
+        void runsTheInnerClosure() {
+            def plugin = new TerraformPluginVersion12()
+            def wasRun = false
+            def innerClosure = { wasRun = true }
+
+            def beforeClosure = plugin.addInitBefore()
+            beforeClosure.delegate = new DummyJenkinsfile()
+            beforeClosure(innerClosure)
+
+            assertTrue(wasRun)
+        }
     }
 
     class InitCommandForValidate {

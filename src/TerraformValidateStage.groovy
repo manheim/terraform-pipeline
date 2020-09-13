@@ -20,7 +20,7 @@ class TerraformValidateStage implements Stage, DecoratableStage {
         Jenkinsfile.build(pipelineConfiguration())
     }
 
-    private Closure pipelineConfiguration() {
+    public Closure pipelineConfiguration() {
         applyPlugins()
 
         def validateCommand = TerraformValidateCommand.instance()
