@@ -1,3 +1,4 @@
+import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.hamcrest.Matchers.isA
 import static org.junit.Assert.assertThat
@@ -34,6 +35,36 @@ class TerraformValidateStageTest {
             def closure = validateStage.pipelineConfiguration()
             closure.delegate = Jenkinsfile.original
             closure()
+        }
+    }
+
+    public class Then {
+        @Test
+        void nextStageisCalled() {
+            def stage  = new TerraformValidateStage()
+            def stage2 = mock(Stage.class)
+
+            def result = stage.then(stage2)
+
+            assertThat(result, isA(BuildGraph.class))
+        }
+    }
+
+    public class Build {
+        @Test
+        void justExerciseNoAssertions() {
+            def stage  = new TerraformValidateStage()
+
+            stage.build()
+        }
+    }
+
+    public class Decorate {
+        @Test
+        void justExerciseNoAssertions() {
+            def stage  = new TerraformValidateStage()
+
+            stage.decorate { }
         }
     }
 }
