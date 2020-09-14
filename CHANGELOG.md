@@ -1,5 +1,7 @@
 # Unreleased
 
+# v5.11
+
 * [Issue #83](https://github.com/manheim/terraform-pipeline/issues/83) Add a plugin to support `terraform fmt`
 * [Issue #296](https://github.com/manheim/terraform-pipeline/issues/296) Allow TagPlugin to be disabled on apply
 * [Issue #293](https://github.com/manheim/terraform-pipeline/issues/293) withEnv & withGlobalEnv docs
