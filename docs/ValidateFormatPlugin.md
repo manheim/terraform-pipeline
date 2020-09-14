@@ -4,7 +4,7 @@ Enable this plugin to run `terraform fmt -check` as part of the TerraformValidat
 
 ```
 // Jenkinsfile
-@Library(['terraform-pipeline@v5.0']) _
+@Library(['terraform-pipeline']) _
 
 Jenkinsfile.init(this)
 
@@ -27,7 +27,7 @@ Additonal options are available, to search directories recusively, and to displa
 
 ```
 // Jenkinsfile
-@Library(['terraform-pipeline@v5.0']) _
+@Library(['terraform-pipeline']) _
 
 Jenkinsfile.init(this)
 
