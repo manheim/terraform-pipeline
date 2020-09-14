@@ -122,6 +122,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
+* [ValidateFormatPlugin](./docs/ValidateFormatPlugin.md): Validate correct code format as part of the TerraformValidateStage.
 
 ## Write your own Plugin
 

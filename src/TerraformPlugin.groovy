@@ -10,6 +10,7 @@
  * before strating on your own.
  */
 class TerraformPlugin implements TerraformValidateCommandPlugin,
+                                 TerraformFormatCommandPlugin,
                                  TerraformPlanCommandPlugin,
                                  TerraformApplyCommandPlugin,
                                  TerraformValidateStagePlugin {
@@ -22,19 +23,14 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
         def plugin = new TerraformPlugin()
 
         TerraformValidateCommand.addPlugin(plugin)
+        TerraformFormatCommand.addPlugin(plugin)
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
         TerraformValidateStage.addPlugin(plugin)
     }
 
     public String detectVersion() {
-        if (version == null) {
-            if (fileExists(TERRAFORM_VERSION_FILE)) {
-                version = readFile(TERRAFORM_VERSION_FILE)
-            } else {
-                version = DEFAULT_VERSION
-            }
-        }
+        version = version ?: Jenkinsfile.original.readFile(TERRAFORM_VERSION_FILE) ?: DEFAULT_VERSION
 
         return version
     }
@@ -77,26 +73,19 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
         this.version = null
 
         TerraformValidateCommand.resetPlugins()
+        TerraformFormatCommand.reset()
         TerraformPlanCommand.resetPlugins()
         TerraformApplyCommand.resetPlugins()
         TerraformValidateStage.resetPlugins()
     }
 
-    public boolean fileExists(String filename) {
-        return getJenkinsOriginal().fileExists(filename)
-    }
-
-    public String readFile(String filename) {
-        def content = (getJenkinsOriginal().readFile(filename) as String)
-        return content.trim()
-    }
-
-    public getJenkinsOriginal() {
-        return  Jenkinsfile.instance.original
+    @Override
+    void apply(TerraformValidateCommand command) {
+        applyToCommand(command)
     }
 
     @Override
-    void apply(TerraformValidateCommand command) {
+    void apply(TerraformFormatCommand command) {
         applyToCommand(command)
     }
 

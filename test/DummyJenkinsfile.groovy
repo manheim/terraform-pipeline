@@ -1,7 +1,7 @@
 class DummyJenkinsfile {
     public docker
     public scm
-    public env
+    public env = [:]
 
     public DummyJenkinsfile() {
         docker = this
