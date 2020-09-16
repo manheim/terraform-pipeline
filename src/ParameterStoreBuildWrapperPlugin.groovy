@@ -3,6 +3,7 @@ import static TerraformEnvironmentStage.APPLY
 
 class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugin {
     private static globalPathPattern
+    private static ArrayList globalParameterOptions = []
     private static defaultPathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
 
     public static void init() {
@@ -11,6 +12,11 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
 
     public static withPathPattern(Closure newPathPattern) {
         globalPathPattern = newPathPattern
+        return this
+    }
+
+    public static withGlobalParameter(String path, options=[]) {
+        globalParameterOptions << [path: path] + options
         return this
     }
 
@@ -26,6 +32,11 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
 
         stage.decorate(PLAN, addParameterStoreBuildWrapper(options))
         stage.decorate(APPLY, addParameterStoreBuildWrapper(options))
+
+        globalParameterOptions.each { gp ->
+            stage.decorate(PLAN, addParameterStoreBuildWrapper(gp))
+            stage.decorate(APPLY, addParameterStoreBuildWrapper(gp))
+        }
     }
 
     String pathForEnvironment(String environment) {
@@ -48,6 +59,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
         def parameterStoreOptions = defaultOptions + options
 
         return { closure ->
+            // sh "echo ${parameterStoreOptions}" //DEBUG
             withAWSParameterStore(parameterStoreOptions) {
                 closure()
             }
@@ -56,5 +68,6 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
 
     public static reset() {
         globalPathPattern = null
+        globalParameterOptions = []
     }
 }
