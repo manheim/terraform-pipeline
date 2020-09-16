@@ -40,7 +40,22 @@ class TerraformPluginTest {
             def expectedVersion =  '0.12.0-foobar'
             def plugin = new TerraformPlugin()
             def original = spy(new DummyJenkinsfile())
+            doReturn(true).when(original).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
             doReturn(expectedVersion).when(original).readFile(TerraformPlugin.TERRAFORM_VERSION_FILE)
+            Jenkinsfile.original = original
+
+            def foundVersion = plugin.detectVersion()
+
+            assertEquals(expectedVersion, foundVersion)
+        }
+
+        @Test
+        void trimsWhitespaceFromFile() {
+            def expectedVersion =  '0.12.0-foobar'
+            def plugin = new TerraformPlugin()
+            def original = spy(new DummyJenkinsfile())
+            doReturn(true).when(original).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
+            doReturn("${expectedVersion}   ").when(original).readFile(TerraformPlugin.TERRAFORM_VERSION_FILE)
             Jenkinsfile.original = original
 
             def foundVersion = plugin.detectVersion()
@@ -52,7 +67,7 @@ class TerraformPluginTest {
         void usesDefaultIfFileNotFound() {
             def plugin = new TerraformPlugin()
             def original = spy(new DummyJenkinsfile())
-            doReturn(null).when(original).readFile(TerraformPlugin.TERRAFORM_VERSION_FILE)
+            doReturn(false).when(original).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
             Jenkinsfile.original = original
 
             def foundVersion = plugin.detectVersion()
