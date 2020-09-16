@@ -84,5 +84,19 @@ class ParameterStoreBuildWrapperPluginTest {
             assertEquals(ParameterStoreBuildWrapperPlugin.class, result)
         }
     }
+
+    class withGlobalParameter {
+        @After
+        public void reset() {
+            ParameterStoreBuildWrapperPlugin.reset()
+        }
+
+        @Test
+        void addsGlobalParameter() {
+            def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter('/path/', [])
+
+            assertEquals(ParameterStoreBuildWrapperPlugin.class, result)
+        }
+    }
 }
 
