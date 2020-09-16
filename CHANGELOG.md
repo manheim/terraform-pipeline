@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #300](https://github.com/manheim/terraform-pipeline/issues/300) Trim whitespace when detecting terraform version from file.
+
 # v5.11
 
 * [Issue #83](https://github.com/manheim/terraform-pipeline/issues/83) Add a plugin to support `terraform fmt`
