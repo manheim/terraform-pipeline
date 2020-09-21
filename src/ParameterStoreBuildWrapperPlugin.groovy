@@ -68,7 +68,6 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
         def parameterStoreOptions = defaultOptions + options
 
         return { closure ->
-            // sh "echo ${parameterStoreOptions}" //DEBUG
             withAWSParameterStore(parameterStoreOptions) {
                 closure()
             }
