@@ -2,7 +2,7 @@ import static TerraformValidateStage.ALL
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
 
-class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugin {
+class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin {
     private static globalPathPattern
     private static ArrayList globalParameterOptions = []
     private static defaultPathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
