@@ -25,8 +25,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
     @Override
     public void apply(TerraformValidateStage stage) {
         globalParameterOptions.each { gp ->
-            stage.decorate(PLAN, addParameterStoreBuildWrapper(gp))
-            stage.decorate(APPLY, addParameterStoreBuildWrapper(gp))
+            stage.decorate(ALL, addParameterStoreBuildWrapper(gp))
         }
     }
 
