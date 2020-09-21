@@ -1,3 +1,4 @@
+import static TerraformValidateStage.ALL
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
 
@@ -8,6 +9,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new ParameterStoreBuildWrapperPlugin())
+        TerraformValidateStage.addPlugin(new ParameterStoreBuildWrapperPlugin())
     }
 
     public static withPathPattern(Closure newPathPattern) {
@@ -18,6 +20,14 @@ class ParameterStoreBuildWrapperPlugin implements TerraformEnvironmentStagePlugi
     public static withGlobalParameter(String path, options=[]) {
         globalParameterOptions << [path: path] + options
         return this
+    }
+
+    @Override
+    public void apply(TerraformValidateStage stage) {
+        globalParameterOptions.each { gp ->
+            stage.decorate(PLAN, addParameterStoreBuildWrapper(gp))
+            stage.decorate(APPLY, addParameterStoreBuildWrapper(gp))
+        }
     }
 
     @Override
