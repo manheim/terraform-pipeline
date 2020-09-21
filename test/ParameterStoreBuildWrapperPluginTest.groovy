@@ -15,6 +15,7 @@ class ParameterStoreBuildWrapperPluginTest {
     public class Init {
         @After
         void resetPlugins() {
+            TerraformValidateStage.resetPlugins()
             TerraformEnvironmentStage.reset()
         }
 
@@ -23,6 +24,46 @@ class ParameterStoreBuildWrapperPluginTest {
             ParameterStoreBuildWrapperPlugin.init()
 
             Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(ParameterStoreBuildWrapperPlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformEnvironmentStageCommandWithGlobalParameter() {
+            ParameterStoreBuildWrapperPlugin.withGlobalParameter('/somePath/').init()
+
+            Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(ParameterStoreBuildWrapperPlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformEnvironmentStageCommandWithGlobalParameterAndOptions() {
+            ParameterStoreBuildWrapperPlugin.withGlobalParameter('/somePath/', [someKey: true, anotherKey: 'someValue']).init()
+
+            Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(ParameterStoreBuildWrapperPlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformValidateStageCommand() {
+            ParameterStoreBuildWrapperPlugin.init()
+
+            Collection actualPlugins = TerraformValidateStage.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(ParameterStoreBuildWrapperPlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformValidateStageCommandWithGlobalParameter() {
+            ParameterStoreBuildWrapperPlugin.withGlobalParameter('/somePath/').init()
+
+            Collection actualPlugins = TerraformValidateStage.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(ParameterStoreBuildWrapperPlugin.class)))
+        }
+
+        @Test
+        void modifiesTerraformValidateStageCommandWithGlobalParameterAndOptions() {
+            ParameterStoreBuildWrapperPlugin.withGlobalParameter('/somePath/', [someKey: true, anotherKey: 'someValue']).init()
+
+            Collection actualPlugins = TerraformValidateStage.getPlugins()
             assertThat(actualPlugins, hasItem(instanceOf(ParameterStoreBuildWrapperPlugin.class)))
         }
     }
@@ -92,10 +133,29 @@ class ParameterStoreBuildWrapperPluginTest {
         }
 
         @Test
-        void addsGlobalParameter() {
+        void addGlobalParameter() {
             def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter('/path/', [])
 
-            assertEquals(ParameterStoreBuildWrapperPlugin.class, result)
+            assertEquals([[path: '/path/']], result.globalParameterOptions)
+        }
+
+        @Test
+        void addGlobalParameterWithOptions() {
+            def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter('/path/', [recursive: true, basename: 'relative'])
+
+            assertEquals([[path: '/path/', recursive: true, basename: 'relative']], result.globalParameterOptions)
+        }
+
+        @Test
+        void addMulitpleGlobalParameters() {
+            ArrayList expected = []
+            def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter('/path/', [])
+                                                         .withGlobalParameter('/path2/', [recursive: true])
+                                                         .withGlobalParameter('/path3/', [basename: 'something'])
+            expected << [path:'/path/']
+            expected << [path: '/path2/', recursive: true]
+            expected << [path: '/path3/', basename: 'something']
+            assertEquals(expected, result.globalParameterOptions)
         }
     }
 }
