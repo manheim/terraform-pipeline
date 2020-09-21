@@ -30,7 +30,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
     }
 
     public String detectVersion() {
-        version = version ?: Jenkinsfile.original.readFile(TERRAFORM_VERSION_FILE) ?: DEFAULT_VERSION
+        version = version ?: Jenkinsfile.readFile(TERRAFORM_VERSION_FILE) ?: DEFAULT_VERSION
 
         return version
     }
