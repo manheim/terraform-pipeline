@@ -1,6 +1,7 @@
 # Unreleased
 
 * [Issue #300](https://github.com/manheim/terraform-pipeline/issues/300) Trim whitespace when detecting terraform version from file.
+* [Issue #299](https://github.com/manheim/terraform-pipeline/issues/299) Support for Global AWS Parameter Store
 
 # v5.11
 

@@ -61,3 +61,34 @@ validate.then(deployQA)
         .then(deployProd)
         .build()
 ```
+
+
+You can also optionally support Global Parameters applied to the following stages `VALIDATE`, `PLAN`, `APPLY`
+
+
+```
+// Jenkinsfile
+@Library(['terraform-pipeline@v5.0']) _
+
+Jenkinsfile.init(this)
+
+ParameterStoreBuildWrapperPlugin.withGlobalParameter('/somePath/') // get all keys under `/somePath/`
+                .withGlobalParameter('/someOtherPath/', [naming: 'relative', recursive: true]) // get all keys recursively under `/someOtherPath/`
+                .init() // Enable ParameterStoreBuildWrapperPlugin
+
+def validate = new TerraformValidateStage()
+
+// Inject all parameters in /<GitOrg>/<GitRepo>/qa
+def deployQA = new TerraformEnvironmentStage('qa')
+
+// Inject all parameters in /<GitOrg>/<GitRepo>/uat
+def deployUat = new TerraformEnvironmentStage('uat')
+
+// Inject all parameters in /<GitOrg>/<GitRepo>/prod
+def deployProd = new TerraformEnvironmentStage('prod')
+
+validate.then(deployQA)
+        .then(deployUat)
+        .then(deployProd)
+        .build()
+```
