@@ -4,7 +4,7 @@ import static TerraformEnvironmentStage.APPLY
 
 class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin {
     private static globalPathPattern
-    private static ArrayList globalParameterOptions = []
+    private static ArrayList<Map> globalParameterOptions = []
     private static defaultPathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
 
     public static void init() {
@@ -17,7 +17,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
         return this
     }
 
-    public static withGlobalParameter(String path, options=[]) {
+    public static withGlobalParameter(String path, Map options = [:]) {
         globalParameterOptions << [path: path] + options
         return this
     }
@@ -31,21 +31,23 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        def environment = stage.getEnvironment()
-        def parameterStorePath = pathForEnvironment(environment)
+        def environment                    = stage.getEnvironment()
+        ArrayList<Map> allParameterOptions = []
 
-        def options = [
-            path: parameterStorePath,
+        allParameterOptions << getEnvironmentParameterOptions(environment)
+        allParameterOptions.addAll(globalParameterOptions)
+
+        allParameterOptions.each { apo ->
+            stage.decorate(PLAN, addParameterStoreBuildWrapper(apo))
+            stage.decorate(APPLY, addParameterStoreBuildWrapper(apo))
+        }
+    }
+
+    Map getEnvironmentParameterOptions(String environment) {
+        return [
+            path: pathForEnvironment(environment),
             credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"
         ]
-
-        stage.decorate(PLAN, addParameterStoreBuildWrapper(options))
-        stage.decorate(APPLY, addParameterStoreBuildWrapper(options))
-
-        globalParameterOptions.each { gp ->
-            stage.decorate(PLAN, addParameterStoreBuildWrapper(gp))
-            stage.decorate(APPLY, addParameterStoreBuildWrapper(gp))
-        }
     }
 
     String pathForEnvironment(String environment) {
@@ -60,7 +62,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
         return pathPattern(patternOptions)
     }
 
-    public static Closure addParameterStoreBuildWrapper(Map options = []) {
+    public Closure addParameterStoreBuildWrapper(Map options = [:]) {
         def Map defaultOptions = [
             naming: 'basename'
         ]
