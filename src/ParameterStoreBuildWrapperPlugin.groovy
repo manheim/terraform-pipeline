@@ -4,7 +4,7 @@ import static TerraformEnvironmentStage.APPLY
 
 class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin {
     private static globalPathPattern
-    private static ArrayList<Map> globalParameterOptions = []
+    private static List globalParameterOptions = []
     private static defaultPathPattern = { options -> "/${options['organization']}/${options['repoName']}/${options['environment']}/" }
 
     public static void init() {
@@ -31,16 +31,25 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        def environment                    = stage.getEnvironment()
-        ArrayList<Map> allParameterOptions = []
+        def environment = stage.getEnvironment()
+        List options    = getParameterOptions(environment)
 
-        allParameterOptions << getEnvironmentParameterOptions(environment)
-        allParameterOptions.addAll(globalParameterOptions)
-
-        allParameterOptions.each { apo ->
-            stage.decorate(PLAN, addParameterStoreBuildWrapper(apo))
-            stage.decorate(APPLY, addParameterStoreBuildWrapper(apo))
+        options.each { option ->
+            stage.decorate(PLAN, addParameterStoreBuildWrapper(option))
+            stage.decorate(APPLY, addParameterStoreBuildWrapper(option))
         }
+    }
+
+    List getParameterOptions(String environment) {
+        List options = []
+        options.add(getEnvironmentParameterOptions(environment))
+        options.addAll(getGlobalParameterOptions())
+
+        return options
+    }
+
+    List getGlobalParameterOptions() {
+        return this.globalParameterOptions
     }
 
     Map getEnvironmentParameterOptions(String environment) {
@@ -52,10 +61,10 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
 
     String pathForEnvironment(String environment) {
         String organization = Jenkinsfile.instance.getOrganization()
-        String repoName = Jenkinsfile.instance.getRepoName()
-        def patternOptions = [ environment: environment,
-                               repoName: repoName,
-                               organization: organization ]
+        String repoName     = Jenkinsfile.instance.getRepoName()
+        def patternOptions  = [ environment: environment,
+                                repoName: repoName,
+                                organization: organization ]
 
         def pathPattern = globalPathPattern ?: defaultPathPattern
 

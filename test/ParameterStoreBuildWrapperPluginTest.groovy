@@ -89,52 +89,137 @@ class ParameterStoreBuildWrapperPluginTest {
 
         class WithTerraformEnvironmentStage {
             @Test
-            void decorateTheTerraformEnvironmentStageIfGlobalParametersNotSet() {
-                String organization = "MyOrg"
-                String repoName     = "MyRepo"
-                String environment  = "MyEnv"
-                Map apo             = [path: "/${organization}/${repoName}/${environment}/", credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"]
-                def expectedClosure = { -> }
-                configureJenkins(repoName: repoName, organization: organization)
-
+            void doesNotDecorateTheTerraformEnvironmentStageIfNoOptionsSet() {
+                def expectedClosure                     = { -> }
+                String environment                      = "MyEnv"
+                List options                  = []
                 TerraformEnvironmentStage stage         = mock(TerraformEnvironmentStage.class)
                 ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
 
                 doReturn(environment).when(stage).getEnvironment()
-                doReturn(apo).when(plugin).getEnvironmentParameterOptions(environment)
-                doReturn(expectedClosure).when(plugin).addParameterStoreBuildWrapper(apo)
+                doReturn(options).when(plugin).getParameterOptions(environment)
 
                 plugin.apply(stage)
 
-                verify(stage, times(2)).decorate(anyString(), eq(expectedClosure))
+                verify(stage, never()).decorate(expectedClosure)
             }
 
             @Test
-            void decorateTheTerraformEnvironmentStageWhenGlobalParametersSet() {
-                String organization = "MyOrg"
-                String repoName     = "MyRepo"
-                String environment  = "MyEnv"
-                String path         = '/someOtherPath/'
-                Map apo             = [path: "/${organization}/${repoName}/${environment}/", credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"]
-                Map gp              = [path: path]
-                def firstClosure    = { -> }
-                def secondClosure   = { -> }
-                configureJenkins(repoName: repoName, organization: organization)
-
+            void decorateTheTerraformEnvironmentStageWhenSingleOptionsSet() {
+                def expectedClosure                     = { -> }
+                String environment                      = "MyEnv"
+                List options                            = [[someKey: "someValue"]]
                 TerraformEnvironmentStage stage         = mock(TerraformEnvironmentStage.class)
                 ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
 
                 doReturn(environment).when(stage).getEnvironment()
-                doReturn(apo).when(plugin).getEnvironmentParameterOptions(environment)
-                doReturn(firstClosure).when(plugin).addParameterStoreBuildWrapper(gp)
-                doReturn(secondClosure).when(plugin).addParameterStoreBuildWrapper(apo)
+                doReturn(options).when(plugin).getParameterOptions(environment)
+                doReturn(expectedClosure).when(plugin).addParameterStoreBuildWrapper(options[0])
 
-                plugin.withGlobalParameter(path)
+                plugin.apply(stage)
+
+                verify(stage).decorate(TerraformEnvironmentStage.PLAN, expectedClosure)
+                verify(stage).decorate(TerraformEnvironmentStage.APPLY, expectedClosure)
+            }
+
+            @Test
+            void decorateTheTerraformEnvironmentStageWhenMultipleOptionsSet() {
+                def firstClosure                        = { -> }
+                def secondClosure                       = { -> }
+                String environment                      = "MyEnv"
+                List options                            = [[someKey: "someValue"], [someOtherKey: "someOtherValue"]]
+                TerraformEnvironmentStage stage         = mock(TerraformEnvironmentStage.class)
+                ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+
+                doReturn(environment).when(stage).getEnvironment()
+                doReturn(options).when(plugin).getParameterOptions(environment)
+                doReturn(firstClosure).when(plugin).addParameterStoreBuildWrapper(options[0])
+                doReturn(secondClosure).when(plugin).addParameterStoreBuildWrapper(options[1])
+
                 plugin.apply(stage)
 
                 verify(stage, times(2)).decorate(anyString(), eq(firstClosure))
                 verify(stage, times(2)).decorate(anyString(), eq(secondClosure))
             }
+        }
+    }
+
+    class GetParameterOptions {
+        @After
+        public void reset() {
+            Jenkinsfile.instance = null
+            ParameterStoreBuildWrapperPlugin.reset()
+        }
+
+        private configureJenkins(Map config = [:]) {
+            Jenkinsfile.instance = mock(Jenkinsfile.class)
+            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
+            when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName ?: 'repo')
+            when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization ?: 'org')
+            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
+        }
+
+        @Test
+        void returnsNoOptionsWhenNotSet() {
+            String environment                      = "MyEnv"
+            Map option                              = [:]
+            List expected                           = [ option ]
+            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+
+            doReturn(option).when(plugin).getEnvironmentParameterOptions(environment)
+
+            List actual = plugin.getParameterOptions(environment)
+
+            assertEquals(expected, actual)
+        }
+
+        @Test
+        void returnsEnvironmentOptionWhenSet() {
+            String environment                      = "MyEnv"
+            Map option                              = [ key: "value" ]
+            List expected                           = [ option ]
+            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+
+            doReturn(option).when(plugin).getEnvironmentParameterOptions(environment)
+
+            List actual = plugin.getParameterOptions(environment)
+
+            assertEquals(expected, actual)
+        }
+
+        @Test
+        void returnsSingleGlobalOptionsAndEnvironmentOptionWhenSet() {
+            String environment                      = "MyEnv"
+            Map environmentOption                   = [ env: "envValue" ]
+            Map globalOption1                       = [ global: "globalValue" ]
+            List globalOptions                      = [ globalOption1 ]
+            List expected                           = [ environmentOption ] + globalOptions
+            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+
+            doReturn(environmentOption).when(plugin).getEnvironmentParameterOptions(environment)
+            doReturn(globalOptions).when(plugin).getGlobalParameterOptions()
+
+            List actual = plugin.getParameterOptions(environment)
+
+            assertEquals(expected, actual)
+        }
+
+        @Test
+        void returnsMultipleGlobalOptionsAndEnvironmentOptionWhenSet() {
+            String environment                      = "MyEnv"
+            Map environmentOption                   = [ env: "envValue" ]
+            Map globalOption1                       = [ global: "globalValue" ]
+            Map globalOption2                       = [ global2: "globalValue2" ]
+            List globalOptions                      = [ globalOption1, globalOption2 ]
+            List expected                           = [ environmentOption ] + globalOptions
+            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+
+            doReturn(environmentOption).when(plugin).getEnvironmentParameterOptions(environment)
+            doReturn(globalOptions).when(plugin).getGlobalParameterOptions()
+
+            List actual = plugin.getParameterOptions(environment)
+
+            assertEquals(expected, actual)
         }
     }
 
@@ -254,10 +339,9 @@ class ParameterStoreBuildWrapperPluginTest {
 
         @Test
         void addGlobalParameterWithEmptyOptions() {
-            Map options = [:]
-            String path = '/path/'
-            ArrayList<Map> expected = []
-            expected << [path: path] + options
+            Map options   = [:]
+            String path   = '/path/'
+            List expected = [[path: path] + options]
 
             def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter(path, options)
 
@@ -266,10 +350,9 @@ class ParameterStoreBuildWrapperPluginTest {
 
         @Test
         void addGlobalParameterWithOptions() {
-            Map options = [recursive: true, basename: 'relative']
-            String path = '/path/'
-            ArrayList<Map> expected = []
-            expected << [path: path] + options
+            Map options   = [recursive: true, basename: 'relative']
+            String path   = '/path/'
+            List expected = [[path: path] + options]
 
             def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter(path, options)
 
@@ -278,7 +361,7 @@ class ParameterStoreBuildWrapperPluginTest {
 
         @Test
         void addMulitpleGlobalParameters() {
-            ArrayList<Map> expected = []
+            List expected = []
             def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter('/path/')
                                                          .withGlobalParameter('/path2/', [:])
                                                          .withGlobalParameter('/path3/', [recursive: true])
