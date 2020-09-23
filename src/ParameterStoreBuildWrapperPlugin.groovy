@@ -49,7 +49,7 @@ class ParameterStoreBuildWrapperPlugin implements TerraformValidateStagePlugin, 
     }
 
     List getGlobalParameterOptions() {
-        return this.globalParameterOptions
+        return globalParameterOptions
     }
 
     Map getEnvironmentParameterOptions(String environment) {
