@@ -151,35 +151,29 @@ class ParameterStoreBuildWrapperPluginTest {
         }
 
         @Test
-        void validPathBasedOnEnvironment() {
-            String organization = "MyOrg"
-            String repoName     = "MyRepo"
+        void returnsTheCorrectParameterPathBasedOnEnvironment() {
             String environment  = "qa"
-            Map expected        = [path: "/${organization}/${repoName}/${environment}/".toString()]
-
-            configureJenkins(repoName: repoName, organization: organization)
+            String expectedPath = "somePath"
             ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
-            doReturn(expected.path.toString()).when(plugin).pathForEnvironment(environment)
+            doReturn(expectedPath).when(plugin).pathForEnvironment(environment)
 
             Map actual = plugin.getEnvironmentParameterOptions(environment)
 
-            assertEquals(expected.path, actual.path)
+            assertEquals(expectedPath, actual.path)
         }
 
         @Test
-        void validCredentialsBasedOnEnvironment() {
-            String organization = "MyOrg"
-            String repoName     = "MyRepo"
-            String environment  = "qa"
-            Map expected        = [credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"]
+        void returnsTheCorrectCredentialsIdBasedOnEnvironment() {
+            String environment           = "qa"
+            String path                  = "somePath"
+            String expectedCredentialsId = "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"
 
-            configureJenkins(repoName: repoName, organization: organization)
             ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
-            doReturn(expected.path.toString()).when(plugin).pathForEnvironment(environment)
+            doReturn(path).when(plugin).pathForEnvironment(environment)
 
             Map actual = plugin.getEnvironmentParameterOptions(environment)
 
-            assertEquals(expected.credentialsId, actual.credentialsId)
+            assertEquals(expectedCredentialsId, actual.credentialsId.toString())
         }
     }
 
