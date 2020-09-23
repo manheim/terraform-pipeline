@@ -31,9 +31,9 @@ Additional options are available, to search directories recursively, and to disp
 
 Jenkinsfile.init(this)
 
-ValidateFormatPlugin.withRecursive()
-                    .withDiff()
-                    .init()
+ValidateFormatPlugin.init()
+TerraformFormatCommand.withRecursive()
+                      .withDiff()
 
 // Runs `terraform fmt -check` in addition to `terraform validate`.
 // TerraformValidateStage fails if code requires validation.
