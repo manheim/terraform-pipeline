@@ -58,81 +58,84 @@ class ParameterStoreBuildWrapperPluginTest {
             when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
         }
 
-        @Test
-        void doesNotDecorateTheTerraformValidateStageIfGlobalParametersNotSet() {
-            def expectedClosure                     = { -> }
-            TerraformValidateStage stage            = mock(TerraformValidateStage.class)
-            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+        class WithTerraformValidateStage {
+            @Test
+            void doesNotDecorateTheTerraformValidateStageIfGlobalParametersNotSet() {
+                def expectedClosure                     = { -> }
+                TerraformValidateStage stage            = mock(TerraformValidateStage.class)
+                ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
 
-            plugin.apply(stage)
+                plugin.apply(stage)
 
-            verify(stage, never()).decorate(expectedClosure)
+                verify(stage, never()).decorate(expectedClosure)
+            }
+
+            @Test
+            void decorateTheTerraformValidateStageIfGlobalParametersSet() {
+                String path                             = '/somePath/'
+                def expectedClosure                     = { -> }
+                Map gp                                  = [path: path]
+                TerraformValidateStage stage            = mock(TerraformValidateStage.class)
+                ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+
+                doReturn(expectedClosure).when(plugin).addParameterStoreBuildWrapper(gp)
+
+                plugin.withGlobalParameter(path)
+                plugin.apply(stage)
+
+                verify(stage).decorate(TerraformValidateStage.ALL, expectedClosure)
+            }
         }
 
-        @Test
-        void decorateTheTerraformValidateStageIfGlobalParametersSet() {
-            String path                             = '/somePath/'
-            def expectedClosure                     = { -> }
-            Map gp                                  = [path: path]
-            TerraformValidateStage stage            = mock(TerraformValidateStage.class)
-            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+        class WithTerraformEnvironmentStage {
+            @Test
+            void decorateTheTerraformEnvironmentStageIfGlobalParametersNotSet() {
+                String organization = "MyOrg"
+                String repoName     = "MyRepo"
+                String environment  = "MyEnv"
+                Map apo             = [path: "/${organization}/${repoName}/${environment}/", credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"]
+                def expectedClosure = { -> }
+                configureJenkins(repoName: repoName, organization: organization)
 
-            doReturn(expectedClosure).when(plugin).addParameterStoreBuildWrapper(gp)
+                TerraformEnvironmentStage stage         = mock(TerraformEnvironmentStage.class)
+                ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
 
-            plugin.withGlobalParameter(path)
-            plugin.apply(stage)
+                doReturn(environment).when(stage).getEnvironment()
+                doReturn(apo).when(plugin).getEnvironmentParameterOptions(environment)
+                doReturn(expectedClosure).when(plugin).addParameterStoreBuildWrapper(apo)
 
-            verify(stage).decorate(TerraformValidateStage.ALL, expectedClosure)
+                plugin.apply(stage)
+
+                verify(stage, times(2)).decorate(anyString(), eq(expectedClosure))
+            }
+
+            @Test
+            void decorateTheTerraformEnvironmentStageWhenGlobalParametersSet() {
+                String organization = "MyOrg"
+                String repoName     = "MyRepo"
+                String environment  = "MyEnv"
+                String path         = '/someOtherPath/'
+                Map apo             = [path: "/${organization}/${repoName}/${environment}/", credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"]
+                Map gp              = [path: path]
+                def firstClosure    = { -> }
+                def secondClosure   = { -> }
+                configureJenkins(repoName: repoName, organization: organization)
+
+                TerraformEnvironmentStage stage         = mock(TerraformEnvironmentStage.class)
+                ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
+
+                doReturn(environment).when(stage).getEnvironment()
+                doReturn(apo).when(plugin).getEnvironmentParameterOptions(environment)
+                doReturn(firstClosure).when(plugin).addParameterStoreBuildWrapper(gp)
+                doReturn(secondClosure).when(plugin).addParameterStoreBuildWrapper(apo)
+
+                plugin.withGlobalParameter(path)
+                plugin.apply(stage)
+
+                verify(stage, times(2)).decorate(anyString(), eq(firstClosure))
+                verify(stage, times(2)).decorate(anyString(), eq(secondClosure))
+            }
         }
-
-        @Test
-        void decorateTheTerraformEnvironmentStageIfGlobalParametersNotSet() {
-            String organization = "MyOrg"
-            String repoName     = "MyRepo"
-            String environment  = "MyEnv"
-            Map apo             = [path: "/${organization}/${repoName}/${environment}/", credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"]
-            def expectedClosure = { -> }
-            configureJenkins(repoName: repoName, organization: organization)
-
-            TerraformEnvironmentStage stage         = mock(TerraformEnvironmentStage.class)
-            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
-
-            doReturn(environment).when(stage).getEnvironment()
-            doReturn(apo).when(plugin).getEnvironmentParameterOptions(environment)
-            doReturn(expectedClosure).when(plugin).addParameterStoreBuildWrapper(apo)
-
-            plugin.apply(stage)
-
-            verify(stage, times(2)).decorate(anyString(), eq(expectedClosure))
-        }
-
-        @Test
-        void decorateTheTerraformEnvironmentStageWhenGlobalParametersSet() {
-            String organization = "MyOrg"
-            String repoName     = "MyRepo"
-            String environment  = "MyEnv"
-            String path         = '/someOtherPath/'
-            Map apo             = [path: "/${organization}/${repoName}/${environment}/", credentialsId: "${environment.toUpperCase()}_PARAMETER_STORE_ACCESS"]
-            Map gp              = [path: path]
-            def firstClosure    = { -> }
-            def secondClosure   = { -> }
-            configureJenkins(repoName: repoName, organization: organization)
-
-            TerraformEnvironmentStage stage         = mock(TerraformEnvironmentStage.class)
-            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
-
-            doReturn(environment).when(stage).getEnvironment()
-            doReturn(apo).when(plugin).getEnvironmentParameterOptions(environment)
-            doReturn(firstClosure).when(plugin).addParameterStoreBuildWrapper(gp)
-            doReturn(secondClosure).when(plugin).addParameterStoreBuildWrapper(apo)
-
-            plugin.withGlobalParameter(path)
-            plugin.apply(stage)
-
-            verify(stage, times(2)).decorate(anyString(), eq(firstClosure))
-            verify(stage, times(2)).decorate(anyString(), eq(secondClosure))
-        }
-
     }
 
     public class GetEnvironmentParameterOptions {
