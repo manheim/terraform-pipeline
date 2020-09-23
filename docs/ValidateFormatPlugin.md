@@ -23,7 +23,7 @@ validate.then(deployQA)
         .build()
 ```
 
-Additonal options are available, to search directories recusively, and to display diffs.
+Additional options are available, to search directories recursively, and to display diffs.
 
 ```
 // Jenkinsfile
