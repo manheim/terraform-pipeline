@@ -46,16 +46,7 @@ class ParameterStoreBuildWrapperPluginTest {
     public class Apply {
         @After
         public void reset() {
-            Jenkinsfile.instance = null
             ParameterStoreBuildWrapperPlugin.reset()
-        }
-
-        private configureJenkins(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-            when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName ?: 'repo')
-            when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization ?: 'org')
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
         }
 
         class WithTerraformValidateStage {
@@ -147,30 +138,7 @@ class ParameterStoreBuildWrapperPluginTest {
     class GetParameterOptions {
         @After
         public void reset() {
-            Jenkinsfile.instance = null
             ParameterStoreBuildWrapperPlugin.reset()
-        }
-
-        private configureJenkins(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-            when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName ?: 'repo')
-            when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization ?: 'org')
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-        }
-
-        @Test
-        void returnsNoOptionsWhenNotSet() {
-            String environment                      = "MyEnv"
-            Map option                              = [:]
-            List expected                           = [ option ]
-            ParameterStoreBuildWrapperPlugin plugin = spy(new ParameterStoreBuildWrapperPlugin())
-
-            doReturn(option).when(plugin).getEnvironmentParameterOptions(environment)
-
-            List actual = plugin.getParameterOptions(environment)
-
-            assertEquals(expected, actual)
         }
 
         @Test
