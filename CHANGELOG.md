@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #303](https://github.com/manheim/terraform-pipeline/issues/303) Update ValidateFormatPlugin Documentation - additional options command
 * [Issue #300](https://github.com/manheim/terraform-pipeline/issues/300) Trim whitespace when detecting terraform version from file.
 
 # v5.11

@@ -23,7 +23,7 @@ validate.then(deployQA)
         .build()
 ```
 
-Additonal options are available, to search directories recusively, and to display diffs.
+Additional options are available, to search directories recursively, and to display diffs.
 
 ```
 // Jenkinsfile
@@ -31,9 +31,9 @@ Additonal options are available, to search directories recusively, and to displa
 
 Jenkinsfile.init(this)
 
-ValidateFormatPlugin.withRecursive()
-                    .withDiff()
-                    .init()
+ValidateFormatPlugin.init()
+TerraformFormatCommand.withRecursive()
+                      .withDiff()
 
 // Runs `terraform fmt -check` in addition to `terraform validate`.
 // TerraformValidateStage fails if code requires validation.
