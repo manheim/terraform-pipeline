@@ -1,5 +1,9 @@
 # Unreleased
 
+* [Issue #311](https://github.com/manheim/terraform-pipeline/issues/311) Fix non-deterministic test failures
+
+# v5.12
+
 * [Issue #303](https://github.com/manheim/terraform-pipeline/issues/303) Update ValidateFormatPlugin Documentation - additional options command
 * [Issue #300](https://github.com/manheim/terraform-pipeline/issues/300) Trim whitespace when detecting terraform version from file.
 * [Issue #299](https://github.com/manheim/terraform-pipeline/issues/299) Support for Global AWS Parameter Store
