@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
@@ -28,6 +29,16 @@ class FileParametersPluginTest {
     }
 
     public class GetVariables {
+        @Before
+        void setupJenkinsfile() {
+            Jenkinsfile.original = new DummyJenkinsfile()
+        }
+
+        @After
+        void reset() {
+            Jenkinsfile.reset()
+        }
+
         @Test
         void returnsAValueForEachLine() {
             List expectedValues = [ "VAR1=VALUE1", "VAR2=VALUE2" ]
