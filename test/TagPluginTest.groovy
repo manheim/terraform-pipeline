@@ -154,6 +154,11 @@ class TagPluginTest {
     }
 
     public class GetTags {
+        @After
+        public void reset() {
+            Jenkinsfile.reset()
+        }
+
         @Test
         void returnsAndEmptyMapIfNoKeyValuePairsWereAdded() {
             def plugin = new TagPlugin()
