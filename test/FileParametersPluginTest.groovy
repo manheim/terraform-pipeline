@@ -2,7 +2,7 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import org.junit.After
@@ -66,7 +66,7 @@ class FileParametersPluginTest {
             String fileContents = 'SOME_VARIABLE=${env.OTHER_VARIABLE}'
 
             FileParametersPlugin plugin = spy(new FileParametersPlugin())
-            when(plugin.getEnv()).thenReturn([ OTHER_VARIABLE: 'VALUE1'])
+            doReturn([ OTHER_VARIABLE: 'VALUE1']).when(plugin).getEnv()
 
             List actualValues = plugin.getVariables(fileContents)
 
