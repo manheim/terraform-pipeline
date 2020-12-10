@@ -2,10 +2,11 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertThat
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.bechte.junit.runners.context.HierarchicalContextRunner
@@ -28,6 +29,16 @@ class FileParametersPluginTest {
     }
 
     public class GetVariables {
+        @Before
+        void setupJenkinsfile() {
+            Jenkinsfile.original = new DummyJenkinsfile()
+        }
+
+        @After
+        void reset() {
+            Jenkinsfile.reset()
+        }
+
         @Test
         void returnsAValueForEachLine() {
             List expectedValues = [ "VAR1=VALUE1", "VAR2=VALUE2" ]
@@ -66,7 +77,7 @@ class FileParametersPluginTest {
             String fileContents = 'SOME_VARIABLE=${env.OTHER_VARIABLE}'
 
             FileParametersPlugin plugin = spy(new FileParametersPlugin())
-            when(plugin.getEnv()).thenReturn([ OTHER_VARIABLE: 'VALUE1'])
+            doReturn([ OTHER_VARIABLE: 'VALUE1']).when(plugin).getEnv()
 
             List actualValues = plugin.getVariables(fileContents)
 
