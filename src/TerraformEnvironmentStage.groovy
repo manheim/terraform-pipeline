@@ -64,10 +64,10 @@ class TerraformEnvironmentStage implements Stage, DecoratableStage {
                     stage(getStageNameFor(PLAN)) {
                         decorations.apply(PLAN) {
                             decorations.apply(INIT_COMMAND) {
-                              sh initCommand.toString()
+                                sh initCommand.toString()
                             }
                             decorations.apply(PLAN_COMMAND) {
-                              sh planCommand.toString()
+                                sh planCommand.toString()
                             }
                         }
                     }
@@ -86,10 +86,10 @@ class TerraformEnvironmentStage implements Stage, DecoratableStage {
                         stage(getStageNameFor(APPLY)) {
                             decorations.apply(APPLY) {
                                 decorations.apply(INIT_COMMAND) {
-                                  sh initCommand.toString()
+                                    sh initCommand.toString()
                                 }
                                 decorations.apply(APPLY_COMMAND) {
-                                  sh applyCommand.toString()
+                                    sh applyCommand.toString()
                                 }
                             }
                         }
