@@ -42,3 +42,9 @@ validate.then(deployQA)
         .then(deployProd)
         .build()
 ```
+
+### For Plugin Developers
+
+#### Decorate Stages/Commands or Hook before/after command execution
+
+TerraformEnvironmentStage has support for numerous decorators, to allow wrapping the various stages, steps, and individual commands. Please see the [source code](../src/TerraformEnvironmentStage.groovy) for details.
