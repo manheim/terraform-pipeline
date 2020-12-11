@@ -9,9 +9,12 @@ class TerraformEnvironmentStage implements Stage, DecoratableStage {
     private static Closure stageNamePattern
 
     public static final String ALL = 'all'
+    public static final String INIT_COMMAND = 'init-command'
     public static final String PLAN = 'plan'
+    public static final String PLAN_COMMAND = 'plan-command'
     public static final String CONFIRM = 'confirm'
     public static final String APPLY = 'apply'
+    public static final String APPLY_COMMAND = 'apply-command'
 
     TerraformEnvironmentStage(String environment) {
         this.environment = environment
@@ -60,8 +63,12 @@ class TerraformEnvironmentStage implements Stage, DecoratableStage {
                 decorations.apply(ALL) {
                     stage(getStageNameFor(PLAN)) {
                         decorations.apply(PLAN) {
-                            sh initCommand.toString()
-                            sh planCommand.toString()
+                            decorations.apply(INIT_COMMAND) {
+                                sh initCommand.toString()
+                            }
+                            decorations.apply(PLAN_COMMAND) {
+                                sh planCommand.toString()
+                            }
                         }
                     }
 
@@ -78,8 +85,12 @@ class TerraformEnvironmentStage implements Stage, DecoratableStage {
                         // The stage name needs to be editable
                         stage(getStageNameFor(APPLY)) {
                             decorations.apply(APPLY) {
-                                sh initCommand.toString()
-                                sh applyCommand.toString()
+                                decorations.apply(INIT_COMMAND) {
+                                    sh initCommand.toString()
+                                }
+                                decorations.apply(APPLY_COMMAND) {
+                                    sh applyCommand.toString()
+                                }
                             }
                         }
                     }
