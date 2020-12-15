@@ -5,6 +5,10 @@ import static TerraformEnvironmentStage.PLAN_COMMAND
 import static TerraformEnvironmentStage.APPLY
 import static TerraformEnvironmentStage.APPLY_COMMAND
 
+public final enum WhenToRun {
+    BEFORE, ON_SUCCESS, ON_FAILURE, AFTER
+}
+
 class HookPoint {
     String runBefore = null
     String runAfterOnSuccess = null
@@ -16,61 +20,67 @@ class HookPoint {
         this.hookName = hookName
     }
 
+    public String getName() {
+        return this.hookName
+    }
+
     public Boolean isConfigured() {
-        return ! (runBefore == null && runAfterOnSuccess == null && runAfterOnFailure == null && runAfterAlways == null)
+        return ! (this.runBefore == null && this.runAfterOnSuccess == null && this.runAfterOnFailure == null && this.runAfterAlways == null)
     }
 
     public Closure getClosure() {
         return { closure ->
             try {
-                if (runBefore != null) { sh runBefore }
+                if (this.runBefore != null) { sh this.runBefore }
                 closure()
-                if (runAfterOnSuccess != null) { sh runAfterOnSuccess }
-            } catch(Exception e) {
-                if (runAfterOnFailure != null) { sh runAfterOnFailure }
+                if (this.runAfterOnSuccess != null) { sh this.runAfterOnSuccess }
+            } catch (Exception e) {
+                if (this.runAfterOnFailure != null) { sh this.runAfterOnFailure }
                 throw e
             } finally {
-                if (runAfterAlways != null) { sh runAfterAlways }
+                if (this.runAfterAlways != null) { sh this.runAfterAlways }
             }
         }
     }
 }
 
 class TerraformEnvironmentStageShellHookPlugin implements TerraformEnvironmentStagePlugin {
-    private static hooks = [
-        ALL: HookPoint(ALL),
-        INIT_COMMAND: HookPoint(INIT_COMMAND),
-        PLAN: HookPoint(PLAN),
-        PLAN_COMMAND: HookPoint(PLAN_COMMAND),
-        APPLY: HookPoint(APPLY),
-        APPLY_COMMAND: HookPoint(APPLY_COMMAND)
+    static hooks = [
+        (ALL): new HookPoint(ALL),
+        (INIT_COMMAND): new HookPoint(INIT_COMMAND),
+        (PLAN): new HookPoint(PLAN),
+        (PLAN_COMMAND): new HookPoint(PLAN_COMMAND),
+        (APPLY): new HookPoint(APPLY),
+        (APPLY_COMMAND): new HookPoint(APPLY_COMMAND)
     ]
-
-    public static final enum WhenToRun {BEFORE, ON_SUCCESS, ON_FAILURE, AFTER}
 
     public static void init() {
         TerraformEnvironmentStageShellHookPlugin plugin = new TerraformEnvironmentStageShellHookPlugin()
         TerraformEnvironmentStage.addPlugin(plugin)
     }
 
-    public static withHook(String hookPoint, String shellCommand, int whenToRun = WhenToRun.ON_SUCCESS) {
+    public static withHook(String hookPoint, String shellCommand, WhenToRun whenToRun = WhenToRun.ON_SUCCESS) {
         switch ( whenToRun ) {
             case WhenToRun.BEFORE:
                 hooks[hookPoint].runBefore = shellCommand
+                break
             case WhenToRun.AFTER:
                 hooks[hookPoint].runAfterAlways = shellCommand
+                break
             case WhenToRun.ON_FAILURE:
                 hooks[hookPoint].runAfterOnFailure = shellCommand
-            default:
+                break
+            case WhenToRun.ON_SUCCESS:
                 hooks[hookPoint].runAfterOnSuccess = shellCommand
+                break
         }
         return this
     }
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        map.each { pointName, hookPoint ->
-            if(hookPoint.isConfigured()) {
+        hooks.each { pointName, hookPoint ->
+            if (hookPoint.isConfigured()) {
                 stage.decorate(pointName, hookPoint.getClosure())
             }
         }
@@ -78,12 +88,12 @@ class TerraformEnvironmentStageShellHookPlugin implements TerraformEnvironmentSt
 
     public static void reset() {
         hooks = [
-            ALL: HookPoint(ALL),
-            INIT_COMMAND: HookPoint(INIT_COMMAND),
-            PLAN: HookPoint(PLAN),
-            PLAN_COMMAND: HookPoint(PLAN_COMMAND),
-            APPLY: HookPoint(APPLY),
-            APPLY_COMMAND: HookPoint(APPLY_COMMAND)
+            (ALL): new HookPoint(ALL),
+            (INIT_COMMAND): new HookPoint(INIT_COMMAND),
+            (PLAN): new HookPoint(PLAN),
+            (PLAN_COMMAND): new HookPoint(PLAN_COMMAND),
+            (APPLY): new HookPoint(APPLY),
+            (APPLY_COMMAND): new HookPoint(APPLY_COMMAND)
         ]
     }
 }

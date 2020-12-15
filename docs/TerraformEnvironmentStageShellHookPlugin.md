@@ -23,8 +23,8 @@ Each hook point "wraps" various parts of the Stage, and supports a total of four
 Jenkinsfile.init(this)
 
 TerraformEnvironmentStageShellHookPlugin.withHook(TerraformEnvironmentStage.APPLY, './bin/after_successful_apply.sh')
-                                        .withHook(TerraformEnvironmentStage.INIT, './bin/download_deps.sh', TerraformEnvironmentStageShellHookPlugin.WhenToRun.BEFORE)
-                                        .withHook(TerraformEnvironmentStage.ALL, './bin/cleanup.sh', TerraformEnvironmentStageShellHookPlugin.WhenToRun.AFTER)
+                                        .withHook(TerraformEnvironmentStage.INIT, './bin/download_deps.sh', WhenToRun.BEFORE)
+                                        .withHook(TerraformEnvironmentStage.ALL, './bin/cleanup.sh', WhenToRun.AFTER)
                                         .init()
 
 def validate = new TerraformValidateStage()
