@@ -1,5 +1,7 @@
 ## [TerraformEnvironmentStageShellHookPlugin](../src/TerraformEnvironmentStageShellHookPlugin.groovy)
 
+**Note:** This plugin is intended as a limited proof-of-concept of a hook system. It (and its unweildy long name) is intended to be replaced at some point in the future with a more flexible and generic, non-TerraformEnvironmentStage-specific hook system.
+
 This plugin allows inserting shell script hooks at various points in the TerraformEnvironmentStage execution. Please see the [TerraformEnvironmentStage source code](../src/TerraformEnvironmentStage.groovy) for a list of the supported hook points. At this time, they are:
 
 * ``TerraformEnvironmentStage.ALL``
