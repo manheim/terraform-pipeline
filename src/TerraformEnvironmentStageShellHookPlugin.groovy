@@ -5,10 +5,6 @@ import static TerraformEnvironmentStage.PLAN_COMMAND
 import static TerraformEnvironmentStage.APPLY
 import static TerraformEnvironmentStage.APPLY_COMMAND
 
-public final enum WhenToRun {
-    BEFORE, ON_SUCCESS, ON_FAILURE, AFTER
-}
-
 class TerraformEnvironmentStageShellHookPlugin implements TerraformEnvironmentStagePlugin {
     static hooks = [
         (ALL): new HookPoint(ALL),
