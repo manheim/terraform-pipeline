@@ -40,3 +40,5 @@ validate.then(deployQA)
         .then(deployProd)
         .build()
 ```
+
+**Reminder:** Please remember that plugin definition order matters. You most likely want this plugin to be defined in your Jenkinsfile _before_ any plugins that affect the environment.
