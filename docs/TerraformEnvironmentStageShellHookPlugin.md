@@ -20,8 +20,6 @@ Each hook point "wraps" various parts of the Stage, and supports a total of four
 // Jenkinsfile
 @Library(['terraform-pipeline@v']) _
 
-import static TerraformEnvironmentStageShellHookPlugin.WhenToRun
-
 Jenkinsfile.init(this)
 
 TerraformEnvironmentStageShellHookPlugin.withHook(TerraformEnvironmentStage.APPLY, './bin/after_successful_apply.sh')
