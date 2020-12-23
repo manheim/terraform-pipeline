@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.11'
+    compile 'org.codehaus.groovy:groovy-all:2.4.12'
 
     testCompile 'com.lesfurets:jenkins-pipeline-unit:1.1'
 
