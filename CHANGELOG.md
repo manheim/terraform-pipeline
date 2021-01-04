@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #321](https://github.com/manheim/terraform-pipeline/issues/321) Upgrade groovy from 2.4.11 to 2.4.12 (fix travisCi failures)
 * [Issue #311](https://github.com/manheim/terraform-pipeline/issues/311) Fix non-deterministic test failures
 * [Issue #316](https://github.com/manheim/terraform-pipeline/issues/316) Implement more granular decorations in TerraformEnvironmentStage.
 
