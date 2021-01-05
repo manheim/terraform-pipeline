@@ -121,6 +121,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [PlanOnlyPlugin](./docs/PlanOnlyPlugin.md): Use this to change the pipeline functionality to `terraform plan` only.
 * [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
+* [TerraformEnvironmentStageShellHookPlugin](./docs/TerraformEnvironmentStageShellHookPlugin.md): Run arbitrary shell scripts at various points in the TerraformEnvironmentStage process.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
 * [ValidateFormatPlugin](./docs/ValidateFormatPlugin.md): Validate correct code format as part of the TerraformValidateStage.
 
@@ -401,4 +402,3 @@ If no `.terraform-version` file is found, and no explicit version is provided, t
     3.  Think of plugins as interchangeable Lego pieces - you can swap one piece out for another, without fundamentally altering what it is to be a Pipeline.
 4.  There should only be one way to Production, and that way should be crystal clear.
     1.  The master branch (or its equivalent) is the one-and-only way to Production.
-
