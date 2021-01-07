@@ -18,12 +18,12 @@ Each hook point "wraps" various parts of the Stage, and supports a total of four
 
 ```
 // Jenkinsfile
-@Library(['terraform-pipeline@v']) _
+@Library(['terraform-pipeline']) _
 
 Jenkinsfile.init(this)
 
-TerraformEnvironmentStageShellHookPlugin.withHook(TerraformEnvironmentStage.APPLY, './bin/after_successful_apply.sh')
-                                        .withHook(TerraformEnvironmentStage.INIT, './bin/download_deps.sh', WhenToRun.BEFORE)
+TerraformEnvironmentStageShellHookPlugin.withHook(TerraformEnvironmentStage.APPLY_COMMAND, './bin/after_successful_apply.sh')
+                                        .withHook(TerraformEnvironmentStage.INIT_COMMAND, './bin/download_deps.sh', WhenToRun.BEFORE)
                                         .withHook(TerraformEnvironmentStage.ALL, './bin/cleanup.sh', WhenToRun.AFTER)
                                         .init()
 
