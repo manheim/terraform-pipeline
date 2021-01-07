@@ -16,6 +16,7 @@ class ConditionalApplyPluginTest {
     @After
     public void reset() {
         Jenkinsfile.instance = null
+        ConditionalApplyPlugin.reset()
     }
 
     private configureJenkins(Map config = [:]) {
@@ -33,7 +34,7 @@ class ConditionalApplyPluginTest {
 
     class ShouldApply {
         @Test
-        void returnsTrueForMaster() {
+        void returnsTrueForMasterByDefault() {
             configureJenkins(env: [ BRANCH_NAME: 'master' ])
             def plugin = new ConditionalApplyPlugin()
 
@@ -41,8 +42,35 @@ class ConditionalApplyPluginTest {
         }
 
         @Test
-        void returnsFalseForNonMaster() {
+        void returnsFalseForNonMasterByDefault() {
             configureJenkins(env: [ BRANCH_NAME: 'notMaster' ])
+            def plugin = new ConditionalApplyPlugin()
+
+            assertFalse(plugin.shouldApply())
+        }
+
+        @Test
+        void returnsTrueForFirstConfiguredBranch() {
+            configureJenkins(env: [ BRANCH_NAME: 'qa' ])
+            ConditionalApplyPlugin.withBranchApplyEnabledFor(['qa', 'someOtherBranch'])
+            def plugin = new ConditionalApplyPlugin()
+
+            assertTrue(plugin.shouldApply())
+        }
+
+        @Test
+        void returnsTrueForOtherConfiguredBranches() {
+            configureJenkins(env: [ BRANCH_NAME: 'someOtherBranch' ])
+            ConditionalApplyPlugin.withBranchApplyEnabledFor(['qa', 'someOtherBranch'])
+            def plugin = new ConditionalApplyPlugin()
+
+            assertTrue(plugin.shouldApply())
+        }
+
+        @Test
+        void returnsFalseForNonMatchingBranch() {
+            configureJenkins(env: [ BRANCH_NAME: 'notQa' ])
+            ConditionalApplyPlugin.withBranchApplyEnabledFor(['qa', 'someOtherBranch'])
             def plugin = new ConditionalApplyPlugin()
 
             assertFalse(plugin.shouldApply())
