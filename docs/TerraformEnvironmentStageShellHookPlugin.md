@@ -18,7 +18,7 @@ Each hook point "wraps" various parts of the Stage, and supports a total of four
 
 ```
 // Jenkinsfile
-@Library(['terraform-pipeline@v']) _
+@Library(['terraform-pipeline']) _
 
 Jenkinsfile.init(this)
 
