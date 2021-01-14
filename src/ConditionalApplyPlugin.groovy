@@ -6,7 +6,7 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin {
     private static DEFAULT_BRANCHES = ['master']
     private static branches = DEFAULT_BRANCHES
 
-    public static void withBranchApplyEnabledFor(enabledBranches) {
+    public static void withApplyOnBranch(String... enabledBranches) {
         branches = enabledBranches.clone()
     }
 

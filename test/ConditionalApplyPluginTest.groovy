@@ -52,7 +52,7 @@ class ConditionalApplyPluginTest {
         @Test
         void returnsTrueForFirstConfiguredBranch() {
             configureJenkins(env: [ BRANCH_NAME: 'qa' ])
-            ConditionalApplyPlugin.withBranchApplyEnabledFor(['qa', 'someOtherBranch'])
+            ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
             def plugin = new ConditionalApplyPlugin()
 
             assertTrue(plugin.shouldApply())
@@ -61,7 +61,7 @@ class ConditionalApplyPluginTest {
         @Test
         void returnsTrueForOtherConfiguredBranches() {
             configureJenkins(env: [ BRANCH_NAME: 'someOtherBranch' ])
-            ConditionalApplyPlugin.withBranchApplyEnabledFor(['qa', 'someOtherBranch'])
+            ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
             def plugin = new ConditionalApplyPlugin()
 
             assertTrue(plugin.shouldApply())
@@ -70,7 +70,7 @@ class ConditionalApplyPluginTest {
         @Test
         void returnsFalseForNonMatchingBranch() {
             configureJenkins(env: [ BRANCH_NAME: 'notQa' ])
-            ConditionalApplyPlugin.withBranchApplyEnabledFor(['qa', 'someOtherBranch'])
+            ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
             def plugin = new ConditionalApplyPlugin()
 
             assertFalse(plugin.shouldApply())
