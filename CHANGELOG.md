@@ -1,6 +1,6 @@
 # Unreleased
 
-* [Issue #321](https://github.com/manheim/terraform-pipeline/issues/172) Allow 'apply' on branches other than master for some environments
+* [Issue #25](https://github.com/manheim/terraform-pipeline/issues/25) Allow 'apply' on branches other than master for some environments
 
 # v5.13
 
