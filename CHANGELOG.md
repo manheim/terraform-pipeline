@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #25](https://github.com/manheim/terraform-pipeline/issues/25) Allow 'apply' on branches other than master for some environments
+
 # v5.13
 
 * [Issue #321](https://github.com/manheim/terraform-pipeline/issues/321) Upgrade groovy from 2.4.11 to 2.4.12 (fix travisCi failures)
