@@ -1,10 +1,8 @@
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNull
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.junit.jupiter.api.Assertions.assertNull
 import static org.mockito.Mockito.inOrder
 import static org.mockito.Mockito.when
 import static org.mockito.Mockito.mock
@@ -22,16 +20,15 @@ import static TerraformEnvironmentStage.APPLY
 import static TerraformEnvironmentStage.APPLY_COMMAND
 
 import org.mockito.InOrder
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
 
-@RunWith(HierarchicalContextRunner.class)
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+
 class TerraformEnvironmentStageShellHookPluginTest {
     def hookKeys = [ALL, INIT_COMMAND, PLAN, PLAN_COMMAND, APPLY, APPLY_COMMAND]
 
-    @After
+    @AfterEach
     public void reset() {
         Jenkinsfile.instance = null
         TerraformEnvironmentStage.reset()
@@ -45,20 +42,22 @@ class TerraformEnvironmentStageShellHookPluginTest {
         when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
     }
 
+    @Nested
     public class Hooks {
         @Test
         void hasAllHooksUnconfigured() {
             TerraformEnvironmentStageShellHookPlugin.reset()
             def hooks = TerraformEnvironmentStageShellHookPlugin.hooks
-            assertEquals(hooks.size(), 6)
+            assertThat(hooks.size(), equalTo(6))
             hookKeys.each {
                 assertThat(hooks[it], instanceOf(HookPoint))
-                assertFalse(hooks[it].isConfigured())
-                assertEquals(hooks[it].getName(), it)
+                assertThat(hooks[it].isConfigured(), equalTo(false))
+                assertThat(it, equalTo(hooks[it].getName()))
             }
         }
     }
 
+    @Nested
     public class Init {
         @Test
         void modifiesTerraformEnvironmentStage() {
@@ -69,6 +68,7 @@ class TerraformEnvironmentStageShellHookPluginTest {
         }
     }
 
+    @Nested
     public class WithHook {
         @Test
         void setDefaultOnSuccess() {
@@ -76,13 +76,13 @@ class TerraformEnvironmentStageShellHookPluginTest {
             def hooks = TerraformEnvironmentStageShellHookPlugin.hooks
             hookKeys.each {
                 if (it == APPLY) {
-                    assertTrue(hooks[it].isConfigured())
-                    assertEquals(hooks[it].runAfterOnSuccess, 'foo bar')
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
+                    assertThat(hooks[it].runAfterOnSuccess, equalTo('foo bar'))
                     assertNull(hooks[it].runBefore)
                     assertNull(hooks[it].runAfterAlways)
                     assertNull(hooks[it].runAfterOnFailure)
                 } else {
-                    assertFalse(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(false))
                 }
             }
         }
@@ -93,13 +93,13 @@ class TerraformEnvironmentStageShellHookPluginTest {
             def hooks = TerraformEnvironmentStageShellHookPlugin.hooks
             hookKeys.each {
                 if (it == PLAN_COMMAND) {
-                    assertTrue(hooks[it].isConfigured())
-                    assertEquals(hooks[it].runBefore, 'foo bar')
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
+                    assertThat(hooks[it].runBefore, equalTo('foo bar'))
                     assertNull(hooks[it].runAfterAlways)
                     assertNull(hooks[it].runAfterOnFailure)
                     assertNull(hooks[it].runAfterOnSuccess)
                 } else {
-                    assertFalse(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(false))
                 }
             }
         }
@@ -110,13 +110,13 @@ class TerraformEnvironmentStageShellHookPluginTest {
             def hooks = TerraformEnvironmentStageShellHookPlugin.hooks
             hookKeys.each {
                 if (it == PLAN) {
-                    assertTrue(hooks[it].isConfigured())
-                    assertEquals(hooks[it].runAfterOnFailure, 'foo bar')
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
+                    assertThat(hooks[it].runAfterOnFailure, equalTo('foo bar'))
                     assertNull(hooks[it].runBefore)
                     assertNull(hooks[it].runAfterAlways)
                     assertNull(hooks[it].runAfterOnSuccess)
                 } else {
-                    assertFalse(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(false))
                 }
             }
         }
@@ -127,13 +127,13 @@ class TerraformEnvironmentStageShellHookPluginTest {
             def hooks = TerraformEnvironmentStageShellHookPlugin.hooks
             hookKeys.each {
                 if (it == PLAN) {
-                    assertTrue(hooks[it].isConfigured())
-                    assertEquals(hooks[it].runAfterAlways, 'foo bar')
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
+                    assertThat(hooks[it].runAfterAlways, equalTo('foo bar'))
                     assertNull(hooks[it].runBefore)
                     assertNull(hooks[it].runAfterOnFailure)
                     assertNull(hooks[it].runAfterOnSuccess)
                 } else {
-                    assertFalse(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(false))
                 }
             }
         }
@@ -145,13 +145,13 @@ class TerraformEnvironmentStageShellHookPluginTest {
             def hooks = TerraformEnvironmentStageShellHookPlugin.hooks
             hookKeys.each {
                 if (it == PLAN) {
-                    assertTrue(hooks[it].isConfigured())
-                    assertEquals(hooks[it].runAfterAlways, 'baz')
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
+                    assertThat(hooks[it].runAfterAlways, equalTo('baz'))
                     assertNull(hooks[it].runBefore)
                     assertNull(hooks[it].runAfterOnFailure)
                     assertNull(hooks[it].runAfterOnSuccess)
                 } else {
-                    assertFalse(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(false))
                 }
             }
         }
@@ -165,30 +165,31 @@ class TerraformEnvironmentStageShellHookPluginTest {
             def hooks = TerraformEnvironmentStageShellHookPlugin.hooks
             hookKeys.each {
                 if (it == ALL) {
-                    assertTrue(hooks[it].isConfigured())
-                    assertEquals(hooks[it].runBefore, 'all-before')
-                    assertEquals(hooks[it].runAfterAlways, 'all-after-always')
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
+                    assertThat(hooks[it].runBefore, equalTo('all-before'))
+                    assertThat(hooks[it].runAfterAlways, equalTo('all-after-always'))
                     assertNull(hooks[it].runAfterOnFailure)
                     assertNull(hooks[it].runAfterOnSuccess)
                 } else if (it == INIT_COMMAND) {
-                    assertTrue(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
                     assertNull(hooks[it].runBefore)
                     assertNull(hooks[it].runAfterAlways)
                     assertNull(hooks[it].runAfterOnFailure)
-                    assertEquals(hooks[it].runAfterOnSuccess, 'init-command-after-success')
+                    assertThat(hooks[it].runAfterOnSuccess, equalTo('init-command-after-success'))
                 } else if (it == PLAN) {
-                    assertTrue(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(true))
                     assertNull(hooks[it].runBefore)
                     assertNull(hooks[it].runAfterAlways)
                     assertNull(hooks[it].runAfterOnFailure)
-                    assertEquals(hooks[it].runAfterOnSuccess, 'plan-after-success')
+                    assertThat(hooks[it].runAfterOnSuccess, equalTo('plan-after-success'))
                 } else {
-                    assertFalse(hooks[it].isConfigured())
+                    assertThat(hooks[it].isConfigured(), equalTo(false))
                 }
             }
         }
     }
 
+    @Nested
     public class Apply {
         @Test
         void testApply() {

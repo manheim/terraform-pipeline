@@ -1,19 +1,17 @@
 import static org.hamcrest.Matchers.containsString
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class ParameterStoreExecPluginTest {
-    @After
+    @AfterEach
     public void reset() {
         Jenkinsfile.instance = null
         TerraformEnvironmentStage.reset()
@@ -28,6 +26,7 @@ class ParameterStoreExecPluginTest {
         when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
     }
 
+    @Nested
     public class Init {
         @Test
         void modifiesTerraformEnvironmentStage() {
@@ -54,6 +53,7 @@ class ParameterStoreExecPluginTest {
         }
     }
 
+    @Nested
     public class Apply {
         @Test
         void addsParameterStorePrefixToTerraformPlan() {
@@ -78,6 +78,7 @@ class ParameterStoreExecPluginTest {
         }
     }
 
+    @Nested
     public class PathForEnvironment {
         @Test
         void constructPathUsingOrgRepoAndEnvironment() {
@@ -89,7 +90,7 @@ class ParameterStoreExecPluginTest {
             ParameterStoreExecPlugin plugin = new ParameterStoreExecPlugin()
 
             String actual = plugin.pathForEnvironment(environment)
-            assertEquals(actual, "/${organization}/${repoName}/${environment}/".toString())
+            assertThat(actual, equalTo("/${organization}/${repoName}/${environment}/".toString()))
         }
     }
 

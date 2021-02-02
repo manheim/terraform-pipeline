@@ -1,19 +1,17 @@
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class WithAwsPluginTest {
-    @After
+    @AfterEach
     void reset() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
         when(Jenkinsfile.instance.getEnv()).thenReturn([:])
@@ -26,8 +24,9 @@ class WithAwsPluginTest {
         when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
     }
 
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformEnvironmentStage.reset()
         }
@@ -46,10 +45,11 @@ class WithAwsPluginTest {
         void isFluentAndReturnsThePluginClass() {
             def result = WithAwsPlugin.withRole()
 
-            assertTrue(result == WithAwsPlugin.class)
+            assertThat(result, equalTo(WithAwsPlugin))
         }
     }
 
+    @Nested
     public class WithImplicitRole {
         @Test
         void returnsGenericRoleIfPresent() {
@@ -103,6 +103,7 @@ class WithAwsPluginTest {
         }
     }
 
+    @Nested
     public class WithExplicitRole {
         @Test
         void returnsProvidedRole() {

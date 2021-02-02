@@ -1,16 +1,15 @@
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertThat
 
-import org.junit.Test
-import org.junit.After
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class AnsiColorPluginTest {
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformEnvironmentStage.reset()
         }

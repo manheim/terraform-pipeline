@@ -1,24 +1,23 @@
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformPluginTest {
 
+    @Nested
     class VersionDetection {
-        @Before
-        @After
+        @BeforeEach
+        @AfterEach
         void reset() {
             TerraformPlugin.reset()
             Jenkinsfile.reset()
@@ -32,7 +31,7 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(expectedVersion, foundVersion)
+            assertThat(expectedVersion, equalTo(foundVersion))
         }
 
         @Test
@@ -46,7 +45,7 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(expectedVersion, foundVersion)
+            assertThat(expectedVersion, equalTo(foundVersion))
         }
 
         @Test
@@ -60,7 +59,7 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(expectedVersion, foundVersion)
+            assertThat(expectedVersion, equalTo(foundVersion))
         }
 
         @Test
@@ -72,13 +71,14 @@ class TerraformPluginTest {
 
             def foundVersion = plugin.detectVersion()
 
-            assertEquals(TerraformPlugin.DEFAULT_VERSION, foundVersion)
+            assertThat(TerraformPlugin.DEFAULT_VERSION, equalTo(foundVersion))
         }
     }
 
+    @Nested
     class CheckVersion {
-        @Before
-        @After
+        @BeforeEach
+        @AfterEach
         void reset() {
             TerraformPlugin.reset()
             Jenkinsfile.reset()
@@ -92,8 +92,9 @@ class TerraformPluginTest {
         }
     }
 
+    @Nested
     class WithVersion {
-        @After
+        @AfterEach
         void reset() {
             TerraformPlugin.reset()
         }
@@ -101,12 +102,13 @@ class TerraformPluginTest {
         @Test
         void usesVersionEvenIfFileExists() {
             TerraformPlugin.withVersion('2.0.0')
-            assertEquals('2.0.0', TerraformPlugin.version)
+            assertThat('2.0.0', equalTo(TerraformPlugin.version))
         }
     }
 
+    @Nested
     class Strategyfor {
-        @After
+        @AfterEach
         void reset() {
             TerraformPlugin.reset()
         }
@@ -140,6 +142,7 @@ class TerraformPluginTest {
 
     }
 
+    @Nested
     class ApplyTerraformValidateCommand {
         @Test
         void shouldApplyTheCorrectStrategyToTerraformValidateCommand() {
@@ -155,6 +158,7 @@ class TerraformPluginTest {
         }
     }
 
+    @Nested
     class ApplyTerraformFormatCommand {
         @Test
         void shouldApplyTheCorrectStrategyToTerraformFormatCommand() {
@@ -170,6 +174,7 @@ class TerraformPluginTest {
         }
     }
 
+    @Nested
     class ApplyTerraformPlanCommand {
         @Test
         void shouldApplyTheCorrectStrategyToTerraformPlanCommand() {
@@ -185,6 +190,7 @@ class TerraformPluginTest {
         }
     }
 
+    @Nested
     class ApplyTerraformApplyCommand {
         @Test
         void shouldApplyTheCorrectStrategyToTerraformApplyCommand() {
@@ -200,6 +206,7 @@ class TerraformPluginTest {
         }
     }
 
+    @Nested
     class ApplyTerraformValidateStage {
         @Test
         void shouldDecorateTheGivenStage() {
@@ -214,6 +221,7 @@ class TerraformPluginTest {
         }
     }
 
+    @Nested
     class ModifyTerraformValidateStage {
         @Test
         void shouldApplyTheCorrectStrategyToTerraformValidateStage() {

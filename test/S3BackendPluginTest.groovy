@@ -3,19 +3,18 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.not
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.spy;
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class S3BackendPluginTest {
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformInitCommand.resetPlugins()
         }
@@ -29,8 +28,9 @@ class S3BackendPluginTest {
         }
     }
 
+    @Nested
     public class Apply {
-        @After
+        @AfterEach
         void reset() {
             S3BackendPlugin.keyPattern = null
         }
@@ -120,6 +120,7 @@ class S3BackendPluginTest {
         }
     }
 
+    @Nested
     public class GetBackend {
         @Test
         void shouldReturnTheValueOfS3BackendBucket() {
@@ -168,6 +169,7 @@ class S3BackendPluginTest {
         }
     }
 
+    @Nested
     public class GetRegion {
         @Test
         void shouldReturnTheValueOfDefaultS3BackendRegion() {
@@ -242,8 +244,9 @@ class S3BackendPluginTest {
         }
     }
 
+    @Nested
     public class GetKey {
-        @After
+        @AfterEach
         void resetPlugins() {
             S3BackendPlugin.keyPattern = null
         }
@@ -269,6 +272,7 @@ class S3BackendPluginTest {
         }
     }
 
+    @Nested
     public class GetDynamoTable {
         @Test
         void shouldReturnDeprecatedS3BackendDynamoTableLockValue() {
@@ -343,6 +347,7 @@ class S3BackendPluginTest {
         }
     }
 
+    @Nested
     public class GetEncrypt {
         @Test
         void shouldReturnS3BackendEncryptValue() {
@@ -392,6 +397,7 @@ class S3BackendPluginTest {
         }
     }
 
+    @Nested
     public class GetKmsKeyId {
         @Test
         void shouldReturnS3BackendKmsKeyIdValue() {

@@ -1,21 +1,20 @@
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class CrqPluginTest {
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformEnvironmentStage.reset()
         }
@@ -29,7 +28,9 @@ class CrqPluginTest {
         }
     }
 
+    @Nested
     public class AddCrq {
+        @Nested
         public class withCrqEnvironment {
             @Test
             public void shouldExecutePipeline() {
@@ -49,6 +50,7 @@ class CrqPluginTest {
             // @Test shouldCallRemedierOpen
         }
 
+        @Nested
         public class withoutCrqEnvironment {
             @Test
             public void shouldExecutePipeline() {
@@ -67,6 +69,7 @@ class CrqPluginTest {
         }
     }
 
+    @Nested
     public class GetCrqEnviroment {
         @Test
         void returnsCrqEnvirommentIfPresent() {

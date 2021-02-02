@@ -2,27 +2,25 @@ import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
+import static org.hamcrest.CoreMatchers.is
+import static org.hamcrest.CoreMatchers.instanceOf
 import static org.hamcrest.Matchers.hasItem
-import static org.hamcrest.Matchers.is
-import static org.hamcrest.Matchers.isA
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.MatcherAssert.assertThat
 import static TerraformEnvironmentStage.PLAN
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformEnvironmentStageTest {
-    @After
+    @AfterEach
     void resetPlugins() {
         TerraformEnvironmentStage.reset()
     }
 
+    @Nested
     public class ToString {
         @Test
         void returnsEnvironmentName() {
@@ -31,10 +29,11 @@ class TerraformEnvironmentStageTest {
 
             def result = stage.toString()
 
-            assertEquals(expectedEnvironment, result)
+            assertThat(result, equalTo(expectedEnvironment))
         }
     }
 
+    @Nested
     public class Then {
 
         @Test
@@ -44,10 +43,11 @@ class TerraformEnvironmentStageTest {
 
             def result = stage.then(stage2)
 
-            assertThat(result, isA(BuildGraph.class))
+            assertThat(result, instanceOf(BuildGraph.class))
         }
     }
 
+    @Nested
     public class AddedPlugins {
         @Test
         void willHaveApplyCalled() {
@@ -61,6 +61,7 @@ class TerraformEnvironmentStageTest {
         }
     }
 
+    @Nested
     public class WithEnv {
         @Test
         void addsAnInstanceOfEnvironmentVariablePlugin() {
@@ -69,7 +70,7 @@ class TerraformEnvironmentStageTest {
 
             def plugins = stage.getAllPlugins()
 
-            assertThat(plugins, hasItem(isA(EnvironmentVariablePlugin.class)))
+            assertThat(plugins, hasItem(instanceOf(EnvironmentVariablePlugin.class)))
         }
 
         @Test
@@ -87,7 +88,7 @@ class TerraformEnvironmentStageTest {
             def plugin1Index = plugins.findIndexOf { it == plugin1 }
 
             assertThat(plugins[plugin1Index], is(plugin1))
-            assertThat(plugins[plugin1Index + 1], isA(EnvironmentVariablePlugin.class))
+            assertThat(plugins[plugin1Index + 1], is(instanceOf(EnvironmentVariablePlugin.class)))
             assertThat(plugins[plugin1Index + 2], is(plugin3))
         }
 
@@ -101,7 +102,7 @@ class TerraformEnvironmentStageTest {
             def plugins = stage.getAllPlugins()
                                .findAll { plugin -> plugin instanceof EnvironmentVariablePlugin }
 
-            assertEquals(2, plugins.size())
+            assertThat(plugins.size(), equalTo(2))
         }
 
         @Test
@@ -115,7 +116,7 @@ class TerraformEnvironmentStageTest {
 
             def pluginsAfter = unmodifiedStage.getAllPlugins()
 
-            assertEquals(pluginsBefore, pluginsAfter)
+            assertThat(pluginsAfter, equalTo(pluginsBefore))
         }
 
         @Test
@@ -123,10 +124,11 @@ class TerraformEnvironmentStageTest {
             def stage = new TerraformEnvironmentStage('foo')
             def result = stage.withEnv('somekey', 'somevalue')
 
-            assertTrue(result == stage)
+            assertThat(result, equalTo(stage))
         }
     }
 
+    @Nested
     public class WithGlobalEnv {
         @Test
         void addsAnInstanceOfEnvironmeentVariablePlugin() {
@@ -134,24 +136,25 @@ class TerraformEnvironmentStageTest {
 
             def plugins = TerraformEnvironmentStage.getPlugins()
 
-            assertThat(plugins, hasItem(isA(EnvironmentVariablePlugin.class)))
+            assertThat(plugins, hasItem(is(instanceOf(EnvironmentVariablePlugin.class))))
         }
 
         @Test
         void isFluent() {
             def result = TerraformEnvironmentStage.withGlobalEnv('somekey', 'somevalue')
 
-            assertTrue(result == TerraformEnvironmentStage.class)
+            assertThat(result, equalTo(TerraformEnvironmentStage.class))
         }
     }
 
+    @Nested
     class PipelineConfigurations {
-        @Before
+        @BeforeEach
         void resetBefore() {
             Jenkinsfile.reset()
         }
 
-        @After
+        @AfterEach
         void resetAfter() {
             Jenkinsfile.reset()
         }
@@ -162,7 +165,7 @@ class TerraformEnvironmentStageTest {
 
             def result = stage.pipelineConfiguration()
 
-            assertThat(result, isA(Closure.class))
+            assertThat(result, is(instanceOf(Closure.class)))
         }
 
         @Test
@@ -178,9 +181,10 @@ class TerraformEnvironmentStageTest {
         }
     }
 
+    @Nested
     class WithStageNamePattern {
-        @Before
-        @After
+        @BeforeEach
+        @AfterEach
         void reset() {
             TerraformEnvironmentStage.reset()
         }
@@ -191,7 +195,7 @@ class TerraformEnvironmentStageTest {
 
             def actualName = stage.getStageNameFor(PLAN)
 
-            assertEquals('plan-myenv', actualName)
+            assertThat(actualName, equalTo('plan-myenv'))
         }
 
         @Test
@@ -201,7 +205,7 @@ class TerraformEnvironmentStageTest {
 
             def actualName = stage.getStageNameFor(PLAN)
 
-            assertEquals('plan-override-myenv', actualName)
+            assertThat(actualName, equalTo('plan-override-myenv'))
         }
     }
 }

@@ -1,7 +1,7 @@
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
 import static org.mockito.Mockito.spy;
@@ -12,15 +12,14 @@ import static org.mockito.Mockito.never
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.anyString
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class ParameterStoreBuildWrapperPluginTest {
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformValidateStage.resetPlugins()
             TerraformEnvironmentStage.reset()
@@ -43,12 +42,14 @@ class ParameterStoreBuildWrapperPluginTest {
         }
     }
 
+    @Nested
     public class Apply {
-        @After
+        @AfterEach
         public void reset() {
             ParameterStoreBuildWrapperPlugin.reset()
         }
 
+        @Nested
         class WithTerraformValidateStage {
             @Test
             void doesNotDecorateTheTerraformValidateStageIfGlobalParametersNotSet() {
@@ -78,6 +79,7 @@ class ParameterStoreBuildWrapperPluginTest {
             }
         }
 
+        @Nested
         class WithTerraformEnvironmentStage {
             @Test
             void doesNotDecorateTheTerraformEnvironmentStageIfNoOptionsSet() {
@@ -135,8 +137,9 @@ class ParameterStoreBuildWrapperPluginTest {
         }
     }
 
+    @Nested
     class GetParameterOptions {
-        @After
+        @AfterEach
         public void reset() {
             ParameterStoreBuildWrapperPlugin.reset()
         }
@@ -152,7 +155,7 @@ class ParameterStoreBuildWrapperPluginTest {
 
             List actual = plugin.getParameterOptions(environment)
 
-            assertEquals(expected, actual)
+            assertThat(actual, equalTo(expected))
         }
 
         @Test
@@ -169,7 +172,7 @@ class ParameterStoreBuildWrapperPluginTest {
 
             List actual = plugin.getParameterOptions(environment)
 
-            assertEquals(expected, actual)
+            assertThat(actual, equalTo(expected))
         }
 
         @Test
@@ -187,12 +190,13 @@ class ParameterStoreBuildWrapperPluginTest {
 
             List actual = plugin.getParameterOptions(environment)
 
-            assertEquals(expected, actual)
+            assertThat(actual, equalTo(expected))
         }
     }
 
+    @Nested
     public class GetEnvironmentParameterOptions {
-        @After
+        @AfterEach
         public void reset() {
             Jenkinsfile.instance = null
             ParameterStoreBuildWrapperPlugin.reset()
@@ -215,7 +219,7 @@ class ParameterStoreBuildWrapperPluginTest {
 
             Map actual = plugin.getEnvironmentParameterOptions(environment)
 
-            assertEquals(expectedPath, actual.path)
+            assertThat(actual.path, equalTo(expectedPath))
         }
 
         @Test
@@ -229,12 +233,13 @@ class ParameterStoreBuildWrapperPluginTest {
 
             Map actual = plugin.getEnvironmentParameterOptions(environment)
 
-            assertEquals(expectedCredentialsId, actual.credentialsId.toString())
+            assertThat(actual.credentialsId.toString(), equalTo(expectedCredentialsId))
         }
     }
 
+    @Nested
     public class PathForEnvironment {
-        @After
+        @AfterEach
         public void reset() {
             Jenkinsfile.instance = null
             ParameterStoreBuildWrapperPlugin.reset()
@@ -258,7 +263,7 @@ class ParameterStoreBuildWrapperPluginTest {
             ParameterStoreBuildWrapperPlugin plugin = new ParameterStoreBuildWrapperPlugin()
 
             String actual = plugin.pathForEnvironment(environment)
-            assertEquals("/${organization}/${repoName}/${environment}/".toString(), actual)
+            assertThat(actual, equalTo("/${organization}/${repoName}/${environment}/".toString()))
         }
 
         @Test
@@ -273,12 +278,13 @@ class ParameterStoreBuildWrapperPluginTest {
             ParameterStoreBuildWrapperPlugin plugin = new ParameterStoreBuildWrapperPlugin()
 
             String actual = plugin.pathForEnvironment(environment)
-            assertEquals("/foo/${organization}/${environment}/${repoName}".toString(), actual)
+            assertThat(actual, equalTo("/foo/${organization}/${environment}/${repoName}".toString()))
         }
     }
 
+    @Nested
     class WithPathPattern {
-        @After
+        @AfterEach
         public void reset() {
             ParameterStoreBuildWrapperPlugin.reset()
         }
@@ -287,12 +293,13 @@ class ParameterStoreBuildWrapperPluginTest {
         void isFluent() {
             def result = ParameterStoreBuildWrapperPlugin.withPathPattern { options -> 'somePattern' }
 
-            assertEquals(ParameterStoreBuildWrapperPlugin.class, result)
+            assertThat(result, equalTo(ParameterStoreBuildWrapperPlugin.class))
         }
     }
 
+    @Nested
     class withGlobalParameter {
-        @After
+        @AfterEach
         public void reset() {
             ParameterStoreBuildWrapperPlugin.reset()
         }
@@ -302,7 +309,7 @@ class ParameterStoreBuildWrapperPluginTest {
             String path = '/path/'
             def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter(path)
             println(result)
-            assertEquals([[path: '/path/']], result.globalParameterOptions)
+            assertThat(result.globalParameterOptions, equalTo([[path: '/path/']]))
         }
 
         @Test
@@ -313,7 +320,7 @@ class ParameterStoreBuildWrapperPluginTest {
 
             def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter(path, options)
 
-            assertEquals(expected, result.globalParameterOptions)
+            assertThat(result.globalParameterOptions, equalTo(expected))
         }
 
         @Test
@@ -324,7 +331,7 @@ class ParameterStoreBuildWrapperPluginTest {
 
             def result = ParameterStoreBuildWrapperPlugin.withGlobalParameter(path, options)
 
-            assertEquals(expected, result.globalParameterOptions)
+            assertThat(result.globalParameterOptions, equalTo(expected))
         }
 
         @Test
@@ -338,7 +345,7 @@ class ParameterStoreBuildWrapperPluginTest {
             expected << [path:'/path2/']
             expected << [path: '/path3/', recursive: true]
             expected << [path: '/path4/', basename: 'something']
-            assertEquals(expected, result.globalParameterOptions)
+            assertThat(result.globalParameterOptions, equalTo(expected))
         }
     }
 }

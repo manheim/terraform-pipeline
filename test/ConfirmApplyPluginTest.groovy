@@ -1,22 +1,21 @@
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.contains
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNull
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertNull
+import static org.junit.jupiter.api.Assertions.assertThrows
+import static org.junit.jupiter.api.Assertions.assertTrue
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class ConfirmApplyPluginTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     void reset() {
         ConfirmApplyPlugin.reset()
     }
@@ -42,6 +41,7 @@ class ConfirmApplyPluginTest {
         assertFalse(ConfirmApplyPlugin.enabled)
     }
 
+    @Nested
     class GetInputOptions {
         @Test
         void defaultsToASubmitterParameterOfApprover() {
@@ -109,6 +109,7 @@ class ConfirmApplyPluginTest {
         }
     }
 
+    @Nested
     class CheckConfirmConditions {
         @Test
         void doesNothingByDefault() {
@@ -127,14 +128,16 @@ class ConfirmApplyPluginTest {
             plugin.checkConfirmConditions('someInput', 'foo')
         }
 
-        @Test(expected = RuntimeException.class)
+        @Test
         void raisesAnExceptionIfAnyConditionReturnsFalse() {
             def plugin = new ConfirmApplyPlugin()
             ConfirmApplyPlugin.withConfirmCondition { options -> true }
                               .withConfirmCondition { options -> false }
                               .withConfirmCondition { options -> true }
 
-            plugin.checkConfirmConditions('someInput', 'foo')
+            assertThrows(RuntimeException.class) {
+                plugin.checkConfirmConditions('someInput', 'foo')
+            }
         }
 
         @Test
@@ -162,6 +165,7 @@ class ConfirmApplyPluginTest {
         }
     }
 
+    @Nested
     class WithParameter {
         @Test
         void isFluent() {
@@ -171,6 +175,7 @@ class ConfirmApplyPluginTest {
         }
     }
 
+    @Nested
     class WithConfirmMessage {
         @Test
         void isFluent() {
@@ -180,6 +185,7 @@ class ConfirmApplyPluginTest {
         }
     }
 
+    @Nested
     class WithOkMessage {
         @Test
         void isFluent() {
@@ -189,6 +195,7 @@ class ConfirmApplyPluginTest {
         }
     }
 
+    @Nested
     class WithSubmitterParameter {
         @Test
         void isFluent() {

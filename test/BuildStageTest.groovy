@@ -1,16 +1,15 @@
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.doReturn
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class BuildStageTest {
 
+    @Nested
     public class Build {
-        @After
+        @AfterEach
         void reset() {
             Jenkinsfile.original = null
         }

@@ -1,23 +1,21 @@
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 
-import org.junit.Test
-import org.junit.Before
-import org.junit.After
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class DestroyPluginTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     void reset() {
         Jenkinsfile.reset()
         ConfirmApplyPlugin.reset()
@@ -26,8 +24,9 @@ class DestroyPluginTest {
         TerraformApplyCommand.resetPlugins()
     }
 
+    @Nested
     public class Init {
-        @Before
+        @BeforeEach
         void setup() {
             Jenkinsfile.instance = mock(Jenkinsfile.class)
             doReturn('repoName').when(Jenkinsfile.instance).getRepoName()
@@ -71,6 +70,7 @@ class DestroyPluginTest {
         }
     }
 
+    @Nested
     class ApplyTerraformPlanCommand {
         @Test
         void modifiesPlanToIncludeDestroyArgument() {
@@ -84,6 +84,7 @@ class DestroyPluginTest {
         }
     }
 
+    @Nested
     class ApplyTerraformApplyCommand {
         @Test
         void modifiesCommandFromApplyToDestroy() {
@@ -96,8 +97,9 @@ class DestroyPluginTest {
             assertThat(result, containsString('terraform destroy'))
         }
 
+        @Nested
         class WithArguments {
-            @After
+            @AfterEach
             void resetPlugins() {
                 DestroyPlugin.reset()
             }
@@ -133,6 +135,7 @@ class DestroyPluginTest {
         }
     }
 
+    @Nested
     class WithArgument {
         @Test
         void isFluent() {
@@ -142,6 +145,7 @@ class DestroyPluginTest {
         }
     }
 
+    @Nested
     class ConfirmCondition {
         @Test
         void returnsTrueIfConfirmationInputDoesNotMatch() {

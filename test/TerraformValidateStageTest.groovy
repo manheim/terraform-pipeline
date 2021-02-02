@@ -1,20 +1,20 @@
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
-import static org.hamcrest.Matchers.isA
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.hamcrest.CoreMatchers.is
+import static org.hamcrest.CoreMatchers.instanceOf
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformValidateStageTest {
-    @After
+    @AfterEach
     void resetPlugins() {
         TerraformValidateStage.resetPlugins()
     }
 
+    @Nested
     public class PipelineConfiguration {
         @Test
         void returnsAJobDslClosure() {
@@ -22,7 +22,7 @@ class TerraformValidateStageTest {
 
             def result = validateStage.pipelineConfiguration()
 
-            assertThat(result, isA(Closure.class))
+            assertThat(result, is(instanceOf(Closure.class)))
         }
 
         // This should be split into separate tests, and assert behavior
@@ -38,6 +38,7 @@ class TerraformValidateStageTest {
         }
     }
 
+    @Nested
     public class Then {
         @Test
         void nextStageisCalled() {
@@ -46,10 +47,11 @@ class TerraformValidateStageTest {
 
             def result = stage.then(stage2)
 
-            assertThat(result, isA(BuildGraph.class))
+            assertThat(result, is(instanceOf(BuildGraph.class)))
         }
     }
 
+    @Nested
     public class Build {
         @Test
         void justExerciseNoAssertions() {
@@ -59,6 +61,7 @@ class TerraformValidateStageTest {
         }
     }
 
+    @Nested
     public class Decorate {
         @Test
         void justExerciseNoAssertions() {

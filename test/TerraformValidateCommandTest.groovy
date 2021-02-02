@@ -1,24 +1,23 @@
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.startsWith
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformValidateCommandTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void reset() {
         TerraformValidateCommand.resetPlugins()
     }
 
+    @Nested
     public class WithDirectory {
         @Test
         void addsDirectoryArgument() {
@@ -29,6 +28,7 @@ class TerraformValidateCommandTest {
         }
     }
 
+    @Nested
     public class WithPrefix {
         @Test
         void addsPrefixToBeginningOfCommand() {
@@ -48,6 +48,7 @@ class TerraformValidateCommandTest {
         }
     }
 
+    @Nested
     public class WithSuffix {
         @Test
         void addsSuffixToEndOfCommand() {
@@ -77,8 +78,9 @@ class TerraformValidateCommandTest {
         }
     }
 
+    @Nested
     public class Plugins {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformValidateCommand.resetPlugins()
         }

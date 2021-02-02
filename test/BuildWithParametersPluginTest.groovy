@@ -1,10 +1,10 @@
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.contains
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -12,16 +12,14 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test
-import org.junit.After
-import org.junit.Before
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class BuildWithParametersPluginTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     void reset() {
         BuildWithParametersPlugin.reset()
     }
@@ -33,8 +31,9 @@ class BuildWithParametersPluginTest {
         return dummyJenkinsfile
     }
 
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             BuildStage.resetPlugins()
             TerraformValidateStage.resetPlugins()
@@ -75,6 +74,7 @@ class BuildWithParametersPluginTest {
         }
     }
 
+    @Nested
     class Apply {
         @Test
         void worksForBuildStage() {
@@ -125,7 +125,9 @@ class BuildWithParametersPluginTest {
         }
     }
 
+    @Nested
     class AddParameterToFirstStageOnly {
+        @Nested
         class WithNoParameters {
             @Test
             void runsTheInnerClosure() {
@@ -151,6 +153,7 @@ class BuildWithParametersPluginTest {
             }
         }
 
+        @Nested
         class WithParameters {
             @Test
             void runsTheInnerClosure() {
@@ -200,9 +203,10 @@ class BuildWithParametersPluginTest {
         }
     }
 
+    @Nested
     class HasParameters {
-        @Before
-        @After
+        @BeforeEach
+        @AfterEach
         void reset() {
             BuildWithParametersPlugin.reset()
         }
@@ -227,6 +231,7 @@ class BuildWithParametersPluginTest {
         }
     }
 
+    @Nested
     class WithBooleanParameter {
         @Test
         void usesTheGivenName() {
@@ -273,6 +278,7 @@ class BuildWithParametersPluginTest {
         }
     }
 
+    @Nested
     class WithStringParameter {
         @Test
         void usesTheGivenName() {
@@ -320,6 +326,7 @@ class BuildWithParametersPluginTest {
 
     }
 
+    @Nested
     class WithParameter {
         @Test
         void addsTheGivenParameter() {
