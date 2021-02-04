@@ -135,7 +135,7 @@ class TerraformInitCommandTest {
     public class Plugins {
         @AfterEach
         void resetPlugins() {
-            TerraformInitCommand.resetPlugins()
+            TerraformInitCommand.reset()
         }
 
         @Test

@@ -93,7 +93,7 @@ class TerraformInitCommand {
         return this.globalPlugins
     }
 
-    public static resetPlugins() {
+    public static reset() {
         globalPlugins = []
         // This is awkward - what about the applied plugins...?
     }

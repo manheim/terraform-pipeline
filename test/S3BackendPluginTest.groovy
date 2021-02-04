@@ -16,7 +16,7 @@ class S3BackendPluginTest {
     public class Init {
         @AfterEach
         void resetPlugins() {
-            TerraformInitCommand.resetPlugins()
+            TerraformInitCommand.reset()
         }
 
         @Test
