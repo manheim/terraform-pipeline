@@ -13,7 +13,7 @@ class TerraformDirectoryPluginTest {
         @AfterEach
         void resetPlugins() {
             TerraformInitCommand.reset()
-            TerraformValidateCommand.resetPlugins()
+            TerraformValidateCommand.reset()
             TerraformPlanCommand.reset()
             TerraformApplyCommand.reset()
         }

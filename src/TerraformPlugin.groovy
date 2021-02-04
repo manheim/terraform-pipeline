@@ -72,7 +72,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
     static  void reset() {
         this.version = null
 
-        TerraformValidateCommand.resetPlugins()
+        TerraformValidateCommand.reset()
         TerraformFormatCommand.reset()
         TerraformPlanCommand.reset()
         TerraformApplyCommand.reset()

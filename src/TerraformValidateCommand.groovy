@@ -69,7 +69,7 @@ class TerraformValidateCommand {
         return this.globalPlugins
     }
 
-    public static resetPlugins() {
+    public static reset() {
         this.globalPlugins = []
     }
 }

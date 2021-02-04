@@ -14,7 +14,7 @@ class TerraformValidateCommandTest {
     @BeforeEach
     @AfterEach
     public void reset() {
-        TerraformValidateCommand.resetPlugins()
+        TerraformValidateCommand.reset()
     }
 
     @Nested
@@ -82,7 +82,7 @@ class TerraformValidateCommandTest {
     public class Plugins {
         @AfterEach
         void resetPlugins() {
-            TerraformValidateCommand.resetPlugins()
+            TerraformValidateCommand.reset()
         }
 
         @Test
