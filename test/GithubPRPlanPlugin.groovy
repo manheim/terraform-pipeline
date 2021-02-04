@@ -21,7 +21,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class GithubPRPlanPluginTest {
 
     @BeforeEach
@@ -38,12 +40,6 @@ class GithubPRPlanPluginTest {
 
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformPlanCommand.reset()
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void modifiesTerraformPlanCommand() {
             GithubPRPlanPlugin.init()
@@ -96,7 +92,6 @@ class GithubPRPlanPluginTest {
     class GetRepoSlug {
         @AfterEach
         void resetPlugin() {
-            GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
         }
 
@@ -131,13 +126,11 @@ class GithubPRPlanPluginTest {
     class GetRepoHost {
         @BeforeEach
         void resetBefore() {
-            GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
         }
 
         @AfterEach
         void reset() {
-            GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
         }
 
