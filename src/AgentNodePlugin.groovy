@@ -1,7 +1,7 @@
 import static TerraformValidateStage.ALL
 import static TerraformEnvironmentStage.ALL
 
-public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin {
+public class AgentNodePlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin, Resettable {
     private static String dockerImage
     private static String dockerfile
     private static String dockerBuildOptions

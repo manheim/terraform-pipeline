@@ -10,11 +10,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class AgentNodePluginTest {
     private createJenkinsfileSpy() {
         def dummyJenkinsfile = spy(new DummyJenkinsfile())
@@ -25,12 +26,6 @@ class AgentNodePluginTest {
 
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformValidateStage.reset()
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void modifiesTerraformEnvironmentStage() {
             AgentNodePlugin.init()
@@ -100,11 +95,6 @@ class AgentNodePluginTest {
                 AgentNodePlugin.withAgentDockerImage(expectedImage)
             }
 
-            @AfterEach
-            void reset() {
-                AgentNodePlugin.reset()
-            }
-
             @Test
             void callsTheInnerClosure() {
                 def plugin = new AgentNodePlugin()
@@ -151,11 +141,6 @@ class AgentNodePluginTest {
             @BeforeEach
             void useDockerImage() {
                 AgentNodePlugin.withAgentDockerImage(expectedImage)
-            }
-
-            @AfterEach
-            void reset() {
-                AgentNodePlugin.reset()
             }
 
             @Test

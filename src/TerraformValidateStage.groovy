@@ -1,4 +1,4 @@
-class TerraformValidateStage implements Stage, DecoratableStage {
+class TerraformValidateStage implements Stage, DecoratableStage, Resettable {
     private Jenkinsfile jenkinsfile
     private StageDecorations decorations
 
