@@ -15,16 +15,12 @@ import static org.mockito.Mockito.anyString
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class ParameterStoreBuildWrapperPluginTest {
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformValidateStage.reset()
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
             ParameterStoreBuildWrapperPlugin.init()
@@ -44,11 +40,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     public class Apply {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Nested
         class WithTerraformValidateStage {
             @Test
@@ -139,11 +130,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     class GetParameterOptions {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Test
         void returnsEnvironmentOptionWhenSet() {
             String environment                      = "MyEnv"
@@ -199,7 +185,6 @@ class ParameterStoreBuildWrapperPluginTest {
         @AfterEach
         public void reset() {
             Jenkinsfile.instance = null
-            ParameterStoreBuildWrapperPlugin.reset()
         }
 
         private configureJenkins(Map config = [:]) {
@@ -242,7 +227,6 @@ class ParameterStoreBuildWrapperPluginTest {
         @AfterEach
         public void reset() {
             Jenkinsfile.instance = null
-            ParameterStoreBuildWrapperPlugin.reset()
         }
 
         private configureJenkins(Map config = [:]) {
@@ -284,11 +268,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     class WithPathPattern {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Test
         void isFluent() {
             def result = ParameterStoreBuildWrapperPlugin.withPathPattern { options -> 'somePattern' }
@@ -299,11 +278,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     class withGlobalParameter {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Test
         void addGlobalParameterWithNoOptions() {
             String path = '/path/'
