@@ -80,7 +80,7 @@ class RegressionStage implements Stage, DecoratableStage {
         return plugins
     }
 
-    public static void resetPlugins() {
+    public static void reset() {
         this.plugins = []
     }
 
