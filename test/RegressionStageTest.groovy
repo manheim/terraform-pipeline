@@ -2,16 +2,15 @@ import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class RegressionStageTest {
 
+    @Nested
     public class AutomationRepo {
-        @After
+        @AfterEach
         void reset() {
             TerraformEnvironmentStage.reset()
             Jenkinsfile.instance = mock(Jenkinsfile.class)
@@ -78,8 +77,9 @@ class RegressionStageTest {
         }
     }
 
+    @Nested
     public class AddedPlugins {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformEnvironmentStage.reset()
         }

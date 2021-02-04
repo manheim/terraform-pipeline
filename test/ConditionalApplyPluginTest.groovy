@@ -1,19 +1,17 @@
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class ConditionalApplyPluginTest {
-    @After
+    @AfterEach
     public void reset() {
         Jenkinsfile.instance = null
         ConditionalApplyPlugin.reset()
@@ -32,6 +30,7 @@ class ConditionalApplyPluginTest {
         assertThat(actualPlugins, hasItem(instanceOf(ConditionalApplyPlugin.class)))
     }
 
+    @Nested
     class ShouldApply {
         @Test
         void returnsTrueForMasterByDefault() {

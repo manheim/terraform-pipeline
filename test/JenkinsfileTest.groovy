@@ -1,7 +1,8 @@
 import static org.hamcrest.Matchers.endsWith
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.startsWith
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.junit.jupiter.api.Assertions.assertThrows
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
@@ -9,27 +10,26 @@ import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class JenkinsfileTest {
     private Jenkinsfile jenkinsfile
 
-    @Before
+    @BeforeEach
     public void setup() {
         jenkinsfile = new Jenkinsfile()
     }
 
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     void reset() {
         Jenkinsfile.reset()
     }
 
+    @Nested
     class StandardizedRepoSlug {
         @Test
         void startsWithTheRepoOrganization() {
@@ -80,15 +80,18 @@ class JenkinsfileTest {
         }
     }
 
+    @Nested
     public class ParseScmUrl {
+        @Nested
         public class WithHttpUrl {
+            @Nested
             public class WithHttp {
                 @Test
                 void returnsOrganization() {
                     String organization = "MyOrg"
                     Map results = jenkinsfile.parseScmUrl("http://my.github.com/${organization}/SomeRepo.git")
 
-                    assertEquals(organization, results['organization'])
+                    assertThat(results['organization'], equalTo(organization))
                 }
 
                 @Test
@@ -96,7 +99,7 @@ class JenkinsfileTest {
                     String repo = "MyRepo"
                     Map results = jenkinsfile.parseScmUrl("http://my.github.com/SomeOrg/${repo}.git")
 
-                    assertEquals(repo, results['repo'])
+                    assertThat(results['repo'], equalTo(repo))
                 }
 
                 @Test
@@ -104,7 +107,7 @@ class JenkinsfileTest {
                     String expectedDomain = "my.github.com"
                     Map results = jenkinsfile.parseScmUrl("http://${expectedDomain}/SomeOrg/SomeRepo.git")
 
-                    assertEquals(expectedDomain, results['domain'])
+                    assertThat(results['domain'], equalTo(expectedDomain))
                 }
 
                 @Test
@@ -112,17 +115,18 @@ class JenkinsfileTest {
                     String expectedProtocol = "http"
                     Map results = jenkinsfile.parseScmUrl("${expectedProtocol}://my.github.com/SomeOrg/SomeRepo.git")
 
-                    assertEquals(expectedProtocol, results['protocol'])
+                    assertThat(results['protocol'], equalTo(expectedProtocol))
                 }
             }
 
+            @Nested
             public class WithHttps {
                 @Test
                 void returnsOrganization() {
                     String organization = "MyOrg"
                     Map results = jenkinsfile.parseScmUrl("https://my.github.com/${organization}/SomeRepo.git")
 
-                    assertEquals(organization, results['organization'])
+                    assertThat(results['organization'], equalTo(organization))
                 }
 
                 @Test
@@ -130,7 +134,7 @@ class JenkinsfileTest {
                     String repo = "MyRepo"
                     Map results = jenkinsfile.parseScmUrl("https://my.github.com/SomeOrg/${repo}.git")
 
-                    assertEquals(repo, results['repo'])
+                    assertThat(results['repo'], equalTo(repo))
                 }
 
                 @Test
@@ -138,7 +142,7 @@ class JenkinsfileTest {
                     String expectedDomain = "my.github.com"
                     Map results = jenkinsfile.parseScmUrl("https://${expectedDomain}/SomeOrg/SomeRepo.git")
 
-                    assertEquals(expectedDomain, results['domain'])
+                    assertThat(results['domain'], equalTo(expectedDomain))
                 }
 
                 @Test
@@ -146,18 +150,19 @@ class JenkinsfileTest {
                     String expectedProtocol = "https"
                     Map results = jenkinsfile.parseScmUrl("${expectedProtocol}://my.github.com/SomeOrg/SomeRepo.git")
 
-                    assertEquals(expectedProtocol, results['protocol'])
+                    assertThat(results['protocol'], equalTo(expectedProtocol))
                 }
             }
         }
 
+        @Nested
         public class WithSshUrl {
             @Test
             void returnsOrganization() {
                 String organization = "MyOrg"
                 Map results = jenkinsfile.parseScmUrl("git@my.github.com:${organization}/SomeRepo.git")
 
-                assertEquals(organization, results['organization'])
+                assertThat(results['organization'], equalTo(organization))
             }
 
             @Test
@@ -165,7 +170,7 @@ class JenkinsfileTest {
                 String repo = "MyRepo"
                 Map results = jenkinsfile.parseScmUrl("git@my.github.com:SomeOrg/${repo}.git")
 
-                assertEquals(repo, results['repo'])
+                assertThat(results['repo'], equalTo(repo))
             }
 
             @Test
@@ -173,7 +178,7 @@ class JenkinsfileTest {
                 String expectedDomain = "my.github.com"
                 Map results = jenkinsfile.parseScmUrl("git@${expectedDomain}/SomeOrg/SomeRepo.git")
 
-                assertEquals(expectedDomain, results['domain'])
+                assertThat(results['domain'], equalTo(expectedDomain))
             }
 
             @Test
@@ -181,11 +186,12 @@ class JenkinsfileTest {
                 String expectedProtocol = 'git'
                 Map results = jenkinsfile.parseScmUrl("${expectedProtocol}@my.github.com/SomeOrg/SomeRepo.git")
 
-                assertEquals(expectedProtocol, results['protocol'])
+                assertThat(results['protocol'], equalTo(expectedProtocol))
             }
         }
     }
 
+    @Nested
     public class GetRepoName {
         @Test
         void returnsTheUnmodifiedRepoName() {
@@ -196,10 +202,11 @@ class JenkinsfileTest {
             def instance = new Jenkinsfile()
             def result = instance.getRepoName()
 
-            assertEquals(expectedRepo, result)
+            assertThat(result, equalTo(expectedRepo))
         }
     }
 
+    @Nested
     public class GetOrganization {
         @Test
         void returnsTheUnmodifiedOrgName() {
@@ -210,25 +217,28 @@ class JenkinsfileTest {
             def instance = new Jenkinsfile()
             def result = instance.getOrganization()
 
-            assertEquals(expectedOrg, result)
+            assertThat(result, equalTo(expectedOrg))
         }
     }
 
+    @Nested
     public class Init {
         @Test
         void storesTheOriginalJenkinsfileReference() {
             def original = new DummyJenkinsfile()
             Jenkinsfile.init(original)
 
-            assertEquals(original, Jenkinsfile.original)
+            assertThat(Jenkinsfile.original, equalTo(original))
         }
     }
 
+    @Nested
     public class Build {
         private class DummyJenkinsfileWithTemplates extends DummyJenkinsfile {
             public Pipeline2Stage = { args -> }
         }
 
+        @Nested
         class Scripted {
             @Test
             void usesDefaultTemplatesIfNonProvided() {
@@ -244,6 +254,7 @@ class JenkinsfileTest {
             }
         }
 
+        @Nested
         class Declarative {
             @Test
             void usesDefaultTemplatesIfNonProvided() {
@@ -272,6 +283,7 @@ class JenkinsfileTest {
         }
     }
 
+    @Nested
     class GetPipelineTemplate {
         private class DummyJenkinsfileWithTemplates extends DummyJenkinsfile {
             public Pipeline2Stage = { args -> }
@@ -291,11 +303,13 @@ class JenkinsfileTest {
             return stages
         }
 
-        @Test(expected = RuntimeException.class)
+        @Test
         void throwsAnErrorFor1Stage() {
             def stages = getNumberOfStages(1)
 
-            Jenkinsfile.getPipelineTemplate(stages)
+            assertThrows(RuntimeException.class) {
+                Jenkinsfile.getPipelineTemplate(stages)
+            }
         }
 
         @Test
@@ -306,7 +320,7 @@ class JenkinsfileTest {
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
 
-            assertEquals(original.Pipeline2Stage, actual)
+            assertThat(actual, equalTo(original.Pipeline2Stage))
         }
 
         @Test
@@ -317,7 +331,7 @@ class JenkinsfileTest {
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
 
-            assertEquals(original.Pipeline3Stage, actual)
+            assertThat(actual, equalTo(original.Pipeline3Stage))
         }
 
         @Test
@@ -328,7 +342,7 @@ class JenkinsfileTest {
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
 
-            assertEquals(original.Pipeline4Stage, actual)
+            assertThat(actual, equalTo(original.Pipeline4Stage))
         }
 
         @Test
@@ -339,7 +353,7 @@ class JenkinsfileTest {
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
 
-            assertEquals(original.Pipeline5Stage, actual)
+            assertThat(actual, equalTo(original.Pipeline5Stage))
         }
 
         @Test
@@ -350,7 +364,7 @@ class JenkinsfileTest {
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
 
-            assertEquals(original.Pipeline6Stage, actual)
+            assertThat(actual, equalTo(original.Pipeline6Stage))
         }
 
         @Test
@@ -361,10 +375,11 @@ class JenkinsfileTest {
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
 
-            assertEquals(original.Pipeline7Stage, actual)
+            assertThat(actual, equalTo(original.Pipeline7Stage))
         }
     }
 
+    @Nested
     class GetEnv {
         @Test
         void returnsThe7StageTemplateFor7Stages() {
@@ -376,13 +391,14 @@ class JenkinsfileTest {
 
             def actual = instance.getEnv()
 
-            assertEquals(expected, actual)
+            assertThat(actual, equalTo(expected))
         }
 
     }
 
+    @Nested
     public class GetNodeName {
-        @After
+        @AfterEach
         void reset() {
             Jenkinsfile.defaultNodeName = null
             Jenkinsfile.instance = null
@@ -402,7 +418,7 @@ class JenkinsfileTest {
             Jenkinsfile.defaultNodeName = expectedName
 
             String actualName = Jenkinsfile.getNodeName()
-            assertEquals(expectedName, actualName)
+            assertThat(actualName, equalTo(expectedName))
         }
 
         @Test
@@ -412,7 +428,7 @@ class JenkinsfileTest {
             configureJenkins(env: [ DEFAULT_NODE_NAME: 'wrongName' ])
 
             String actualName = Jenkinsfile.getNodeName()
-            assertEquals(expectedName, actualName)
+            assertThat(actualName, equalTo(expectedName))
         }
 
         @Test
@@ -422,10 +438,11 @@ class JenkinsfileTest {
             configureJenkins(env: [ DEFAULT_NODE_NAME: expectedName ])
 
             String actualName = Jenkinsfile.getNodeName()
-            assertEquals(expectedName, actualName)
+            assertThat(actualName, equalTo(expectedName))
         }
     }
 
+    @Nested
     class ReadFile {
         @Test
         void returnsNullIfTheFileDoesNotExist() {
@@ -436,7 +453,7 @@ class JenkinsfileTest {
 
             def result = Jenkinsfile.readFile(filename)
 
-            assertEquals(null, result)
+            assertThat(result, equalTo(null))
         }
 
         @Test
@@ -451,7 +468,7 @@ class JenkinsfileTest {
 
             def result = Jenkinsfile.readFile(filename)
 
-            assertEquals(expectedContent, result)
+            assertThat(result, equalTo(expectedContent))
         }
     }
 

@@ -4,21 +4,20 @@ import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.notNullValue
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.any
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class CredentialsPluginTest {
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             BuildStage.resetPlugins()
             RegressionStage.resetPlugins()
@@ -55,8 +54,9 @@ class CredentialsPluginTest {
         }
     }
 
+    @Nested
     public class WithBuildCredentials {
-        @After
+        @AfterEach
         void resetPlugin() {
             CredentialsPlugin.reset()
         }
@@ -87,6 +87,7 @@ class CredentialsPluginTest {
         }
     }
 
+    @Nested
     public class ToEnvironmentVariable {
         @Test
         void convertsLowercaseToUppercase() {
@@ -116,6 +117,7 @@ class CredentialsPluginTest {
         }
     }
 
+    @Nested
     public class PopulateDefaults {
         @Test
         void populatesCredentialsId() {
@@ -165,6 +167,7 @@ class CredentialsPluginTest {
         }
     }
 
+    @Nested
     class Apply {
         @Test
         void decoratesTheBuildStage()  {

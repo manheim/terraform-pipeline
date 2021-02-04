@@ -1,29 +1,22 @@
-import static org.junit.Assert.assertEquals
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo
 
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
+import org.junit.jupiter.api.Test
 
-@RunWith(Parameterized.class)
 class SemanticVersionTest {
-
-    @Parameterized.Parameters
-    static data() {
-        Arrays.asList( new Object[100][])
-    }
-
-    SemanticVersionTest() { }
 
     @Test
     void sortsCorrectly() {
-        List<SemanticVersion> versions = SORTED.clone().collect { v -> new SemanticVersion(v) }
-        // Randomize
-        Collections.shuffle(versions)
-        // Then sort
-        versions.sort()
+        100.times {
+            List<SemanticVersion> versions = SORTED.clone().collect { v -> new SemanticVersion(v) }
+            // Randomize
+            Collections.shuffle(versions)
+            // Then sort
+            versions.sort()
 
-        def result = versions.collect { sv -> sv.version }
-        assertEquals(SORTED, result)
+            def result = versions.collect { sv -> sv.version }
+            assertThat(result, equalTo(SORTED))
+        }
     }
 
     static SORTED = [

@@ -1,27 +1,26 @@
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.endsWith
+import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.not
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Matchers.any
 import static org.mockito.Matchers.eq
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify;
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformPluginVersion12Test {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     void reset() {
         TerraformFormatCommand.reset()
     }
 
+    @Nested
     class AddInitBefore {
         @Test
         void runsTheInnerClosure() {
@@ -33,10 +32,11 @@ class TerraformPluginVersion12Test {
             beforeClosure.delegate = new DummyJenkinsfile()
             beforeClosure(innerClosure)
 
-            assertTrue(wasRun)
+            assertThat(wasRun, is(true))
         }
     }
 
+    @Nested
     class InitCommandForValidate {
         @Test
         void createsCommandWithNoBackend() {
@@ -46,6 +46,7 @@ class TerraformPluginVersion12Test {
         }
     }
 
+    @Nested
     class ModifiesTerraformValidateStage {
         @Test
         void addsTerraformInitBeforeValidate()  {
@@ -58,6 +59,7 @@ class TerraformPluginVersion12Test {
         }
     }
 
+    @Nested
     class ModifiesTerraformPlanCommand {
         @Test
         void toUseTerraform12CliSyntaxForVariables() {
@@ -84,6 +86,7 @@ class TerraformPluginVersion12Test {
         }
     }
 
+    @Nested
     class ModifiesTerraformApplyCommand {
         @Test
         void toUseTerraform12CliSyntaxForVariables() {
@@ -110,7 +113,9 @@ class TerraformPluginVersion12Test {
         }
     }
 
+    @Nested
     class ModifiesTerraformFormatCommand {
+        @Nested
         class WithCheck {
             @Test
             void usesCheckFlagWhenCheckIsEnabled() {
@@ -137,6 +142,7 @@ class TerraformPluginVersion12Test {
             }
         }
 
+        @Nested
         class WithRecursive {
             @Test
             void usesRecursiveFlagWhenRecursiveIsEnabled() {
@@ -163,6 +169,7 @@ class TerraformPluginVersion12Test {
             }
         }
 
+        @Nested
         class WithDiff {
             @Test
             void usesDiffFlagWhenDiffIsEnabled() {

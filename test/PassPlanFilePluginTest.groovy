@@ -1,8 +1,8 @@
 import static org.hamcrest.Matchers.containsString
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
@@ -10,15 +10,14 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
-import org.junit.Test
-import org.junit.Before
-import org.junit.After
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
 
-@RunWith(HierarchicalContextRunner.class)
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+
 class PassPlanFilePluginTest {
-    @Before
+    @BeforeEach
     void resetJenkinsEnv() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
         when(Jenkinsfile.instance.getEnv()).thenReturn([:])
@@ -29,8 +28,9 @@ class PassPlanFilePluginTest {
         when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
     }
 
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformPlanCommand.resetPlugins()
             TerraformApplyCommand.resetPlugins()
@@ -63,6 +63,7 @@ class PassPlanFilePluginTest {
 
     }
 
+    @Nested
     public class Apply {
 
         @Test
@@ -97,6 +98,7 @@ class PassPlanFilePluginTest {
 
     }
 
+    @Nested
     public class StashPlan {
 
         @Test
@@ -109,11 +111,12 @@ class PassPlanFilePluginTest {
             stashClosure.delegate = new DummyJenkinsfile()
             stashClosure.call(passedClosure)
 
-            assertTrue(wasCalled)
+            assertThat(wasCalled, equalTo(true))
         }
 
     }
 
+    @Nested
     public class UnstashPlan {
 
         @Test
@@ -126,7 +129,7 @@ class PassPlanFilePluginTest {
             unstashClosure.delegate = new DummyJenkinsfile()
             unstashClosure.call(passedClosure)
 
-            assertTrue(wasCalled)
+            assertThat(wasCalled, equalTo(true))
         }
 
     }

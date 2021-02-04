@@ -3,14 +3,12 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 
-import de.bechte.junit.runners.context.HierarchicalContextRunner
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TfvarsFilesPluginTest {
 
     static void setupOriginalContext() {
@@ -47,8 +45,9 @@ class TfvarsFilesPluginTest {
         TfvarsFilesPlugin.directory = '.'
     }
 
+    @Nested
     class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             reset()
         }
@@ -70,8 +69,9 @@ class TfvarsFilesPluginTest {
         }
     }
 
+    @Nested
     class Directory {
-        @After
+        @AfterEach
         void resetPlugins() {
             reset()
         }
@@ -84,9 +84,10 @@ class TfvarsFilesPluginTest {
         }
     }
 
+    @Nested
     class ApplyCommand {
 
-        @After
+        @AfterEach
         void resetPlugins() {
             reset()
         }
@@ -143,9 +144,10 @@ class TfvarsFilesPluginTest {
         }
     }
 
+    @Nested
     class PlanCommand {
 
-        @After
+        @AfterEach
         void resetPlugins() {
             reset()
         }

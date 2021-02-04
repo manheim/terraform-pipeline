@@ -1,22 +1,21 @@
 import static org.hamcrest.Matchers.containsString
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify;
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformPluginVersion11Test {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     void reset() {
         TerraformPlugin.reset()
     }
 
+    @Nested
     class ModifiesTerraformValidateCommand {
         @Test
         void addsCheckVariablesFalseToValidateCommand() {
@@ -29,6 +28,7 @@ class TerraformPluginVersion11Test {
         }
     }
 
+    @Nested
     class ModifiesTerraformPlanCommand {
         @Test
         void toPreserveTerraform11CliSyntaxForVariables() {
@@ -55,6 +55,7 @@ class TerraformPluginVersion11Test {
         }
     }
 
+    @Nested
     class ModifiesTerraformApplyCommand {
         @Test
         void toPreserveTerraform11CliSyntaxForVariables() {

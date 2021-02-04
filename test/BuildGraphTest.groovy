@@ -3,13 +3,12 @@ import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
 import org.mockito.InOrder
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class BuildGraphTest {
+    @Nested
     public class WithASingleStage {
         @Test
         void buildsTheStageThatItWasCreatedWith() {
@@ -22,6 +21,7 @@ class BuildGraphTest {
         }
     }
 
+    @Nested
     public class WithMultipleStages {
         @Test
         void buildsTheStagesInOrder() {

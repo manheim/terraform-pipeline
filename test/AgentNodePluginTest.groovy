@@ -1,6 +1,6 @@
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.contains;
@@ -10,13 +10,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test
-import org.junit.After
-import org.junit.Before
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class AgentNodePluginTest {
     private createJenkinsfileSpy() {
         def dummyJenkinsfile = spy(new DummyJenkinsfile())
@@ -25,8 +23,9 @@ class AgentNodePluginTest {
         return dummyJenkinsfile
     }
 
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformValidateStage.resetPlugins()
             TerraformEnvironmentStage.reset()
@@ -49,6 +48,7 @@ class AgentNodePluginTest {
         }
     }
 
+    @Nested
     class Apply {
         @Test
         void addsAgentClosureToTerraformEnvironmentStage() {
@@ -75,7 +75,9 @@ class AgentNodePluginTest {
         }
     }
 
+    @Nested
     class AddAgent {
+        @Nested
         class WithNoDockerEnabled {
             @Test
             void callsTheInnerclosure() {
@@ -90,14 +92,15 @@ class AgentNodePluginTest {
             }
         }
 
+        @Nested
         class WithDockerImageNoDockerfile {
             private String expectedImage = 'someImage'
-            @Before
+            @BeforeEach
             void useDockerImage() {
                 AgentNodePlugin.withAgentDockerImage(expectedImage)
             }
 
-            @After
+            @AfterEach
             void reset() {
                 AgentNodePlugin.reset()
             }
@@ -142,14 +145,15 @@ class AgentNodePluginTest {
             }
         }
 
+        @Nested
         class WithDockerImageAndDockerfile {
             private String expectedImage = 'someImage'
-            @Before
+            @BeforeEach
             void useDockerImage() {
                 AgentNodePlugin.withAgentDockerImage(expectedImage)
             }
 
-            @After
+            @AfterEach
             void reset() {
                 AgentNodePlugin.reset()
             }

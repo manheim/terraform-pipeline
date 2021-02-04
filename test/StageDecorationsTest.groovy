@@ -2,12 +2,11 @@ import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class StageDecorationsTest {
+    @Nested
     class WithoutGroup {
         @Test
         void applyEmptyDecorationsShouldRunInnerClosure() {
@@ -68,6 +67,7 @@ class StageDecorationsTest {
         }
     }
 
+    @Nested
     class WithGroup {
         @Test
         void applyEmptyDecorationsShouldRunInnerClosure() {
@@ -130,6 +130,7 @@ class StageDecorationsTest {
         }
     }
 
+    @Nested
     class WithAndWithoutGroups {
         @Test
         void applyWithoutGroupDoesNotRunGroupdDecorations() {

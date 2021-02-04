@@ -2,18 +2,17 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.startsWith
 import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.not
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformInitCommandTest {
+    @Nested
     public class WithInput {
         @Test
         void defaultsToFalse() {
@@ -40,6 +39,7 @@ class TerraformInitCommandTest {
         }
     }
 
+    @Nested
     public class WithBackendConfig {
         @Test
         void notPresentByDefault() {
@@ -80,6 +80,7 @@ class TerraformInitCommandTest {
         }
     }
 
+    @Nested
     public class WithDirectory {
         @Test
         void addsDirectoryArgument() {
@@ -90,6 +91,7 @@ class TerraformInitCommandTest {
         }
     }
 
+    @Nested
     public class WithPrefix {
         @Test
         void addsPrefixToBeginningOfCommand() {
@@ -109,6 +111,7 @@ class TerraformInitCommandTest {
         }
     }
 
+    @Nested
     public class WithSuffix {
         @Test
         void addsSuffixToEndOfCommand() {
@@ -128,8 +131,9 @@ class TerraformInitCommandTest {
         }
     }
 
+    @Nested
     public class Plugins {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformInitCommand.resetPlugins()
         }

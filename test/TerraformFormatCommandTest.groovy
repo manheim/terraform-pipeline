@@ -1,23 +1,22 @@
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.not
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.startsWith
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformFormatCommandTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void reset() {
         TerraformFormatCommand.reset()
     }
 
+    @Nested
     public class ToString {
         @Test
         void includesTerraformFormatCommand() {
@@ -28,6 +27,7 @@ class TerraformFormatCommandTest {
             assertThat(actual, startsWith('terraform fmt'))
         }
 
+        @Nested
         public class WithCheck {
             @Test
             void addsCheckOptionByDefault() {
@@ -49,6 +49,7 @@ class TerraformFormatCommandTest {
                 assertThat(actual, not(containsString('-check')))
             }
 
+            @Nested
             public class WithPatternOverride {
                 @Test
                 void usesThePatternWhenCheckIsFalse() {
@@ -74,6 +75,7 @@ class TerraformFormatCommandTest {
             }
         }
 
+        @Nested
         public class WithRecursive {
             @Test
             void doesNothingByDefaultUnsupportedByTerraformm11() {
@@ -82,9 +84,10 @@ class TerraformFormatCommandTest {
                 TerraformFormatCommand.withRecursive()
                 def actual = command.toString()
 
-                assertEquals(actual, 'terraform fmt')
+                assertThat(actual, equalTo('terraform fmt'))
             }
 
+            @Nested
             public class WithPatternOverride {
                 @Test
                 void usesThePatternWhenCheckIsFalse() {
@@ -110,6 +113,7 @@ class TerraformFormatCommandTest {
             }
         }
 
+        @Nested
         public class WithDiff {
             @Test
             void addsDiffOptionByDefault() {
@@ -131,6 +135,7 @@ class TerraformFormatCommandTest {
                 assertThat(actual, not(containsString('-diff')))
             }
 
+            @Nested
             public class WithPatternOverride {
                 @Test
                 void usesThePatternWhenCheckIsFalse() {
@@ -157,60 +162,66 @@ class TerraformFormatCommandTest {
         }
     }
 
+    @Nested
     public class WithCheck {
         @Test
         void isFluent() {
             def result = TerraformFormatCommand.withCheck()
 
-            assertEquals(TerraformFormatCommand.class, result)
+            assertThat(result, equalTo(TerraformFormatCommand.class))
         }
     }
 
+    @Nested
     public class WithRecursive {
         @Test
         void isFluent() {
             def result = TerraformFormatCommand.withRecursive()
 
-            assertEquals(TerraformFormatCommand.class, result)
+            assertThat(result, equalTo(TerraformFormatCommand.class))
         }
     }
 
+    @Nested
     public class WithDiff {
         @Test
         void isFluent() {
             def result = TerraformFormatCommand.withDiff()
 
-            assertEquals(TerraformFormatCommand.class, result)
+            assertThat(result, equalTo(TerraformFormatCommand.class))
         }
     }
 
+    @Nested
     public class WithCheckOptionPattern {
         @Test
         void isFluent() {
             def command = new TerraformFormatCommand()
             def result = command.withCheckOptionPattern { "somevalue" }
 
-            assertEquals(command, result)
+            assertThat(result, equalTo(command))
         }
     }
 
+    @Nested
     public class WithRecursiveOptionPattern {
         @Test
         void isFluent() {
             def command = new TerraformFormatCommand()
             def result = command.withRecursiveOptionPattern { 'somevalue' }
 
-            assertEquals(command, result)
+            assertThat(result, equalTo(command))
         }
     }
 
+    @Nested
     public class WithDiffOptionPattern {
         @Test
         void isFluent() {
             def command = new TerraformFormatCommand()
             def result = command.withDiffOptionPattern { 'somevalue' }
 
-            assertEquals(command, result)
+            assertThat(result, equalTo(command))
         }
     }
 }

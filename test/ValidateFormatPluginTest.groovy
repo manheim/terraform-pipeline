@@ -1,21 +1,19 @@
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class ValidateFormatPluginTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void reset() {
         TerraformValidateStage.resetPlugins()
         TerraformFormatCommand.reset()
@@ -38,6 +36,7 @@ class ValidateFormatPluginTest {
         }
     }
 
+    @Nested
     public class ApplyForValidateStage {
         @Test
         void addsClosureToRunTerraformFormat() {
@@ -52,6 +51,7 @@ class ValidateFormatPluginTest {
         }
     }
 
+    @Nested
     public class FormatClosure {
         @Test
         void runsTheGivenInnerClosure() {

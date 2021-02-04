@@ -1,7 +1,7 @@
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertEquals
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -10,22 +10,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.anyMap;
 
-import org.junit.Test
-import org.junit.Before
-import org.junit.After
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TagPluginTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void reset() {
         TerraformApplyCommand.resetPlugins()
         TerraformPlanCommand.resetPlugins()
         TagPlugin.reset()
     }
 
+    @Nested
     public class Init {
         @Test
         void modifiesTerraformPlanCommand() {
@@ -44,42 +43,47 @@ class TagPluginTest {
         }
     }
 
+    @Nested
     class WithTag {
         @Test
         void isFluent() {
             def result = TagPlugin.withTag('key', 'value')
 
-            assertEquals(result, TagPlugin.class)
+            assertThat(result, equalTo(TagPlugin.class))
         }
     }
 
+    @Nested
     class WithTagFromFile {
         @Test
         void isFluent() {
             def result = TagPlugin.withTagFromFile('key', 'value')
 
-            assertEquals(result, TagPlugin.class)
+            assertThat(result, equalTo(TagPlugin.class))
         }
     }
 
+    @Nested
     class WithTagFromEnvironmentVariable {
         @Test
         void isFluent() {
             def result = TagPlugin.withTagFromEnvironmentVariable('key', 'variable')
 
-            assertEquals(result, TagPlugin.class)
+            assertThat(result, equalTo(TagPlugin.class))
         }
     }
 
+    @Nested
     class WithEnvironmentTag {
         @Test
         void isFluent() {
             def result = TagPlugin.withEnvironmentTag()
 
-            assertEquals(result, TagPlugin.class)
+            assertThat(result, equalTo(TagPlugin.class))
         }
     }
 
+    @Nested
     public class ApplyForPlanCommand {
         @Test
         public void addsTheTagArgument() {
@@ -94,6 +98,7 @@ class TagPluginTest {
             verify(command).withVariable(expectedVariableName, expectedTags)
         }
 
+        @Nested
         class WithVariableName {
             @Test
             void overridesTheDefaultVariableName() {
@@ -111,6 +116,7 @@ class TagPluginTest {
         }
     }
 
+    @Nested
     public class ApplyForApplyCommand {
         @Test
         public void addsTheTagArgument() {
@@ -136,6 +142,7 @@ class TagPluginTest {
             verify(command, times(0)).withVariable(anyString(), anyMap())
         }
 
+        @Nested
         class WithVariableName {
             @Test
             void overridesTheDefaultVariableName() {
@@ -153,8 +160,9 @@ class TagPluginTest {
         }
     }
 
+    @Nested
     public class GetTags {
-        @After
+        @AfterEach
         public void reset() {
             Jenkinsfile.reset()
         }
@@ -165,7 +173,7 @@ class TagPluginTest {
 
             def result = plugin.getTags()
 
-            assertEquals([:], result)
+            assertThat(result, equalTo([:]))
         }
 
         @Test
@@ -175,7 +183,7 @@ class TagPluginTest {
 
             def result = plugin.getTags()
 
-            assertEquals([mykey: 'myvalue'], result)
+            assertThat(result, equalTo([mykey: 'myvalue']))
         }
 
         @Test
@@ -186,7 +194,7 @@ class TagPluginTest {
 
             def result = plugin.getTags()
 
-            assertEquals([key1: 'value1', key2: 'value2'], result)
+            assertThat(result, equalTo([key1: 'value1', key2: 'value2']))
         }
 
         @Test
@@ -198,7 +206,7 @@ class TagPluginTest {
 
             def result = plugin.getTags(command)
 
-            assertEquals([ environment: 'myenv' ], result)
+            assertThat(result, equalTo([ environment: 'myenv' ]))
         }
 
         @Test
@@ -213,7 +221,7 @@ class TagPluginTest {
 
             Map expectedResult = [:]
             expectedResult[expectedTagKey] = 'myenv'
-            assertEquals(expectedResult, result)
+            assertThat(result, equalTo(expectedResult))
         }
 
         @Test
@@ -231,7 +239,7 @@ class TagPluginTest {
 
             def result = plugin.getTags(command)
 
-            assertEquals(['change-id': "${fileContent}".toString()], result)
+            assertThat(result, equalTo(['change-id': "${fileContent}".toString()]))
         }
 
         @Test
@@ -249,7 +257,7 @@ class TagPluginTest {
 
             def result = plugin.getTags(command)
 
-            assertEquals([ 'someTagName': expectedValue ], result)
+            assertThat(result, equalTo([ 'someTagName': expectedValue ]))
         }
 
         @Test
@@ -263,16 +271,17 @@ class TagPluginTest {
 
             def result = plugin.getTags(command)
 
-            assertEquals([key1: 'value1', environment: 'myenv', key2: 'value2'], result)
+            assertThat(result, equalTo([key1: 'value1', environment: 'myenv', key2: 'value2']))
         }
     }
 
+    @Nested
     class DisableOnApply {
         @Test
         void isFluent() {
             def result = TagPlugin.disableOnApply()
 
-            assertEquals(result, TagPlugin.class)
+            assertThat(result, equalTo(TagPlugin.class))
         }
     }
 }

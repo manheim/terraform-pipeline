@@ -1,5 +1,7 @@
 # Unreleased
 
+* [Issue #332](https://github.com/manheim/terraform-pipeline/issues/332) Upgrade from Junit 4 to 5.7, upgrade hamcrest from 1.3 to 2.2, remove junit-hierarchicalcontextrunner dependency
+
 # v5.14
 
 * [Issue #25](https://github.com/manheim/terraform-pipeline/issues/25) Allow 'apply' on branches other than master for some environments

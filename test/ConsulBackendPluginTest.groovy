@@ -2,20 +2,19 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class ConsulBackendPluginTest {
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformInitCommand.resetPlugins()
         }
@@ -29,8 +28,9 @@ class ConsulBackendPluginTest {
         }
     }
 
+    @Nested
     public class Apply {
-        @Before
+        @BeforeEach
         public void resetJenkinsfile() {
             Jenkinsfile.instance = mock(Jenkinsfile.class)
             when(Jenkinsfile.instance.getEnv()).thenReturn([:])
@@ -42,6 +42,7 @@ class ConsulBackendPluginTest {
             when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
         }
 
+        @Nested
         public class PathBackendParameter {
             @Test
             void isAddedAndIsEnvironmentSpecific() {
@@ -73,6 +74,7 @@ class ConsulBackendPluginTest {
             }
         }
 
+        @Nested
         public class AddressBackendParameter {
             @Test
             void isNotAddedByDefault() {

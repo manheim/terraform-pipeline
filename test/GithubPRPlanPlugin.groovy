@@ -1,11 +1,11 @@
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -17,16 +17,14 @@ import static org.mockito.Mockito.times;
 import static TerraformEnvironmentStage.PLAN;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test
-import org.junit.Before
-import org.junit.After
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class GithubPRPlanPluginTest {
 
-    @Before
+    @BeforeEach
     void resetJenkinsEnv() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
         when(Jenkinsfile.instance.getEnv()).thenReturn([:])
@@ -38,8 +36,9 @@ class GithubPRPlanPluginTest {
         when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
     }
 
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformPlanCommand.resetPlugins()
             TerraformEnvironmentStage.reset()
@@ -62,6 +61,7 @@ class GithubPRPlanPluginTest {
         }
     }
 
+    @Nested
     public class Apply {
 
         @Test
@@ -92,8 +92,9 @@ class GithubPRPlanPluginTest {
 
     }
 
+    @Nested
     class GetRepoSlug {
-        @After
+        @AfterEach
         void resetPlugin() {
             GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
@@ -126,14 +127,15 @@ class GithubPRPlanPluginTest {
 
     }
 
+    @Nested
     class GetRepoHost {
-        @Before
+        @BeforeEach
         void resetBefore() {
             GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
         }
 
-        @After
+        @AfterEach
         void reset() {
             GithubPRPlanPlugin.reset()
             Jenkinsfile.reset()
@@ -187,6 +189,7 @@ class GithubPRPlanPluginTest {
         }
     }
 
+    @Nested
     class IsPullRequest {
         @Test
         void returnsTrueWhenBranchNameStartsWithPR() {
@@ -206,6 +209,7 @@ class GithubPRPlanPluginTest {
 
     }
 
+    @Nested
     class GetPullRequestNumber {
         @Test
         void parsesTheNumberFromTheBranchName() {
@@ -219,6 +223,7 @@ class GithubPRPlanPluginTest {
         }
     }
 
+    @Nested
     class GetPullRequestCommentUrl {
         @Test
         void constructsTheUrlFromHostRepoSlugAndPrNumber() {
@@ -236,6 +241,7 @@ class GithubPRPlanPluginTest {
         }
     }
 
+    @Nested
     class GetPlanOutput {
         @Test
         void readsContentsFromPlanOutFile() {
@@ -273,6 +279,7 @@ class GithubPRPlanPluginTest {
             assertThat(planOutput, not(containsString(colorEncoding)))
         }
 
+        @Nested
         class WithErrorOutput {
             @Test
             void includesContentsFromPlanErrorFileIfPresent() {
@@ -326,6 +333,7 @@ class GithubPRPlanPluginTest {
         }
     }
 
+    @Nested
     class GetCommentBody {
         @Test
         void usesThePlanOutput()  {
@@ -380,13 +388,14 @@ class GithubPRPlanPluginTest {
         }
     }
 
+    @Nested
     class PostPullRequestComment {
-        @After
+        @AfterEach
         void reset() {
             Jenkinsfile.reset()
         }
 
-        @Before
+        @BeforeEach
         void stubJenkins() {
             Jenkinsfile.original = spy(new DummyJenkinsfile())
         }

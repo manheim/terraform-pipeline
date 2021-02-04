@@ -1,22 +1,21 @@
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.endsWith
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.not
 import static org.hamcrest.Matchers.startsWith
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class TerraformApplyCommandTest {
+    @Nested
     public class WithInput {
         @Test
         void defaultsToFalse() {
@@ -43,6 +42,7 @@ class TerraformApplyCommandTest {
         }
     }
 
+    @Nested
     public class WithArgument {
         @Test
         void addsArgument() {
@@ -62,6 +62,7 @@ class TerraformApplyCommandTest {
         }
     }
 
+    @Nested
     public class WithVariableString {
         @Test
         void addsArgument() {
@@ -83,7 +84,8 @@ class TerraformApplyCommandTest {
             assertThat(actualCommand, containsString("-var 'key2=val2'"))
         }
 
-        class WithVariablePattern {
+        @Nested
+        public class WithVariablePattern {
             @Test
             void usesTheNewPattern() {
                 def command = new TerraformApplyCommand().withVariablePattern { key, value -> "boop-${key}-${value}-boop" }
@@ -95,6 +97,7 @@ class TerraformApplyCommandTest {
         }
     }
 
+    @Nested
     public class WithVariableMap {
         @Test
         void convertsMapToStringAndTreatsLikeAStringVariable() {
@@ -109,6 +112,7 @@ class TerraformApplyCommandTest {
         }
     }
 
+    @Nested
     public class ConvertMapToCliString {
         @Test
         void handlesSingleKeyPair() {
@@ -116,7 +120,7 @@ class TerraformApplyCommandTest {
             def command = new TerraformApplyCommand()
 
             def result = command.convertMapToCliString(map)
-            assertEquals('{mapKey=\"mapValue\"}', result)
+            assertThat(result, equalTo('{mapKey=\"mapValue\"}'))
         }
 
         @Test
@@ -125,7 +129,7 @@ class TerraformApplyCommandTest {
             def command = new TerraformApplyCommand()
 
             def result = command.convertMapToCliString(map)
-            assertEquals('{mapKey1=\"mapValue1\",mapKey2=\"mapValue2\"}', result)
+            assertThat(result, equalTo('{mapKey1=\"mapValue1\",mapKey2=\"mapValue2\"}'))
         }
 
         @Test
@@ -137,10 +141,11 @@ class TerraformApplyCommandTest {
             def map = [mapKey1: 'mapValue1', mapKey2: 'mapValue2']
 
             def result = command.convertMapToCliString(map)
-            assertEquals('[mapValue1|mapKey1;mapValue2|mapKey2]', result)
+            assertThat(result, equalTo('[mapValue1|mapKey1;mapValue2|mapKey2]'))
         }
     }
 
+    @Nested
     public class WithDirectory {
         @Test
         void addsDirectoryArgument() {
@@ -151,6 +156,7 @@ class TerraformApplyCommandTest {
         }
     }
 
+    @Nested
     public class WithPrefix {
         @Test
         void addsPrefixToBeginningOfCommand() {
@@ -170,6 +176,7 @@ class TerraformApplyCommandTest {
         }
     }
 
+    @Nested
     public class WithSuffix {
         @Test
         void addsSuffixToEndOfCommand() {
@@ -199,8 +206,9 @@ class TerraformApplyCommandTest {
         }
     }
 
+    @Nested
     public class Plugins {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformApplyCommand.resetPlugins()
         }

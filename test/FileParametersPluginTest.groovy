@@ -1,20 +1,19 @@
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThat
+import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-@RunWith(HierarchicalContextRunner.class)
 class FileParametersPluginTest {
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformEnvironmentStage.reset()
         }
@@ -28,13 +27,14 @@ class FileParametersPluginTest {
         }
     }
 
+    @Nested
     public class GetVariables {
-        @Before
+        @BeforeEach
         void setupJenkinsfile() {
             Jenkinsfile.original = new DummyJenkinsfile()
         }
 
-        @After
+        @AfterEach
         void reset() {
             Jenkinsfile.reset()
         }

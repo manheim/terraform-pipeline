@@ -2,7 +2,7 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not
-import static org.junit.Assert.assertThat
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
@@ -10,15 +10,14 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
-import org.junit.Test
-import org.junit.Before
-import org.junit.After
-import org.junit.runner.RunWith
-import de.bechte.junit.runners.context.HierarchicalContextRunner
 
-@RunWith(HierarchicalContextRunner.class)
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+
 class PlanOnlyPluginTest {
-    @Before
+    @BeforeEach
     void resetJenkinsEnv() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
         when(Jenkinsfile.instance.getEnv()).thenReturn([:])
@@ -29,8 +28,9 @@ class PlanOnlyPluginTest {
         when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
     }
 
+    @Nested
     public class Init {
-        @After
+        @AfterEach
         void resetPlugins() {
             TerraformPlanCommand.resetPlugins()
             TerraformEnvironmentStage.reset()
@@ -60,6 +60,7 @@ class PlanOnlyPluginTest {
         }
     }
 
+    @Nested
     public class Apply {
 
         @Test
