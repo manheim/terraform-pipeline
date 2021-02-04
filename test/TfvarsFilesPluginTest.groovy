@@ -41,7 +41,7 @@ class TfvarsFilesPluginTest {
 
     static void reset() {
         TerraformPlanCommand.reset()
-        TerraformApplyCommand.resetPlugins()
+        TerraformApplyCommand.reset()
         TfvarsFilesPlugin.directory = '.'
     }
 

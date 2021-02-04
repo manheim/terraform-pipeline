@@ -31,7 +31,7 @@ class AwssumePluginTest {
         void resetPlugins() {
             TerraformInitCommand.resetPlugins()
             TerraformPlanCommand.reset()
-            TerraformApplyCommand.resetPlugins()
+            TerraformApplyCommand.reset()
         }
 
         @Test

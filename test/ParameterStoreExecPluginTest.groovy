@@ -16,7 +16,7 @@ class ParameterStoreExecPluginTest {
         Jenkinsfile.instance = null
         TerraformEnvironmentStage.reset()
         TerraformPlanCommand.reset()
-        TerraformApplyCommand.resetPlugins()
+        TerraformApplyCommand.reset()
     }
 
     private configureJenkins(Map config = [:]) {

@@ -118,7 +118,7 @@ class TerraformApplyCommand implements TerraformCommand {
         return plugins
     }
 
-    public static resetPlugins() {
+    public static reset() {
         this.plugins = []
     }
 

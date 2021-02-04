@@ -210,7 +210,7 @@ class TerraformApplyCommandTest {
     public class Plugins {
         @AfterEach
         void resetPlugins() {
-            TerraformApplyCommand.resetPlugins()
+            TerraformApplyCommand.reset()
         }
 
         @Test

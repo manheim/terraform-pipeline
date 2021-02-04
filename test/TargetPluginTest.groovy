@@ -28,7 +28,7 @@ class TargetPluginTest {
         @AfterEach
         void resetPlugins() {
             TerraformPlanCommand.reset()
-            TerraformApplyCommand.resetPlugins()
+            TerraformApplyCommand.reset()
         }
 
         @Test

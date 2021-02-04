@@ -21,7 +21,7 @@ class DestroyPluginTest {
         ConfirmApplyPlugin.reset()
         TerraformEnvironmentStage.reset()
         TerraformPlanCommand.reset()
-        TerraformApplyCommand.resetPlugins()
+        TerraformApplyCommand.reset()
     }
 
     @Nested
