@@ -20,7 +20,7 @@ class TagPluginTest {
     @AfterEach
     public void reset() {
         TerraformApplyCommand.resetPlugins()
-        TerraformPlanCommand.resetPlugins()
+        TerraformPlanCommand.reset()
         TagPlugin.reset()
     }
 

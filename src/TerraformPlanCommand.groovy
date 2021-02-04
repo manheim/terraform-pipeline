@@ -125,7 +125,7 @@ class TerraformPlanCommand implements TerraformCommand {
         return plugins
     }
 
-    public static resetPlugins() {
+    public static reset() {
         this.plugins = DEFAULT_PLUGINS.clone()
     }
 

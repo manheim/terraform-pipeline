@@ -20,7 +20,7 @@ class DestroyPluginTest {
         Jenkinsfile.reset()
         ConfirmApplyPlugin.reset()
         TerraformEnvironmentStage.reset()
-        TerraformPlanCommand.resetPlugins()
+        TerraformPlanCommand.reset()
         TerraformApplyCommand.resetPlugins()
     }
 

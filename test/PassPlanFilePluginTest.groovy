@@ -32,7 +32,7 @@ class PassPlanFilePluginTest {
     public class Init {
         @AfterEach
         void resetPlugins() {
-            TerraformPlanCommand.resetPlugins()
+            TerraformPlanCommand.reset()
             TerraformApplyCommand.resetPlugins()
             TerraformEnvironmentStage.reset()
         }

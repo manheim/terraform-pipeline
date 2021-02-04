@@ -240,7 +240,7 @@ class TerraformPlanCommandTest {
     public class Plugins {
         @AfterEach
         void resetPlugins() {
-            TerraformPlanCommand.resetPlugins()
+            TerraformPlanCommand.reset()
         }
 
         @Test

@@ -40,7 +40,7 @@ class GithubPRPlanPluginTest {
     public class Init {
         @AfterEach
         void resetPlugins() {
-            TerraformPlanCommand.resetPlugins()
+            TerraformPlanCommand.reset()
             TerraformEnvironmentStage.reset()
         }
 

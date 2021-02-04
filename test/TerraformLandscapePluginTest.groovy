@@ -19,7 +19,7 @@ class TerraformLandscapePluginTest {
     public class Init {
         @AfterEach
         void resetPlugins() {
-            TerraformPlanCommand.resetPlugins()
+            TerraformPlanCommand.reset()
         }
 
         @Test
