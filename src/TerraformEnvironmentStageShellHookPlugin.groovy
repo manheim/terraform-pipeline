@@ -5,7 +5,7 @@ import static TerraformEnvironmentStage.PLAN_COMMAND
 import static TerraformEnvironmentStage.APPLY
 import static TerraformEnvironmentStage.APPLY_COMMAND
 
-class TerraformEnvironmentStageShellHookPlugin implements TerraformEnvironmentStagePlugin {
+class TerraformEnvironmentStageShellHookPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     static hooks = [
         (ALL): new HookPoint(ALL),
         (INIT_COMMAND): new HookPoint(INIT_COMMAND),

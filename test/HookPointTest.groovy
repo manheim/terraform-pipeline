@@ -11,7 +11,9 @@ import org.mockito.InOrder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class HookPointTest {
 
     @Nested
@@ -65,8 +67,6 @@ class HookPointTest {
         @AfterEach
         public void reset() {
             Jenkinsfile.instance = null
-            TerraformEnvironmentStage.reset()
-            TerraformEnvironmentStageShellHookPlugin.reset()
         }
 
         @Test
