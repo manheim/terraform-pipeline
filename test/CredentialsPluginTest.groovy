@@ -19,7 +19,7 @@ class CredentialsPluginTest {
     public class Init {
         @AfterEach
         void resetPlugins() {
-            BuildStage.resetPlugins()
+            BuildStage.reset()
             RegressionStage.resetPlugins()
             TerraformEnvironmentStage.reset()
             TerraformValidateStage.reset()

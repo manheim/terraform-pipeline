@@ -73,7 +73,7 @@ class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePl
         return plugins
     }
 
-    public static void resetPlugins() {
+    public static void reset() {
         this.plugins = []
     }
 
