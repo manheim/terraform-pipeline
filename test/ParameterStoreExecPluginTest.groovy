@@ -9,14 +9,13 @@ import static org.mockito.Mockito.mock;
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class ParameterStoreExecPluginTest {
     @AfterEach
     public void reset() {
         Jenkinsfile.instance = null
-        TerraformEnvironmentStage.reset()
-        TerraformPlanCommand.reset()
-        TerraformApplyCommand.reset()
     }
 
     private configureJenkins(Map config = [:]) {
