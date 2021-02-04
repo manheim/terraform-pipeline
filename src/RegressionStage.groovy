@@ -1,4 +1,4 @@
-class RegressionStage implements Stage, DecoratableStage {
+class RegressionStage implements Stage, DecoratableStage, Resettable {
 
     public String testCommand
     public List automationRepoList = []
