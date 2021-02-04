@@ -1,4 +1,4 @@
-class TerraformPlanCommand implements TerraformCommand {
+class TerraformPlanCommand implements TerraformCommand, Resettable {
     private static final DEFAULT_PLUGINS = []
     private boolean input = false
     private String terraformBinary = "terraform"

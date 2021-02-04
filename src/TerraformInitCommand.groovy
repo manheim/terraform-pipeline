@@ -1,4 +1,4 @@
-class TerraformInitCommand {
+class TerraformInitCommand implements Resettable {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "init"
