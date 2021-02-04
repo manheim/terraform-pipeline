@@ -36,7 +36,7 @@ class BuildWithParametersPluginTest {
         @AfterEach
         void resetPlugins() {
             BuildStage.resetPlugins()
-            TerraformValidateStage.resetPlugins()
+            TerraformValidateStage.reset()
             TerraformEnvironmentStage.reset()
             RegressionStage.resetPlugins()
         }

@@ -22,7 +22,7 @@ class CredentialsPluginTest {
             BuildStage.resetPlugins()
             RegressionStage.resetPlugins()
             TerraformEnvironmentStage.reset()
-            TerraformValidateStage.resetPlugins()
+            TerraformValidateStage.reset()
             CredentialsPlugin.reset()
         }
 

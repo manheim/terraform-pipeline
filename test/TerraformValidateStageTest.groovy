@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 class TerraformValidateStageTest {
     @AfterEach
     void resetPlugins() {
-        TerraformValidateStage.resetPlugins()
+        TerraformValidateStage.reset()
     }
 
     @Nested

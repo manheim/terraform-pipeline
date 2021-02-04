@@ -27,7 +27,7 @@ class AgentNodePluginTest {
     public class Init {
         @AfterEach
         void resetPlugins() {
-            TerraformValidateStage.resetPlugins()
+            TerraformValidateStage.reset()
             TerraformEnvironmentStage.reset()
         }
 

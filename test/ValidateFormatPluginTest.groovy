@@ -15,7 +15,7 @@ class ValidateFormatPluginTest {
     @BeforeEach
     @AfterEach
     public void reset() {
-        TerraformValidateStage.resetPlugins()
+        TerraformValidateStage.reset()
         TerraformFormatCommand.reset()
     }
 

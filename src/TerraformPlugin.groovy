@@ -76,7 +76,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
         TerraformFormatCommand.reset()
         TerraformPlanCommand.resetPlugins()
         TerraformApplyCommand.resetPlugins()
-        TerraformValidateStage.resetPlugins()
+        TerraformValidateStage.reset()
     }
 
     @Override

@@ -63,7 +63,7 @@ class TerraformValidateStage implements Stage, DecoratableStage {
         return this.globalPlugins
     }
 
-    public static void resetPlugins() {
+    public static void reset() {
         this.globalPlugins = []
     }
 }
