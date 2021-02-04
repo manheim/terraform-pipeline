@@ -1,5 +1,6 @@
 class DestroyPlugin implements TerraformPlanCommandPlugin,
-                               TerraformApplyCommandPlugin {
+                               TerraformApplyCommandPlugin,
+                               Resettable {
 
     private static arguments = []
     public static DESTROY_CONFIRM_MESSAGE = 'DANGER! Your ${environment} environment will be IMMEDIATELY DESTROYED via "terraform destroy".  Review your plan to see all the resources that will be destroyed, and confirm. YOU CANNOT UNDO THIS.'

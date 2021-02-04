@@ -12,16 +12,14 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class DestroyPluginTest {
     @BeforeEach
     @AfterEach
     void reset() {
         Jenkinsfile.reset()
-        ConfirmApplyPlugin.reset()
-        TerraformEnvironmentStage.reset()
-        TerraformPlanCommand.reset()
-        TerraformApplyCommand.reset()
     }
 
     @Nested
@@ -99,11 +97,6 @@ class DestroyPluginTest {
 
         @Nested
         class WithArguments {
-            @AfterEach
-            void resetPlugins() {
-                DestroyPlugin.reset()
-            }
-
             @Test
             void includesTheGivenArgument() {
                 def expectedArgument = '-refresh=false'
