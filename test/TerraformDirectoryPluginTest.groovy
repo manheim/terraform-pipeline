@@ -6,18 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformDirectoryPluginTest {
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformInitCommand.reset()
-            TerraformValidateCommand.reset()
-            TerraformPlanCommand.reset()
-            TerraformApplyCommand.reset()
-        }
-
         @Test
         void modifiesTerraformInitCommand() {
             TerraformDirectoryPlugin.init()
