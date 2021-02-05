@@ -1,4 +1,4 @@
-class TerraformValidateCommand {
+class TerraformValidateCommand implements Resettable {
     private String terraformBinary = "terraform"
     private String command = "validate"
     private arguments = []
