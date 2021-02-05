@@ -7,4 +7,8 @@ public class MockJenkinsfile {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
         when(Jenkinsfile.instance.getEnv()).thenReturn(env)
     }
+
+    public static withMockedOriginal() {
+        Jenkinsfile.original = new DummyJenkinsfile()
+    }
 }

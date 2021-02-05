@@ -52,6 +52,7 @@ class TerraformValidateStageTest {
         @Test
         void justExerciseNoAssertions() {
             def stage  = new TerraformValidateStage()
+            MockJenkinsfile.withMockedOriginal()
 
             stage.build()
         }
