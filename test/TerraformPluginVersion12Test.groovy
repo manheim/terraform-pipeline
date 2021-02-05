@@ -8,18 +8,12 @@ import static org.mockito.Matchers.eq
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformPluginVersion12Test {
-    @BeforeEach
-    @AfterEach
-    void reset() {
-        TerraformFormatCommand.reset()
-    }
-
     @Nested
     class AddInitBefore {
         @Test
