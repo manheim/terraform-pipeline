@@ -13,13 +13,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformEnvironmentStageTest {
-    @AfterEach
-    void resetPlugins() {
-        TerraformEnvironmentStage.reset()
-    }
-
     @Nested
     public class ToString {
         @Test
@@ -149,13 +146,9 @@ class TerraformEnvironmentStageTest {
 
     @Nested
     class PipelineConfigurations {
+        @AfterEach
         @BeforeEach
         void resetBefore() {
-            Jenkinsfile.reset()
-        }
-
-        @AfterEach
-        void resetAfter() {
             Jenkinsfile.reset()
         }
 
@@ -183,12 +176,6 @@ class TerraformEnvironmentStageTest {
 
     @Nested
     class WithStageNamePattern {
-        @BeforeEach
-        @AfterEach
-        void reset() {
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void constructsTheDefaultStageNameWhenBlank() {
             def stage = new TerraformEnvironmentStage('myenv')
