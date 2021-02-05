@@ -9,13 +9,14 @@ import static org.mockito.Mockito.mock;
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class WithAwsPluginTest {
     @AfterEach
     void reset() {
         Jenkinsfile.instance = mock(Jenkinsfile.class)
         when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-        WithAwsPlugin.reset()
     }
 
     private configureJenkins(Map config = [:]) {
@@ -26,11 +27,6 @@ class WithAwsPluginTest {
 
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void modifiesTerraformEnvironmentStage() {
             WithAwsPlugin.init()
