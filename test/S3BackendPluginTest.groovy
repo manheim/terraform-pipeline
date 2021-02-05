@@ -7,18 +7,14 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.spy;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class S3BackendPluginTest {
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformInitCommand.reset()
-        }
-
         @Test
         void addsS3BackendPluginToListOfPlugins() {
             S3BackendPlugin.init()
@@ -30,11 +26,6 @@ class S3BackendPluginTest {
 
     @Nested
     public class Apply {
-        @AfterEach
-        void reset() {
-            S3BackendPlugin.keyPattern = null
-        }
-
         @Test
         void addsEnvironmentSpecificKeyAsBackendParameter() {
             String repoSlug = 'myOrg/myRepo'
@@ -246,11 +237,6 @@ class S3BackendPluginTest {
 
     @Nested
     public class GetKey {
-        @AfterEach
-        void resetPlugins() {
-            S3BackendPlugin.keyPattern = null
-        }
-
         @Test
         void shouldBeGeneratedFromRepoSlugAndEnvironment() {
             def plugin = spy(new S3BackendPlugin())
