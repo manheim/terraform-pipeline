@@ -2,6 +2,7 @@ import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.reflections.Reflections
+import groovy.transform.Memoized
 
 public class ResetStaticStateExtension implements BeforeEachCallback,
                                                   AfterEachCallback {
@@ -24,6 +25,7 @@ public class ResetStaticStateExtension implements BeforeEachCallback,
         }
     }
 
+    @Memoized
     public findAllResettableClasses() {
         return new Reflections(Resettable.getPackage().getName()).getSubTypesOf( Resettable.class )
     }
