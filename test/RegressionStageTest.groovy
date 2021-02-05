@@ -5,14 +5,15 @@ import static org.mockito.Mockito.when
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class RegressionStageTest {
 
     @Nested
     public class AutomationRepo {
         @AfterEach
         void reset() {
-            TerraformEnvironmentStage.reset()
             Jenkinsfile.instance = mock(Jenkinsfile.class)
             Jenkinsfile.original = null
         }
@@ -79,11 +80,6 @@ class RegressionStageTest {
 
     @Nested
     public class AddedPlugins {
-        @AfterEach
-        void resetPlugins() {
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void willHaveApplyCalled() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
