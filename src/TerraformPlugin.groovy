@@ -13,7 +13,8 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
                                  TerraformFormatCommandPlugin,
                                  TerraformPlanCommandPlugin,
                                  TerraformApplyCommandPlugin,
-                                 TerraformValidateStagePlugin {
+                                 TerraformValidateStagePlugin,
+                                 Resettable {
 
     static String version
     static final String DEFAULT_VERSION = '0.11.0'
