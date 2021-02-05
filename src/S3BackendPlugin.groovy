@@ -1,4 +1,4 @@
-class S3BackendPlugin implements TerraformInitCommandPlugin {
+class S3BackendPlugin implements TerraformInitCommandPlugin, Resettable {
 
     public static Closure keyPattern
 
@@ -141,5 +141,9 @@ class S3BackendPlugin implements TerraformInitCommandPlugin {
 
     public getStandardizedRepoSlug() {
         return (Jenkinsfile.instance != null) ? Jenkinsfile.instance.getStandardizedRepoSlug() : null
+    }
+
+    public static reset() {
+        keyPattern = null
     }
 }
