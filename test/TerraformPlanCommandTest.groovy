@@ -10,10 +10,11 @@ import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformPlanCommandTest {
     @Nested
     public class WithInput {
@@ -238,11 +239,6 @@ class TerraformPlanCommandTest {
 
     @Nested
     public class Plugins {
-        @AfterEach
-        void resetPlugins() {
-            TerraformPlanCommand.reset()
-        }
-
         @Test
         void areAppliedToTheCommand() {
             TerraformPlanCommandPlugin plugin = mock(TerraformPlanCommandPlugin.class)
