@@ -6,11 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TargetPluginTest {
     @BeforeEach
     void resetJenkinsEnv() {
@@ -25,12 +26,6 @@ class TargetPluginTest {
 
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformPlanCommand.reset()
-            TerraformApplyCommand.reset()
-        }
-
         @Test
         void modifiesTerraformPlanCommand() {
             TargetPlugin.init()
