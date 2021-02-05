@@ -11,19 +11,12 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.anyMap;
 
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TagPluginTest {
-    @BeforeEach
-    @AfterEach
-    public void reset() {
-        TerraformApplyCommand.reset()
-        TerraformPlanCommand.reset()
-        TagPlugin.reset()
-    }
-
     @Nested
     public class Init {
         @Test
