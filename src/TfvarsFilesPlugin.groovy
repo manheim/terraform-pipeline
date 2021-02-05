@@ -1,4 +1,4 @@
-class TfvarsFilesPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin {
+class TfvarsFilesPlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, Resettable {
 
     static String directory = "."
     static List<String> globalFiles = []
@@ -44,5 +44,10 @@ class TfvarsFilesPlugin implements TerraformPlanCommandPlugin, TerraformApplyCom
                 originalContext.echo "${file} does not exist."
             }
         }
+    }
+
+    public static void reset() {
+        directory = "."
+        globalFiles = []
     }
 }
