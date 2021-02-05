@@ -11,7 +11,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformPluginTest {
 
     @Nested
@@ -19,7 +21,6 @@ class TerraformPluginTest {
         @BeforeEach
         @AfterEach
         void reset() {
-            TerraformPlugin.reset()
             Jenkinsfile.reset()
         }
 
@@ -80,7 +81,6 @@ class TerraformPluginTest {
         @BeforeEach
         @AfterEach
         void reset() {
-            TerraformPlugin.reset()
             Jenkinsfile.reset()
         }
 
@@ -94,11 +94,6 @@ class TerraformPluginTest {
 
     @Nested
     class WithVersion {
-        @AfterEach
-        void reset() {
-            TerraformPlugin.reset()
-        }
-
         @Test
         void usesVersionEvenIfFileExists() {
             TerraformPlugin.withVersion('2.0.0')
@@ -108,11 +103,6 @@ class TerraformPluginTest {
 
     @Nested
     class Strategyfor {
-        @AfterEach
-        void reset() {
-            TerraformPlugin.reset()
-        }
-
         @Test
         void returnsVersion11ForLessThan0_12_0() {
             def plugin = new TerraformPlugin()
