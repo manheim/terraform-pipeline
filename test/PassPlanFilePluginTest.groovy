@@ -11,11 +11,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class PassPlanFilePluginTest {
     @BeforeEach
     void resetJenkinsEnv() {
@@ -30,13 +31,6 @@ class PassPlanFilePluginTest {
 
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformPlanCommand.reset()
-            TerraformApplyCommand.reset()
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
             PassPlanFilePlugin.init()
