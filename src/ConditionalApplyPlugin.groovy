@@ -1,7 +1,7 @@
 import static TerraformEnvironmentStage.CONFIRM
 import static TerraformEnvironmentStage.APPLY
 
-public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin {
+public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, Resettable {
 
     private static DEFAULT_BRANCHES = ['master']
     private static branches = DEFAULT_BRANCHES
