@@ -29,6 +29,24 @@ public class MockJenkinsfile {
         return this
     }
 
+    public static withRepoName(String repoName) {
+        if (needsJenkinsfileInstanceMock()) {
+            mockJenkinsfileInstance()
+        }
+
+        when(Jenkinsfile.instance.getRepoName()).thenReturn(repoName)
+        return this
+    }
+
+    public static withOrganization(String organization) {
+        if (needsJenkinsfileInstanceMock()) {
+            mockJenkinsfileInstance()
+        }
+
+        when(Jenkinsfile.instance.getOrganization()).thenReturn(organization)
+        return this
+    }
+
     public static withFile(String filePath, String fileContent = '') {
         def original = spy(new DummyJenkinsfile())
         doReturn(true).when(original).fileExists(filePath)
