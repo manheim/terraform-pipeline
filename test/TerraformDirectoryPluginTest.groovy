@@ -3,7 +3,6 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.MatcherAssert.assertThat
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -47,11 +46,6 @@ class TerraformDirectoryPluginTest {
 
     @Nested
     public class Apply {
-        @AfterEach
-        void resetJenkinsEnv() {
-            TerraformDirectoryPlugin.withDirectory("./terraform/")
-        }
-
         @Nested
         public class WithDirectoryProvided {
             @Test
