@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -16,18 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ResetStaticStateExtension.class)
 class DestroyPluginTest {
-    @BeforeEach
-    @AfterEach
-    void reset() {
-        Jenkinsfile.reset()
-    }
-
     @Nested
     public class Init {
         @BeforeEach
         void setup() {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            doReturn('repoName').when(Jenkinsfile.instance).getRepoName()
+            MockJenkinsfile.withRepoName('repoName')
         }
 
         @Test
