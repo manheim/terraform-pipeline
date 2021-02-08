@@ -21,7 +21,6 @@ import static TerraformEnvironmentStage.APPLY_COMMAND
 
 import org.mockito.InOrder
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -29,18 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(ResetStaticStateExtension.class)
 class TerraformEnvironmentStageShellHookPluginTest {
     def hookKeys = [ALL, INIT_COMMAND, PLAN, PLAN_COMMAND, APPLY, APPLY_COMMAND]
-
-    @AfterEach
-    public void reset() {
-        Jenkinsfile.instance = null
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization)
-        when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
 
     @Nested
     public class Hooks {
