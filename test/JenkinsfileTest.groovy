@@ -14,21 +14,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class JenkinsfileTest {
-    private Jenkinsfile jenkinsfile
-
-    @BeforeEach
-    public void setup() {
-        jenkinsfile = new Jenkinsfile()
-    }
-
-    @BeforeEach
-    @AfterEach
-    void reset() {
-        Jenkinsfile.reset()
-    }
-
     @Nested
     class StandardizedRepoSlug {
         @Test
@@ -82,6 +71,13 @@ class JenkinsfileTest {
 
     @Nested
     public class ParseScmUrl {
+        private Jenkinsfile jenkinsfile
+
+        @BeforeEach
+        public void setup() {
+            jenkinsfile = new Jenkinsfile()
+        }
+
         @Nested
         public class WithHttpUrl {
             @Nested
