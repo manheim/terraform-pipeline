@@ -2,10 +2,7 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.jupiter.api.Assertions.assertEquals
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -28,12 +25,7 @@ class FileParametersPluginTest {
     public class GetVariables {
         @BeforeEach
         void setupJenkinsfile() {
-            Jenkinsfile.original = new DummyJenkinsfile()
-        }
-
-        @AfterEach
-        void reset() {
-            Jenkinsfile.reset()
+            MockJenkinsfile.withEnv()
         }
 
         @Test
@@ -72,9 +64,8 @@ class FileParametersPluginTest {
         @Test
         void interpolatesReferencesToOtherEnvironmentVariables() {
             String fileContents = 'SOME_VARIABLE=${env.OTHER_VARIABLE}'
-
-            FileParametersPlugin plugin = spy(new FileParametersPlugin())
-            doReturn([ OTHER_VARIABLE: 'VALUE1']).when(plugin).getEnv()
+            MockJenkinsfile.withEnv(OTHER_VARIABLE: 'VALUE1')
+            FileParametersPlugin plugin = new FileParametersPlugin()
 
             List actualValues = plugin.getVariables(fileContents)
 
