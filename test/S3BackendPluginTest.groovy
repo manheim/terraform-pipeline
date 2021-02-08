@@ -4,8 +4,6 @@ import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.not
 import static org.hamcrest.MatcherAssert.assertThat
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -30,8 +28,8 @@ class S3BackendPluginTest {
         void addsEnvironmentSpecificKeyAsBackendParameter() {
             String repoSlug = 'myOrg/myRepo'
             String environment = "myEnv"
-            S3BackendPlugin plugin = spy(new S3BackendPlugin())
-            when(plugin.getStandardizedRepoSlug()).thenReturn(repoSlug)
+            MockJenkinsfile.withStandardizedRepoSlug(repoSlug).withEnv()
+            S3BackendPlugin plugin = new S3BackendPlugin()
             TerraformInitCommand command = new TerraformInitCommand(environment)
 
             plugin.apply(command)
@@ -44,8 +42,8 @@ class S3BackendPluginTest {
         void addsBucketPreDefinedByEnvironmentAsBackendParameter() {
             String expectedBucket = 'bucket'
             String environment = "myEnv"
-            S3BackendPlugin plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([MYENV_S3_BACKEND_BUCKET: expectedBucket])
+            MockJenkinsfile.withEnv(MYENV_S3_BACKEND_BUCKET: expectedBucket)
+            S3BackendPlugin plugin = new S3BackendPlugin()
             TerraformInitCommand command = new TerraformInitCommand(environment)
 
             plugin.apply(command)
@@ -59,8 +57,8 @@ class S3BackendPluginTest {
             String expectedRegion = 'theFarEast'
 
             String environment = "myEnv"
-            S3BackendPlugin plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([ 'DEFAULT_S3_BACKEND_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('DEFAULT_S3_BACKEND_REGION': expectedRegion)
+            S3BackendPlugin plugin = new S3BackendPlugin()
             TerraformInitCommand command = new TerraformInitCommand(environment)
 
             plugin.apply(command)
@@ -74,8 +72,8 @@ class S3BackendPluginTest {
             String dynamodb_table = 'terraform-state-lock-dynamo'
 
             String environment = "myEnv"
-            S3BackendPlugin plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([ 'MYENV_S3_BACKEND_DYNAMO_TABLE_LOCK': dynamodb_table ])
+            MockJenkinsfile.withEnv('MYENV_S3_BACKEND_DYNAMO_TABLE_LOCK': dynamodb_table)
+            S3BackendPlugin plugin = new S3BackendPlugin()
             TerraformInitCommand command = new TerraformInitCommand(environment)
 
             plugin.apply(command)
@@ -87,8 +85,8 @@ class S3BackendPluginTest {
         @Test
         void skipsDynamoDbTableAsBackendParameterWhenNoneSpecified() {
             String environment = "myEnv"
-            S3BackendPlugin plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([:])
+            S3BackendPlugin plugin = new S3BackendPlugin()
+            MockJenkinsfile.withEnv()
             TerraformInitCommand command = new TerraformInitCommand(environment)
 
             plugin.apply(command)
@@ -101,8 +99,8 @@ class S3BackendPluginTest {
         void isAddedAndUsesCustomizedPatternFolderKeyAsBackendParameter() {
             String repoSlug = 'myOrg/myRepo'
             S3BackendPlugin.keyPattern = { String env -> "customPatternFor/${repoSlug}/entropy/${env}" }
-            S3BackendPlugin plugin = spy(new S3BackendPlugin())
-            when(plugin.getStandardizedRepoSlug()).thenReturn(repoSlug)
+            MockJenkinsfile.withStandardizedRepoSlug(repoSlug).withEnv()
+            S3BackendPlugin plugin = new S3BackendPlugin()
 
             String environment = "myEnv"
             TerraformInitCommand command = new TerraformInitCommand(environment)
@@ -116,8 +114,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnTheValueOfS3BackendBucket() {
             String expectedBucket = 'defaultBucket'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['S3_BACKEND_BUCKET': expectedBucket])
+            MockJenkinsfile.withEnv('S3_BACKEND_BUCKET': expectedBucket)
+            def plugin = new S3BackendPlugin()
 
             String actualBucket = plugin.getBucket('myenv')
 
@@ -127,8 +125,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnTheValueOfTheEnvironmentSpecificS3BackendBucket() {
             String expectedBucket = 'myBucket'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['MYENV_S3_BACKEND_BUCKET': expectedBucket])
+            MockJenkinsfile.withEnv('MYENV_S3_BACKEND_BUCKET': expectedBucket)
+            def plugin = new S3BackendPlugin()
 
             String actualBucket = plugin.getBucket('myenv')
 
@@ -138,8 +136,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnTheValueOfTheEnvironmentSpecificS3BackendBucketCaseInsensitive() {
             String expectedBucket = 'myBucket'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['myenv_S3_BACKEND_BUCKET': expectedBucket])
+            MockJenkinsfile.withEnv('myenv_S3_BACKEND_BUCKET': expectedBucket)
+            def plugin = new S3BackendPlugin()
 
             String actualBucket = plugin.getBucket('myenv')
 
@@ -149,10 +147,10 @@ class S3BackendPluginTest {
         @Test
         void shouldPreferS3BackendBucketOverEnvironmentSpecificBucket() {
             String expectedBucket = "thisBucket"
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['S3_BACKEND_BUCKET': expectedBucket,
+            MockJenkinsfile.withEnv('S3_BACKEND_BUCKET': expectedBucket,
                                    'MYENV_S3_BACKEND_BUCKET': 'notThisBucket',
-                                   'myenv_S3_BACKEND_BUCKET': 'notThisBucketEither'])
+                                   'myenv_S3_BACKEND_BUCKET': 'notThisBucketEither')
+            def plugin = new S3BackendPlugin()
 
             String actualBucket = plugin.getBucket('myenv')
 
@@ -165,8 +163,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnTheValueOfDefaultS3BackendRegion() {
             String expectedRegion = 'defaultRegion'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['DEFAULT_S3_BACKEND_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('DEFAULT_S3_BACKEND_REGION': expectedRegion)
+            def plugin = new S3BackendPlugin()
 
             String actualRegion = plugin.getRegion('myenv')
 
@@ -176,8 +174,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnTheValueOfS3BackendRegion() {
             String expectedRegion = 'region'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['S3_BACKEND_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('S3_BACKEND_REGION': expectedRegion)
+            def plugin = new S3BackendPlugin()
 
             String actualRegion = plugin.getRegion('myenv')
 
@@ -187,8 +185,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnTheValueOfEnvironmentSpecificS3BackendRegion() {
             String expectedRegion = 'environmentSpecificRegion'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['MYENV_S3_BACKEND_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('MYENV_S3_BACKEND_REGION': expectedRegion)
+            def plugin = new S3BackendPlugin()
 
             String actualRegion = plugin.getRegion('myenv')
 
@@ -198,8 +196,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnTheValueOfEnvironmentSpecificS3BackendRegionCaseInsensitive() {
             String expectedRegion = 'environmentSpecificRegion'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn(['myenv_S3_BACKEND_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('myenv_S3_BACKEND_REGION': expectedRegion)
+            def plugin = new S3BackendPlugin()
 
             String actualRegion = plugin.getRegion('myenv')
 
@@ -209,11 +207,11 @@ class S3BackendPluginTest {
         @Test
         void shouldPreferS3BackendRegionOverEnvironmentSpecificRegion() {
             String expectedRegion = 'thisRegion'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([
+            MockJenkinsfile.withEnv(
                 'S3_BACKEND_REGION': expectedRegion,
                 'myenv_S3_BACKEND_REGION': 'notThisRegion'
-            ])
+            )
+            def plugin = new S3BackendPlugin()
 
             String actualRegion = plugin.getRegion('myenv')
 
@@ -223,11 +221,11 @@ class S3BackendPluginTest {
         @Test
         void shouldPreferEnvironmentSpecificRegionOverDeprecatedDefaultS3BackendRegion() {
             String expectedRegion = 'thisRegion'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([
+            MockJenkinsfile.withEnv(
                 'MYENV_S3_BACKEND_REGION': expectedRegion,
                 'DEFAULT_S3_BACKEND_REGION': "notThisRegion"
-            ])
+            )
+            def plugin = new S3BackendPlugin()
 
             String actualRegion = plugin.getRegion('myenv')
 
@@ -239,8 +237,8 @@ class S3BackendPluginTest {
     public class GetKey {
         @Test
         void shouldBeGeneratedFromRepoSlugAndEnvironment() {
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getStandardizedRepoSlug()).thenReturn('Org/App')
+            def plugin = new S3BackendPlugin()
+            MockJenkinsfile.withStandardizedRepoSlug('Org/App')
 
             String actualKey = plugin.getKey('myenv')
 
@@ -263,8 +261,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnDeprecatedS3BackendDynamoTableLockValue() {
             String expectedTable = 'myDeprecatedDynamoTable'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([MYENV_S3_BACKEND_DYNAMO_TABLE_LOCK: expectedTable])
+            MockJenkinsfile.withEnv(MYENV_S3_BACKEND_DYNAMO_TABLE_LOCK: expectedTable)
+            def plugin = new S3BackendPlugin()
 
             String actualTable = plugin.getDynamodbTable('myenv')
 
@@ -274,8 +272,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnS3BackendDynamodbTableValue() {
             String expectedTable = 'myDynamoTable'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([S3_BACKEND_DYNAMODB_TABLE: expectedTable])
+            MockJenkinsfile.withEnv(S3_BACKEND_DYNAMODB_TABLE: expectedTable)
+            def plugin = new S3BackendPlugin()
 
             String actualTable = plugin.getDynamodbTable('myenv')
 
@@ -285,8 +283,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnEnvironmentSpecificS3BackendDynamodbTableValue() {
             String expectedTable = 'myEnvDynamoTable'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([MYENV_S3_BACKEND_DYNAMODB_TABLE: expectedTable])
+            MockJenkinsfile.withEnv(MYENV_S3_BACKEND_DYNAMODB_TABLE: expectedTable)
+            def plugin = new S3BackendPlugin()
 
             String actualTable = plugin.getDynamodbTable('myenv')
 
@@ -296,8 +294,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnEnvironmentSpecificS3BackendDynamodbTableValueCaseInsensitive() {
             String expectedTable = 'myEnvDynamoTable'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([myenv_S3_BACKEND_DYNAMODB_TABLE: expectedTable])
+            MockJenkinsfile.withEnv(myenv_S3_BACKEND_DYNAMODB_TABLE: expectedTable)
+            def plugin = new S3BackendPlugin()
 
             String actualTable = plugin.getDynamodbTable('myenv')
 
@@ -307,11 +305,11 @@ class S3BackendPluginTest {
         @Test
         void shouldPreferS3BackendDynamodbTableOverEnvironmentSpecificValue() {
             String expectedTable = 'thisTable'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([
+            MockJenkinsfile.withEnv(
                 S3_BACKEND_DYNAMODB_TABLE: expectedTable,
                 MYENV_S3_BACKEND_DYNAMODB_TABLE: 'notThisTable'
-            ])
+            )
+            def plugin = new S3BackendPlugin()
 
             String actualTable = plugin.getDynamodbTable('myenv')
 
@@ -321,11 +319,11 @@ class S3BackendPluginTest {
         @Test
         void shouldPreferS3BackendDynamodbTableOverDeprecatedValue() {
             String expectedTable = 'thisTable'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([
+            MockJenkinsfile.withEnv(
                 S3_BACKEND_DYNAMODB_TABLE: expectedTable,
                 MYENV_S3_BACKEND_DYNAMO_TABLE_LOCK: 'notThisTable'
-            ])
+            )
+            def plugin = new S3BackendPlugin()
 
             String actualTable = plugin.getDynamodbTable('myenv')
 
@@ -338,8 +336,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnS3BackendEncryptValue() {
             String expectedValue = 'true'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([S3_BACKEND_ENCRYPT: expectedValue])
+            MockJenkinsfile.withEnv(S3_BACKEND_ENCRYPT: expectedValue)
+            def plugin = new S3BackendPlugin()
 
             String actualValue = plugin.getEncrypt('myenv')
 
@@ -349,8 +347,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnEnvironmentSpecificS3BackendEncryptValue() {
             String expectedValue = 'true'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([MYENV_S3_BACKEND_ENCRYPT: expectedValue])
+            MockJenkinsfile.withEnv(MYENV_S3_BACKEND_ENCRYPT: expectedValue)
+            def plugin = new S3BackendPlugin()
 
             String actualValue = plugin.getEncrypt('myenv')
 
@@ -360,8 +358,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnEnvironmentSpecificS3BackendEncryptValueCaseInsensitive() {
             String expectedValue = 'true'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([myenv_S3_BACKEND_ENCRYPT: expectedValue])
+            MockJenkinsfile.withEnv(myenv_S3_BACKEND_ENCRYPT: expectedValue)
+            def plugin = new S3BackendPlugin()
 
             String actualValue = plugin.getEncrypt('myenv')
 
@@ -371,11 +369,11 @@ class S3BackendPluginTest {
         @Test
         void shouldPreferS3BackendEncryptOverEnvironmentSpecificValue() {
             String expectedValue = 'true'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([
+            MockJenkinsfile.withEnv(
                 S3_BACKEND_ENCRYPT: expectedValue,
                 MYENV_S3_BACKEND_ENCRYPT: 'false'
-            ])
+            )
+            def plugin = new S3BackendPlugin()
 
             String actualValue = plugin.getEncrypt('myenv')
 
@@ -388,8 +386,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnS3BackendKmsKeyIdValue() {
             String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([S3_BACKEND_KMS_KEY_ID: expectedArn])
+            MockJenkinsfile.withEnv('S3_BACKEND_KMS_KEY_ID': expectedArn)
+            def plugin = new S3BackendPlugin()
 
             String actualArn = plugin.getKmsKeyId('myenv')
 
@@ -399,8 +397,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnEnvironmentSpecificS3BackendKmsKeyIdValue() {
             String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([MYENV_S3_BACKEND_KMS_KEY_ID: expectedArn])
+            MockJenkinsfile.withEnv(MYENV_S3_BACKEND_KMS_KEY_ID: expectedArn)
+            def plugin = new S3BackendPlugin()
 
             String actualArn = plugin.getKmsKeyId('myenv')
 
@@ -410,8 +408,8 @@ class S3BackendPluginTest {
         @Test
         void shouldReturnEnvironmentSpecificS3BackendKmsKeyIdValueCaseInsensitive() {
             String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([myenv_S3_BACKEND_KMS_KEY_ID: expectedArn])
+            MockJenkinsfile.withEnv(myenv_S3_BACKEND_KMS_KEY_ID: expectedArn)
+            def plugin = new S3BackendPlugin()
 
             String actualArn = plugin.getKmsKeyId('myenv')
 
@@ -421,11 +419,11 @@ class S3BackendPluginTest {
         @Test
         void shouldPreferS3BackendKmsKeyIdOverEnvironmentSpecificValue() {
             String expectedArn = 'arn:aws:kms:us-east-1:000000000000:key/eed43b74-c0ff-475f-abab-d0e31b85ee8d'
-            def plugin = spy(new S3BackendPlugin())
-            when(plugin.getEnv()).thenReturn([
+            MockJenkinsfile.withEnv(
                 S3_BACKEND_KMS_KEY_ID: expectedArn,
                 MYENV_S3_BACKEND_KMS_KEY_ID: 'arn:aws:kms:us-east-1:000000000000:key/e665286a-12bc-471f-97fa-38c3eb412074'
-            ])
+            )
+            def plugin = new S3BackendPlugin()
 
             String actualArn = plugin.getKmsKeyId('myenv')
 
