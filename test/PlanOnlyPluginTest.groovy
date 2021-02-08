@@ -18,17 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ResetStaticStateExtension.class)
 class PlanOnlyPluginTest {
-    @BeforeEach
-    void resetJenkinsEnv() {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Nested
     public class Init {
         @Test
@@ -72,9 +61,7 @@ class PlanOnlyPluginTest {
         void addsArgumentToTerraformPlan() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'true'
-            ])
+            MockJenkinsfile.withEnv('FAIL_PLAN_ON_CHANGES': 'true')
 
             plugin.apply(command)
 
@@ -87,9 +74,7 @@ class PlanOnlyPluginTest {
         void doesNotAddArgumentToTerraformPlan() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'false'
-            ])
+            MockJenkinsfile.withEnv('FAIL_PLAN_ON_CHANGES': 'false')
 
             plugin.apply(command)
 
