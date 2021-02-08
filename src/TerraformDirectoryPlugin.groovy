@@ -1,4 +1,4 @@
-class TerraformDirectoryPlugin implements TerraformInitCommandPlugin, TerraformValidateCommandPlugin, TerraformPlanCommandPlugin, TerraformApplyCommandPlugin {
+class TerraformDirectoryPlugin implements TerraformInitCommandPlugin, TerraformValidateCommandPlugin, TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, Resettable {
 
     private static String directory = "./terraform/"
 
@@ -34,5 +34,9 @@ class TerraformDirectoryPlugin implements TerraformInitCommandPlugin, TerraformV
     @Override
     public void apply(TerraformApplyCommand command) {
         command.withDirectory(directory)
+    }
+
+    public static reset() {
+        directory = "./terraform/"
     }
 }
