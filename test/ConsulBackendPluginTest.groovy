@@ -6,7 +6,6 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -26,24 +25,12 @@ class ConsulBackendPluginTest {
 
     @Nested
     public class Apply {
-        @BeforeEach
-        public void resetJenkinsfile() {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-        }
-
-        private configureJenkins(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-        }
-
         @Nested
         public class PathBackendParameter {
             @Test
             void isAddedAndIsEnvironmentSpecific() {
                 String repoSlug = 'myOrg/myRepo'
-                configureJenkins(repoSlug: repoSlug)
+                MockJenkinsfile.withStandardizedRepoSlug(repoSlug).withEnv()
 
                 String environment = "myEnv"
                 ConsulBackendPlugin plugin = new ConsulBackendPlugin()
@@ -57,7 +44,7 @@ class ConsulBackendPluginTest {
 
             @Test
             void isAddedAndUsesCustomizablePattern() {
-                configureJenkins(repoSlug: 'someOrg/someRepo')
+                MockJenkinsfile.withStandardizedRepoSlug('someOrg/someRepo').withEnv()
 
                 ConsulBackendPlugin.pathPattern = { String env -> "customPatternFor_${env}" }
                 ConsulBackendPlugin plugin = new ConsulBackendPlugin()
@@ -74,6 +61,7 @@ class ConsulBackendPluginTest {
         public class AddressBackendParameter {
             @Test
             void isNotAddedByDefault() {
+                MockJenkinsfile.withEnv()
                 ConsulBackendPlugin plugin = new ConsulBackendPlugin()
                 TerraformInitCommand command = new TerraformInitCommand('someEnvironment')
 
@@ -86,7 +74,7 @@ class ConsulBackendPluginTest {
             @Test
             void isAddedIfEnvironmentVariablePresent() {
                 String expectedConsulAddress = 'someAddress'
-                configureJenkins(env: [ DEFAULT_CONSUL_ADDRESS: expectedConsulAddress ])
+                MockJenkinsfile.withEnv(DEFAULT_CONSUL_ADDRESS: expectedConsulAddress)
                 ConsulBackendPlugin plugin = new ConsulBackendPlugin()
                 TerraformInitCommand command = new TerraformInitCommand('someEnvironment')
 
@@ -113,7 +101,7 @@ class ConsulBackendPluginTest {
             void isAddedAndPrefersTheExplicitValueOverTheDefaultEnvironmentValue() {
                 String expectedConsulAddress = 'theRightValue'
                 ConsulBackendPlugin.defaultAddress = expectedConsulAddress
-                configureJenkins(env: [ DEFAULT_CONSUL_ADDRESS: 'theWrongValue' ])
+                MockJenkinsfile.withEnv(DEFAULT_CONSUL_ADDRESS: 'theWrongValue')
 
                 ConsulBackendPlugin plugin = new ConsulBackendPlugin()
                 TerraformInitCommand command = new TerraformInitCommand('someEnvironment')
