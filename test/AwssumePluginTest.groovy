@@ -14,18 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ResetStaticStateExtension.class)
 class AwssumePluginTest {
-    @BeforeEach
-    void resetJenkinsEnv() {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Nested
     public class Init {
         @Test
@@ -61,7 +49,7 @@ class AwssumePluginTest {
             @Test
             void addsEnvironmentSpecificRoleArnAsPrefixToTerraformInit() {
                 String environment = "myEnv"
-                configureJenkins(env: ['MYENV_AWS_ROLE_ARN': 'someArn'])
+                MockJenkinsfile.withEnv('MYENV_AWS_ROLE_ARN': 'someArn')
                 AwssumePlugin plugin = new AwssumePlugin()
                 TerraformInitCommand command = new TerraformInitCommand(environment)
 
@@ -74,7 +62,7 @@ class AwssumePluginTest {
             @Test
             void addsEnvironmentSpecificRoleArnAsPrefixToTerraformPlan() {
                 String environment = "myEnv"
-                configureJenkins(env: ['MYENV_AWS_ROLE_ARN': 'someArn'])
+                MockJenkinsfile.withEnv('MYENV_AWS_ROLE_ARN': 'someArn')
                 AwssumePlugin plugin = new AwssumePlugin()
                 TerraformPlanCommand command = new TerraformPlanCommand(environment)
 
@@ -87,7 +75,7 @@ class AwssumePluginTest {
             @Test
             void addsEnvironmentSpecificRoleArnAsPrefixToTerraformApply() {
                 String environment = "myEnv"
-                configureJenkins(env: ['MYENV_AWS_ROLE_ARN': 'someArn'])
+                MockJenkinsfile.withEnv('MYENV_AWS_ROLE_ARN': 'someArn')
                 AwssumePlugin plugin = new AwssumePlugin()
                 TerraformApplyCommand command = new TerraformApplyCommand(environment)
 
@@ -103,7 +91,7 @@ class AwssumePluginTest {
             @Test
             void skipsAwssumeForTerraformInit() {
                 String environment = "myEnv"
-                configureJenkins(env: [:])
+                MockJenkinsfile.withEnv()
                 AwssumePlugin plugin = new AwssumePlugin()
                 TerraformInitCommand command = new TerraformInitCommand(environment)
 
@@ -117,7 +105,7 @@ class AwssumePluginTest {
             @Test
             void skipsAwssumeForTerraformPlan() {
                 String environment = "myEnv"
-                configureJenkins(env: [:])
+                MockJenkinsfile.withEnv()
                 AwssumePlugin plugin = new AwssumePlugin()
                 TerraformPlanCommand command = new TerraformPlanCommand(environment)
 
@@ -131,7 +119,7 @@ class AwssumePluginTest {
             @Test
             void skipsAwssumeForTerraformApply() {
                 String environment = "myEnv"
-                configureJenkins(env: [:])
+                MockJenkinsfile.withEnv()
                 AwssumePlugin plugin = new AwssumePlugin()
                 TerraformApplyCommand command = new TerraformApplyCommand(environment)
 
@@ -149,7 +137,7 @@ class AwssumePluginTest {
         @Test
         void returnsAwsRoleArnIfPresent() {
             String expectedRole = 'someRoleArn'
-            configureJenkins(env: ['AWS_ROLE_ARN': expectedRole])
+            MockJenkinsfile.withEnv('AWS_ROLE_ARN': expectedRole)
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRole = plugin.getAwsRoleArn('myenv')
@@ -160,7 +148,7 @@ class AwssumePluginTest {
         @Test
         void returnsEnvironmentSpecificAwsRoleArnIfPresent() {
             String expectedRole = 'myenvRole'
-            configureJenkins(env: ['MYENV_AWS_ROLE_ARN': expectedRole])
+            MockJenkinsfile.withEnv('MYENV_AWS_ROLE_ARN': expectedRole)
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRole = plugin.getAwsRoleArn('myenv')
@@ -171,7 +159,7 @@ class AwssumePluginTest {
         @Test
         void returnsEnvironmentSpecifiedAwsRoleArnIfPresentCaseInsensitive() {
             String expectedRole = 'myenvRole'
-            configureJenkins(env: ['myenv_AWS_ROLE_ARN': expectedRole])
+            MockJenkinsfile.withEnv('myenv_AWS_ROLE_ARN': expectedRole)
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRole = plugin.getAwsRoleArn('myenv')
@@ -182,10 +170,10 @@ class AwssumePluginTest {
         @Test
         void prefersAwsArnRoleOverEnvironmentSpecificRole() {
             String expectedRole = 'thisRole'
-            configureJenkins(env: [
+            MockJenkinsfile.withEnv(
                 'AWS_ROLE_ARN': expectedRole,
                 'myenv_AWS_ROLE_ARN': 'notThisRole'
-            ])
+            )
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRole = plugin.getAwsRoleArn('myenv')
@@ -199,7 +187,7 @@ class AwssumePluginTest {
         @Test
         void returnsAwsRegionIfPresent() {
             String expectedRegion = 'someRegion'
-            configureJenkins(env: ['AWS_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('AWS_REGION': expectedRegion)
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRegion = plugin.getRegion('myenv')
@@ -210,7 +198,7 @@ class AwssumePluginTest {
         @Test
         void returnsEnvironmentSpecificRegionIfPresent() {
             String expectedRegion = 'environmentSpecificRegion'
-            configureJenkins(env: ['MYENV_AWS_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('MYENV_AWS_REGION': expectedRegion)
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRegion = plugin.getRegion('myenv')
@@ -221,7 +209,7 @@ class AwssumePluginTest {
         @Test
         void returnsAwsDefaultRegionIfPresent() {
             String expectedRegion = 'defaultRegion'
-            configureJenkins(env: ['AWS_DEFAULT_REGION': expectedRegion])
+            MockJenkinsfile.withEnv('AWS_DEFAULT_REGION': expectedRegion)
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRegion = plugin.getRegion('myenv')
@@ -232,10 +220,10 @@ class AwssumePluginTest {
         @Test
         void prefersRegionOverEnvironmentSpecificRegion() {
             String expectedRegion = 'thisRegion'
-            configureJenkins(env: [
+            MockJenkinsfile.withEnv(
                 'AWS_REGION': expectedRegion,
                 'MYENV_AWS_REGION': 'notThisRegion'
-            ])
+            )
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRegion = plugin.getRegion('myenv')
@@ -246,10 +234,10 @@ class AwssumePluginTest {
         @Test
         void prefersEnvironmentSpecificRegionOverDefaultRegion() {
             String expectedRegion = 'thisRegion'
-            configureJenkins(env: [
+            MockJenkinsfile.withEnv(
                 'MYENV_AWS_REGION': expectedRegion,
                 'AWS_DEFAULT_REGION': 'notThisRegion'
-            ])
+            )
 
             AwssumePlugin plugin = new AwssumePlugin()
             String actualRegion = plugin.getRegion('myenv')
