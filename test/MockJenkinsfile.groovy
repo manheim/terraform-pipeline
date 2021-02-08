@@ -11,4 +11,9 @@ public class MockJenkinsfile {
     public static withMockedOriginal() {
         Jenkinsfile.original = new DummyJenkinsfile()
     }
+
+    public static withStandardizedRepoSlug(String slug) {
+        Jenkinsfile.instance = mock(Jenkinsfile.class)
+        when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(slug)
+    }
 }
