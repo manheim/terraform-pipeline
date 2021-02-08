@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.anyMap;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -155,11 +154,6 @@ class TagPluginTest {
 
     @Nested
     public class GetTags {
-        @AfterEach
-        public void reset() {
-            Jenkinsfile.reset()
-        }
-
         @Test
         void returnsAndEmptyMapIfNoKeyValuePairsWereAdded() {
             def plugin = new TagPlugin()
@@ -222,15 +216,11 @@ class TagPluginTest {
             def key = 'change-id'
             def file = 'changeId.txt'
             def fileContent = 'someContent'
+            MockJenkinsfile.withFile(file, fileContent)
             def plugin = new TagPlugin()
             plugin.withTagFromFile(key, file)
-            def command = mock(TerraformCommand.class)
-            def original = spy(new DummyJenkinsfile())
-            doReturn(true).when(original).fileExists(file)
-            doReturn(fileContent).when(original).readFile(file)
-            Jenkinsfile.original = original
 
-            def result = plugin.getTags(command)
+            def result = plugin.getTags(mock(TerraformCommand.class))
 
             assertThat(result, equalTo(['change-id': "${fileContent}".toString()]))
         }
