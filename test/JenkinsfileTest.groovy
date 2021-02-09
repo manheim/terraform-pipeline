@@ -394,20 +394,6 @@ class JenkinsfileTest {
 
     @Nested
     public class GetNodeName {
-        @AfterEach
-        void reset() {
-            Jenkinsfile.defaultNodeName = null
-            Jenkinsfile.instance = null
-        }
-
-        private configureJenkins(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-            when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName ?: 'repo')
-            when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization ?: 'org')
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-        }
-
         @Test
         void returnsDefaultNodeNameWhenPresent() {
             String expectedName = "someName"
@@ -420,8 +406,8 @@ class JenkinsfileTest {
         @Test
         void returnsDefaultNodeNameEvenWhenEnvironmentVariableGiven() {
             String expectedName = "expectedName"
+            MockJenkinsfile.withEnv(DEFAULT_NODE_NAME: 'wrongName')
             Jenkinsfile.defaultNodeName = expectedName
-            configureJenkins(env: [ DEFAULT_NODE_NAME: 'wrongName' ])
 
             String actualName = Jenkinsfile.getNodeName()
             assertThat(actualName, equalTo(expectedName))
@@ -430,8 +416,8 @@ class JenkinsfileTest {
         @Test
         void returnsEnvironmentVariableWhenDefaultNodeNameNotGiven() {
             String expectedName = 'expectedName'
+            MockJenkinsfile.withEnv(DEFAULT_NODE_NAME: expectedName)
             Jenkinsfile.defaultNodeName = null
-            configureJenkins(env: [ DEFAULT_NODE_NAME: expectedName ])
 
             String actualName = Jenkinsfile.getNodeName()
             assertThat(actualName, equalTo(expectedName))
