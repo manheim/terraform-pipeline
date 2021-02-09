@@ -88,7 +88,7 @@ class PassPlanFilePluginTest {
             def plugin = new PassPlanFilePlugin()
 
             def stashClosure = plugin.stashPlan('dev')
-            stashClosure.delegate = new DummyJenkinsfile()
+            stashClosure.delegate = new MockWorkflowScript()
             stashClosure.call(passedClosure)
 
             assertThat(wasCalled, equalTo(true))
@@ -106,7 +106,7 @@ class PassPlanFilePluginTest {
             def plugin = new PassPlanFilePlugin()
 
             def unstashClosure = plugin.unstashPlan('dev')
-            unstashClosure.delegate = new DummyJenkinsfile()
+            unstashClosure.delegate = new MockWorkflowScript()
             unstashClosure.call(passedClosure)
 
             assertThat(wasCalled, equalTo(true))

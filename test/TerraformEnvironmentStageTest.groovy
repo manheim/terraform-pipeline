@@ -158,7 +158,7 @@ class TerraformEnvironmentStageTest {
             def stage = new TerraformEnvironmentStage('foo')
 
             def closure = stage.pipelineConfiguration()
-            closure.delegate = new DummyJenkinsfile()
+            closure.delegate = new MockWorkflowScript()
             closure()
         }
     }

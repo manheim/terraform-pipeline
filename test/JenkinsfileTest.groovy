@@ -22,7 +22,7 @@ class JenkinsfileTest {
         @Test
         void startsWithTheRepoOrganization() {
             def expectedOrg = "my_org"
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             original.scm = mockScm("https://github.com/${expectedOrg}/myRepo.git")
             Jenkinsfile.original = original
             def instance = new Jenkinsfile()
@@ -34,7 +34,7 @@ class JenkinsfileTest {
         @Test
         void convertsOrgFromTitleCaseToSnakeCase() {
             def expectedOrg = "my_org"
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             original.scm = mockScm("https://github.com/MyOrg/myRepo.git")
             Jenkinsfile.original = original
             def instance = new Jenkinsfile()
@@ -46,7 +46,7 @@ class JenkinsfileTest {
         @Test
         void endsWithTheRepoOrganization() {
             def expectedRepo = "my_repo"
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             original.scm = mockScm("https://github.com/MyOrg/my_repo.git")
             Jenkinsfile.original = original
             def instance = new Jenkinsfile()
@@ -58,7 +58,7 @@ class JenkinsfileTest {
         @Test
         void convertsRepoFromTitleCaseToSnakeCase() {
             def expectedRepo = "my_repo"
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             original.scm = mockScm("https://github.com/MyOrg/MyRepo.git")
             Jenkinsfile.original = original
             def instance = new Jenkinsfile()
@@ -191,7 +191,7 @@ class JenkinsfileTest {
         @Test
         void returnsTheUnmodifiedRepoName() {
             def expectedRepo = "MyRepoName"
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             original.scm = mockScm("https://github.com/MyOrg/${expectedRepo}.git")
             Jenkinsfile.original = original
             def instance = new Jenkinsfile()
@@ -206,7 +206,7 @@ class JenkinsfileTest {
         @Test
         void returnsTheUnmodifiedOrgName() {
             def expectedOrg = "MyOrgName"
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             original.scm = mockScm("https://github.com/${expectedOrg}/MyRepo.git")
             Jenkinsfile.original = original
             def instance = new Jenkinsfile()
@@ -220,7 +220,7 @@ class JenkinsfileTest {
     public class Init {
         @Test
         void storesTheOriginalJenkinsfileReference() {
-            def original = new DummyJenkinsfile()
+            def original = new MockWorkflowScript()
             Jenkinsfile.init(original)
 
             assertThat(Jenkinsfile.original, equalTo(original))
@@ -229,7 +229,7 @@ class JenkinsfileTest {
 
     @Nested
     public class Build {
-        private class DummyJenkinsfileWithTemplates extends DummyJenkinsfile {
+        private class MockWorkflowScriptWithTemplates extends MockWorkflowScript {
             public Pipeline2Stage = { args -> }
         }
 
@@ -253,7 +253,7 @@ class JenkinsfileTest {
         class Declarative {
             @Test
             void usesDefaultTemplatesIfNonProvided() {
-                def original = new DummyJenkinsfileWithTemplates()
+                def original = new MockWorkflowScriptWithTemplates()
                 original.Pipeline2Stage = spy(original.Pipeline2Stage)
                 def stages = [mock(Stage.class), mock(Stage.class)]
                 Jenkinsfile.declarative = true
@@ -280,7 +280,7 @@ class JenkinsfileTest {
 
     @Nested
     class GetPipelineTemplate {
-        private class DummyJenkinsfileWithTemplates extends DummyJenkinsfile {
+        private class MockWorkflowScriptWithTemplates extends MockWorkflowScript {
             public Pipeline2Stage = { args -> }
             public Pipeline3Stage = { args -> }
             public Pipeline4Stage = { args -> }
@@ -310,7 +310,7 @@ class JenkinsfileTest {
         @Test
         void returnsThe2StageTemplateFor2Stages() {
             def stages = getNumberOfStages(2)
-            def original = spy(new DummyJenkinsfileWithTemplates())
+            def original = spy(new MockWorkflowScriptWithTemplates())
             Jenkinsfile.original = original
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
@@ -321,7 +321,7 @@ class JenkinsfileTest {
         @Test
         void returnsThe3StageTemplateFor3Stages() {
             def stages = getNumberOfStages(3)
-            def original = spy(new DummyJenkinsfileWithTemplates())
+            def original = spy(new MockWorkflowScriptWithTemplates())
             Jenkinsfile.original = original
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
@@ -332,7 +332,7 @@ class JenkinsfileTest {
         @Test
         void returnsThe4StageTemplateFor4Stages() {
             def stages = getNumberOfStages(4)
-            def original = spy(new DummyJenkinsfileWithTemplates())
+            def original = spy(new MockWorkflowScriptWithTemplates())
             Jenkinsfile.original = original
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
@@ -343,7 +343,7 @@ class JenkinsfileTest {
         @Test
         void returnsThe5StageTemplateFor5Stages() {
             def stages = getNumberOfStages(5)
-            def original = spy(new DummyJenkinsfileWithTemplates())
+            def original = spy(new MockWorkflowScriptWithTemplates())
             Jenkinsfile.original = original
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
@@ -354,7 +354,7 @@ class JenkinsfileTest {
         @Test
         void returnsThe6StageTemplateFor6Stages() {
             def stages = getNumberOfStages(6)
-            def original = spy(new DummyJenkinsfileWithTemplates())
+            def original = spy(new MockWorkflowScriptWithTemplates())
             Jenkinsfile.original = original
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
@@ -365,7 +365,7 @@ class JenkinsfileTest {
         @Test
         void returnsThe7StageTemplateFor7Stages() {
             def stages = getNumberOfStages(7)
-            def original = spy(new DummyJenkinsfileWithTemplates())
+            def original = spy(new MockWorkflowScriptWithTemplates())
             Jenkinsfile.original = original
 
             def actual = Jenkinsfile.getPipelineTemplate(stages)
@@ -379,7 +379,7 @@ class JenkinsfileTest {
         @Test
         void returnsThe7StageTemplateFor7Stages() {
             def expected = [key: 'value']
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             original.env = expected
             Jenkinsfile.original = original
             def instance = new Jenkinsfile()
@@ -428,7 +428,7 @@ class JenkinsfileTest {
         @Test
         void returnsNullIfTheFileDoesNotExist() {
             def filename = 'somefile'
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             doReturn(false).when(original).fileExists(filename)
             Jenkinsfile.original = original
 
@@ -441,7 +441,7 @@ class JenkinsfileTest {
         void returnsFileContentIfFileExists() {
             def expectedContent = 'someContent'
             def filename = 'somefile'
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             doReturn(true).when(original).fileExists(filename)
             doReturn(expectedContent).when(original).readFile(filename)
 

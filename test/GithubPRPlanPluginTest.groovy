@@ -348,7 +348,7 @@ class GithubPRPlanPluginTest {
         @Test
         void doesNotBlowUp() {
             MockJenkinsfile.withParsedScmUrl([protocol: 'git', domain: 'my.github.com'])
-            Jenkinsfile.original = spy(new DummyJenkinsfile())
+            Jenkinsfile.original = spy(new MockWorkflowScript())
             def plugin = spy(new GithubPRPlanPlugin())
             doReturn('HTTP/1.1 201 Created').when(plugin).readFile('comment.headers')
             doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())

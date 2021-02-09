@@ -16,7 +16,7 @@ public class MockJenkinsfile {
     }
 
     public static withMockedOriginal() {
-        Jenkinsfile.original = new DummyJenkinsfile()
+        Jenkinsfile.original = new MockWorkflowScript()
         return this
     }
 
@@ -57,7 +57,7 @@ public class MockJenkinsfile {
     }
 
     public static withFile(String filePath, String fileContent = '') {
-        def original = spy(new DummyJenkinsfile())
+        def original = spy(new MockWorkflowScript())
         doReturn(true).when(original).fileExists(filePath)
         doReturn(fileContent).when(original).readFile(filePath)
 

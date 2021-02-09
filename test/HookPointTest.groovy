@@ -71,22 +71,22 @@ class HookPointTest {
             hp.runAfterOnFailure = 'after-failure'
             hp.runAfterAlways = 'after-always'
 
-            def dummyJenkinsfile = mock(DummyJenkinsfile.class)
+            def original = mock(MockWorkflowScript.class)
 
             def passedClosure = { -> sh 'passedClosure' }
-            passedClosure.delegate = dummyJenkinsfile
+            passedClosure.delegate = original
 
             def result = hp.getClosure()
-            result.delegate = dummyJenkinsfile
+            result.delegate = original
             result.call(passedClosure)
 
-            InOrder inOrder = inOrder(dummyJenkinsfile);
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('run-before')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('passedClosure')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-success')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-always')
+            InOrder inOrder = inOrder(original);
+            inOrder.verify(original, times(1)).sh('run-before')
+            inOrder.verify(original, times(1)).sh('passedClosure')
+            inOrder.verify(original, times(1)).sh('after-success')
+            inOrder.verify(original, times(1)).sh('after-always')
             inOrder.verifyNoMoreInteractions()
-            verifyNoMoreInteractions(dummyJenkinsfile)
+            verifyNoMoreInteractions(original)
         }
 
         @Test
@@ -98,28 +98,28 @@ class HookPointTest {
             hp.runAfterOnFailure = 'after-failure'
             hp.runAfterAlways = 'after-always'
 
-            def dummyJenkinsfile = mock(DummyJenkinsfile.class)
+            def original = mock(MockWorkflowScript.class)
 
             def passedClosure = { ->
                 sh 'passedClosure'
                 throw new Exception()
             }
-            passedClosure.delegate = dummyJenkinsfile
+            passedClosure.delegate = original
 
             def result = hp.getClosure()
-            result.delegate = dummyJenkinsfile
+            result.delegate = original
 
             try {
                 result.call(passedClosure)
             } catch (Exception e) { }
 
-            InOrder inOrder = inOrder(dummyJenkinsfile);
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('run-before')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('passedClosure')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-failure')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-always')
+            InOrder inOrder = inOrder(original);
+            inOrder.verify(original, times(1)).sh('run-before')
+            inOrder.verify(original, times(1)).sh('passedClosure')
+            inOrder.verify(original, times(1)).sh('after-failure')
+            inOrder.verify(original, times(1)).sh('after-always')
             inOrder.verifyNoMoreInteractions()
-            verifyNoMoreInteractions(dummyJenkinsfile)
+            verifyNoMoreInteractions(original)
         }
 
         @Test
@@ -127,20 +127,20 @@ class HookPointTest {
             def hp = new HookPoint("foo")
             hp.runBefore = 'run-before'
 
-            def dummyJenkinsfile = mock(DummyJenkinsfile.class)
+            def original = mock(MockWorkflowScript.class)
 
             def passedClosure = { -> sh 'passedClosure' }
-            passedClosure.delegate = dummyJenkinsfile
+            passedClosure.delegate = original
 
             def result = hp.getClosure()
-            result.delegate = dummyJenkinsfile
+            result.delegate = original
             result.call(passedClosure)
 
-            InOrder inOrder = inOrder(dummyJenkinsfile);
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('run-before')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('passedClosure')
+            InOrder inOrder = inOrder(original);
+            inOrder.verify(original, times(1)).sh('run-before')
+            inOrder.verify(original, times(1)).sh('passedClosure')
             inOrder.verifyNoMoreInteractions()
-            verifyNoMoreInteractions(dummyJenkinsfile)
+            verifyNoMoreInteractions(original)
         }
 
         @Test
@@ -148,20 +148,20 @@ class HookPointTest {
             def hp = new HookPoint("foo")
             hp.runAfterOnSuccess = 'after-success'
 
-            def dummyJenkinsfile = mock(DummyJenkinsfile.class)
+            def original = mock(MockWorkflowScript.class)
 
             def passedClosure = { -> sh 'passedClosure' }
-            passedClosure.delegate = dummyJenkinsfile
+            passedClosure.delegate = original
 
             def result = hp.getClosure()
-            result.delegate = dummyJenkinsfile
+            result.delegate = original
             result.call(passedClosure)
 
-            InOrder inOrder = inOrder(dummyJenkinsfile);
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('passedClosure')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-success')
+            InOrder inOrder = inOrder(original);
+            inOrder.verify(original, times(1)).sh('passedClosure')
+            inOrder.verify(original, times(1)).sh('after-success')
             inOrder.verifyNoMoreInteractions()
-            verifyNoMoreInteractions(dummyJenkinsfile)
+            verifyNoMoreInteractions(original)
         }
 
         @Test
@@ -169,20 +169,20 @@ class HookPointTest {
             def hp = new HookPoint("foo")
             hp.runAfterAlways = 'after-always'
 
-            def dummyJenkinsfile = mock(DummyJenkinsfile.class)
+            def original = mock(MockWorkflowScript.class)
 
             def passedClosure = { -> sh 'passedClosure' }
-            passedClosure.delegate = dummyJenkinsfile
+            passedClosure.delegate = original
 
             def result = hp.getClosure()
-            result.delegate = dummyJenkinsfile
+            result.delegate = original
             result.call(passedClosure)
 
-            InOrder inOrder = inOrder(dummyJenkinsfile);
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('passedClosure')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-always')
+            InOrder inOrder = inOrder(original);
+            inOrder.verify(original, times(1)).sh('passedClosure')
+            inOrder.verify(original, times(1)).sh('after-always')
             inOrder.verifyNoMoreInteractions()
-            verifyNoMoreInteractions(dummyJenkinsfile)
+            verifyNoMoreInteractions(original)
         }
 
         @Test
@@ -191,25 +191,25 @@ class HookPointTest {
             def hp = new HookPoint("foo")
             hp.runAfterAlways = 'after-always'
 
-            def dummyJenkinsfile = mock(DummyJenkinsfile.class)
+            def original = mock(MockWorkflowScript.class)
 
             def passedClosure = { ->
                 sh 'passedClosure'
                 throw new Exception()
             }
-            passedClosure.delegate = dummyJenkinsfile
+            passedClosure.delegate = original
 
             def result = hp.getClosure()
-            result.delegate = dummyJenkinsfile
+            result.delegate = original
             try {
                 result.call(passedClosure)
             } catch (Exception e) { }
 
-            InOrder inOrder = inOrder(dummyJenkinsfile);
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('passedClosure')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-always')
+            InOrder inOrder = inOrder(original);
+            inOrder.verify(original, times(1)).sh('passedClosure')
+            inOrder.verify(original, times(1)).sh('after-always')
             inOrder.verifyNoMoreInteractions()
-            verifyNoMoreInteractions(dummyJenkinsfile)
+            verifyNoMoreInteractions(original)
         }
 
         @Test
@@ -218,25 +218,25 @@ class HookPointTest {
             def hp = new HookPoint("foo")
             hp.runAfterOnFailure = 'after-failure'
 
-            def dummyJenkinsfile = mock(DummyJenkinsfile.class)
+            def original = mock(MockWorkflowScript.class)
 
             def passedClosure = { ->
                 sh 'passedClosure'
                 throw new Exception()
             }
-            passedClosure.delegate = dummyJenkinsfile
+            passedClosure.delegate = original
 
             def result = hp.getClosure()
-            result.delegate = dummyJenkinsfile
+            result.delegate = original
             try {
                 result.call(passedClosure)
             } catch (Exception e) { }
 
-            InOrder inOrder = inOrder(dummyJenkinsfile);
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('passedClosure')
-            inOrder.verify(dummyJenkinsfile, times(1)).sh('after-failure')
+            InOrder inOrder = inOrder(original);
+            inOrder.verify(original, times(1)).sh('passedClosure')
+            inOrder.verify(original, times(1)).sh('after-failure')
             inOrder.verifyNoMoreInteractions()
-            verifyNoMoreInteractions(dummyJenkinsfile)
+            verifyNoMoreInteractions(original)
         }
     }
 }

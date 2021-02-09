@@ -23,7 +23,7 @@ class TerraformPluginVersion12Test {
             def innerClosure = { wasRun = true }
 
             def beforeClosure = plugin.addInitBefore()
-            beforeClosure.delegate = new DummyJenkinsfile()
+            beforeClosure.delegate = new MockWorkflowScript()
             beforeClosure(innerClosure)
 
             assertThat(wasRun, is(true))

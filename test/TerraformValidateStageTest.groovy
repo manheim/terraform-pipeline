@@ -25,7 +25,7 @@ class TerraformValidateStageTest {
         @Test
         void justExerciseClosureNoAssertions() {
             Jenkinsfile.instance = spy(new Jenkinsfile())
-            Jenkinsfile.original = new DummyJenkinsfile()
+            Jenkinsfile.original = new MockWorkflowScript()
             def validateStage = new TerraformValidateStage()
 
             def closure = validateStage.pipelineConfiguration()
