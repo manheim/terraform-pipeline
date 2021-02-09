@@ -2,6 +2,7 @@ class DummyJenkinsfile {
     public docker
     public scm
     public env = [:]
+    public static BRANCH_NAME
 
     public DummyJenkinsfile() {
         docker = this
@@ -62,5 +63,15 @@ class DummyJenkinsfile {
     }
     public unstash(args) {
         println "DummyJenkinsfile.unstash(${args})"
+    }
+
+    public dir(String directory, Closure closure) {
+        println "DummyJenkinsfile.dir(${directory})"
+        closure.delegate = this
+        closure()
+    }
+
+    public resolveScm(Map args) {
+        println "DummyJenkinsfile.resolveScm(${args})"
     }
 }
