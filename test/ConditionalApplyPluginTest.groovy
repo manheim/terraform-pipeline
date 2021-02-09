@@ -3,26 +3,13 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class ConditionalApplyPluginTest {
-    @AfterEach
-    public void reset() {
-        Jenkinsfile.instance = null
-        ConditionalApplyPlugin.reset()
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Test
     void modifiesTerraformEnvironmentStageByDefault() {
         Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
@@ -34,7 +21,7 @@ class ConditionalApplyPluginTest {
     class ShouldApply {
         @Test
         void returnsTrueForMasterByDefault() {
-            configureJenkins(env: [ BRANCH_NAME: 'master' ])
+            MockJenkinsfile.withEnv(BRANCH_NAME: 'master')
             def plugin = new ConditionalApplyPlugin()
 
             assertTrue(plugin.shouldApply())
@@ -42,7 +29,7 @@ class ConditionalApplyPluginTest {
 
         @Test
         void returnsFalseForNonMasterByDefault() {
-            configureJenkins(env: [ BRANCH_NAME: 'notMaster' ])
+            MockJenkinsfile.withEnv(BRANCH_NAME: 'notMaster')
             def plugin = new ConditionalApplyPlugin()
 
             assertFalse(plugin.shouldApply())
@@ -50,7 +37,7 @@ class ConditionalApplyPluginTest {
 
         @Test
         void returnsTrueForFirstConfiguredBranch() {
-            configureJenkins(env: [ BRANCH_NAME: 'qa' ])
+            MockJenkinsfile.withEnv(BRANCH_NAME: 'qa')
             ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
             def plugin = new ConditionalApplyPlugin()
 
@@ -59,7 +46,7 @@ class ConditionalApplyPluginTest {
 
         @Test
         void returnsTrueForOtherConfiguredBranches() {
-            configureJenkins(env: [ BRANCH_NAME: 'someOtherBranch' ])
+            MockJenkinsfile.withEnv(BRANCH_NAME: 'someOtherBranch')
             ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
             def plugin = new ConditionalApplyPlugin()
 
@@ -68,7 +55,7 @@ class ConditionalApplyPluginTest {
 
         @Test
         void returnsFalseForNonMatchingBranch() {
-            configureJenkins(env: [ BRANCH_NAME: 'notQa' ])
+            MockJenkinsfile.withEnv(BRANCH_NAME: 'notQa')
             ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
             def plugin = new ConditionalApplyPlugin()
 
@@ -77,7 +64,7 @@ class ConditionalApplyPluginTest {
 
         @Test
         void returnsTrueWhenBranchIsUnknown() {
-            configureJenkins(env: [ : ])
+            MockJenkinsfile.withEnv()
             def plugin = new ConditionalApplyPlugin()
 
             assertTrue(plugin.shouldApply())

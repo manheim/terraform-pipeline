@@ -2,7 +2,7 @@ import static TerraformEnvironmentStage.PLAN
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin {
+class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnvironmentStagePlugin, Resettable {
 
     private static String myRepoSlug
     private static String myRepoHost

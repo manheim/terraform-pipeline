@@ -1,4 +1,4 @@
-class TerraformValidateStage implements Stage, DecoratableStage {
+class TerraformValidateStage implements Stage, DecoratableStage, Resettable {
     private Jenkinsfile jenkinsfile
     private StageDecorations decorations
 
@@ -63,7 +63,7 @@ class TerraformValidateStage implements Stage, DecoratableStage {
         return this.globalPlugins
     }
 
-    public static void resetPlugins() {
+    public static void reset() {
         this.globalPlugins = []
     }
 }

@@ -1,4 +1,4 @@
-class TerraformValidateCommand {
+class TerraformValidateCommand implements Resettable {
     private String terraformBinary = "terraform"
     private String command = "validate"
     private arguments = []
@@ -69,7 +69,7 @@ class TerraformValidateCommand {
         return this.globalPlugins
     }
 
-    public static resetPlugins() {
+    public static reset() {
         this.globalPlugins = []
     }
 }

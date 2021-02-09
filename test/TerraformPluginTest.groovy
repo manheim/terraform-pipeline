@@ -7,22 +7,15 @@ import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformPluginTest {
 
     @Nested
     class VersionDetection {
-        @BeforeEach
-        @AfterEach
-        void reset() {
-            TerraformPlugin.reset()
-            Jenkinsfile.reset()
-        }
-
         @Test
         void usesExplicitVersionIfProvided() {
             def expectedVersion = 'foo'
@@ -37,11 +30,8 @@ class TerraformPluginTest {
         @Test
         void usesFileIfPresent() {
             def expectedVersion =  '0.12.0-foobar'
+            MockJenkinsfile.withFile(TerraformPlugin.TERRAFORM_VERSION_FILE, expectedVersion)
             def plugin = new TerraformPlugin()
-            def original = spy(new DummyJenkinsfile())
-            doReturn(true).when(original).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
-            doReturn(expectedVersion).when(original).readFile(TerraformPlugin.TERRAFORM_VERSION_FILE)
-            Jenkinsfile.original = original
 
             def foundVersion = plugin.detectVersion()
 
@@ -51,11 +41,8 @@ class TerraformPluginTest {
         @Test
         void trimsWhitespaceFromFile() {
             def expectedVersion =  '0.12.0-foobar'
+            MockJenkinsfile.withFile(TerraformPlugin.TERRAFORM_VERSION_FILE, "${expectedVersion}   ")
             def plugin = new TerraformPlugin()
-            def original = spy(new DummyJenkinsfile())
-            doReturn(true).when(original).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
-            doReturn("${expectedVersion}   ").when(original).readFile(TerraformPlugin.TERRAFORM_VERSION_FILE)
-            Jenkinsfile.original = original
 
             def foundVersion = plugin.detectVersion()
 
@@ -77,13 +64,6 @@ class TerraformPluginTest {
 
     @Nested
     class CheckVersion {
-        @BeforeEach
-        @AfterEach
-        void reset() {
-            TerraformPlugin.reset()
-            Jenkinsfile.reset()
-        }
-
         // This can be fleshed out.  For now, jusst make sure it runs
         @Test
         void doesNotError() {
@@ -94,11 +74,6 @@ class TerraformPluginTest {
 
     @Nested
     class WithVersion {
-        @AfterEach
-        void reset() {
-            TerraformPlugin.reset()
-        }
-
         @Test
         void usesVersionEvenIfFileExists() {
             TerraformPlugin.withVersion('2.0.0')
@@ -108,11 +83,6 @@ class TerraformPluginTest {
 
     @Nested
     class Strategyfor {
-        @AfterEach
-        void reset() {
-            TerraformPlugin.reset()
-        }
-
         @Test
         void returnsVersion11ForLessThan0_12_0() {
             def plugin = new TerraformPlugin()

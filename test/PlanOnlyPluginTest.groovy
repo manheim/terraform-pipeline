@@ -8,34 +8,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class PlanOnlyPluginTest {
-    @BeforeEach
-    void resetJenkinsEnv() {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformPlanCommand.resetPlugins()
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
             PlanOnlyPlugin.init()
@@ -77,9 +58,7 @@ class PlanOnlyPluginTest {
         void addsArgumentToTerraformPlan() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'true'
-            ])
+            MockJenkinsfile.withEnv('FAIL_PLAN_ON_CHANGES': 'true')
 
             plugin.apply(command)
 
@@ -92,9 +71,7 @@ class PlanOnlyPluginTest {
         void doesNotAddArgumentToTerraformPlan() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'FAIL_PLAN_ON_CHANGES': 'false'
-            ])
+            MockJenkinsfile.withEnv('FAIL_PLAN_ON_CHANGES': 'false')
 
             plugin.apply(command)
 

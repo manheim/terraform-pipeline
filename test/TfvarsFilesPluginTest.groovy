@@ -5,10 +5,11 @@ import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not
 import static org.hamcrest.MatcherAssert.assertThat
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TfvarsFilesPluginTest {
 
     static void setupOriginalContext() {
@@ -39,19 +40,8 @@ class TfvarsFilesPluginTest {
         TfvarsFilesPlugin.withGlobalVarFile(file).init()
     }
 
-    static void reset() {
-        TerraformPlanCommand.resetPlugins()
-        TerraformApplyCommand.resetPlugins()
-        TfvarsFilesPlugin.directory = '.'
-    }
-
     @Nested
     class Init {
-        @AfterEach
-        void resetPlugins() {
-            reset()
-        }
-
         @Test
         void modifiesTerraformPlanCommand() {
             setupOriginalContext()
@@ -71,11 +61,6 @@ class TfvarsFilesPluginTest {
 
     @Nested
     class Directory {
-        @AfterEach
-        void resetPlugins() {
-            reset()
-        }
-
         @Test
         void setsDirectory() {
             setupOriginalContext()
@@ -86,12 +71,6 @@ class TfvarsFilesPluginTest {
 
     @Nested
     class ApplyCommand {
-
-        @AfterEach
-        void resetPlugins() {
-            reset()
-        }
-
         @Test
         void returnsArgumentIfFileExists() {
             fileWillExist()
@@ -146,12 +125,6 @@ class TfvarsFilesPluginTest {
 
     @Nested
     class PlanCommand {
-
-        @AfterEach
-        void resetPlugins() {
-            reset()
-        }
-
         @Test
         void returnsArgumentIfFileExists() {
             fileWillExist()

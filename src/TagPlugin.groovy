@@ -1,5 +1,6 @@
 class TagPlugin implements TerraformPlanCommandPlugin,
-                           TerraformApplyCommandPlugin {
+                           TerraformApplyCommandPlugin,
+                           Resettable {
 
     private static variableName
     private static disableOnApply = false

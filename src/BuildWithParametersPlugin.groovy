@@ -1,7 +1,8 @@
 public class BuildWithParametersPlugin implements BuildStagePlugin,
                                                   TerraformValidateStagePlugin,
                                                   TerraformEnvironmentStagePlugin,
-                                                  RegressionStagePlugin {
+                                                  RegressionStagePlugin,
+                                                  Resettable {
 
     private static globalBuildParameters = []
     private static appliedOnce = false

@@ -3,34 +3,15 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.MatcherAssert.assertThat
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TargetPluginTest {
-    @BeforeEach
-    void resetJenkinsEnv() {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformPlanCommand.resetPlugins()
-            TerraformApplyCommand.resetPlugins()
-        }
-
         @Test
         void modifiesTerraformPlanCommand() {
             TargetPlugin.init()
@@ -67,11 +48,11 @@ class TargetPluginTest {
     public class Apply {
         @Test
         void addsTargetArgumentToTerraformPlan() {
+            MockJenkinsfile.withEnv(
+                'RESOURCE_TARGETS': 'aws_dynamodb_table.test-table-2,aws_dynamodb_table.test-table-3'
+            )
             TargetPlugin plugin = new TargetPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'RESOURCE_TARGETS': 'aws_dynamodb_table.test-table-2,aws_dynamodb_table.test-table-3'
-            ])
 
             plugin.apply(command)
 
@@ -81,11 +62,9 @@ class TargetPluginTest {
 
         @Test
         void doesNotAddTargetArgumentToTerraformPlanWhenResourceTargetsBlank() {
+            MockJenkinsfile.withEnv('RESOURCE_TARGETS': '')
             TargetPlugin plugin = new TargetPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
-            configureJenkins(env: [
-                'RESOURCE_TARGETS': ''
-            ])
 
             plugin.apply(command)
 
@@ -95,11 +74,9 @@ class TargetPluginTest {
 
         @Test
         void addsTargetArgumentToTerraformApply() {
+            MockJenkinsfile.withEnv('RESOURCE_TARGETS': 'aws_dynamodb_table.test-table-2,aws_dynamodb_table.test-table-3')
             TargetPlugin plugin = new TargetPlugin()
             TerraformApplyCommand command = new TerraformApplyCommand()
-            configureJenkins(env: [
-                'RESOURCE_TARGETS': 'aws_dynamodb_table.test-table-2,aws_dynamodb_table.test-table-3'
-            ])
 
             plugin.apply(command)
 
@@ -109,11 +86,9 @@ class TargetPluginTest {
 
         @Test
         void doesNotAddTargetArgumentToTerraformApplyWhenResourceTargetsBlank() {
+            MockJenkinsfile.withEnv('RESOURCE_TARGETS': '')
             TargetPlugin plugin = new TargetPlugin()
             TerraformApplyCommand command = new TerraformApplyCommand()
-            configureJenkins(env: [
-                'RESOURCE_TARGETS': ''
-            ])
 
             plugin.apply(command)
 

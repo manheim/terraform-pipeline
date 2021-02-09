@@ -10,22 +10,14 @@ import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.any
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class CredentialsPluginTest {
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            BuildStage.resetPlugins()
-            RegressionStage.resetPlugins()
-            TerraformEnvironmentStage.reset()
-            TerraformValidateStage.resetPlugins()
-            CredentialsPlugin.reset()
-        }
-
         @Test
         void modifiesBuildStage() {
             CredentialsPlugin.init()
@@ -56,11 +48,6 @@ class CredentialsPluginTest {
 
     @Nested
     public class WithBuildCredentials {
-        @AfterEach
-        void resetPlugin() {
-            CredentialsPlugin.reset()
-        }
-
         @Test
         void addsCredentialsForBuildStage() {
             CredentialsPlugin.withBuildCredentials("credentials1")

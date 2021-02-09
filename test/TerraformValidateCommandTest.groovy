@@ -5,18 +5,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformValidateCommandTest {
-    @BeforeEach
-    @AfterEach
-    public void reset() {
-        TerraformValidateCommand.resetPlugins()
-    }
-
     @Nested
     public class WithDirectory {
         @Test
@@ -80,11 +74,6 @@ class TerraformValidateCommandTest {
 
     @Nested
     public class Plugins {
-        @AfterEach
-        void resetPlugins() {
-            TerraformValidateCommand.resetPlugins()
-        }
-
         @Test
         void areAppliedToTheCommand() {
             TerraformValidateCommandPlugin plugin = mock(TerraformValidateCommandPlugin.class)

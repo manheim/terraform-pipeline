@@ -1,4 +1,4 @@
-class TerraformFormatCommand {
+class TerraformFormatCommand implements Resettable {
     private static globalPlugins = []
     private appliedPlugins = []
     private static boolean check = false

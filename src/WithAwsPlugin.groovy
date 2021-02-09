@@ -1,6 +1,6 @@
 import static TerraformEnvironmentStage.ALL
 
-class WithAwsPlugin implements TerraformEnvironmentStagePlugin {
+class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     private static role
 
     public static void init() {

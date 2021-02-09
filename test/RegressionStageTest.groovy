@@ -1,28 +1,19 @@
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.verify
-import static org.mockito.Mockito.when
 
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class RegressionStageTest {
 
     @Nested
     public class AutomationRepo {
-        @AfterEach
-        void reset() {
-            TerraformEnvironmentStage.reset()
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            Jenkinsfile.original = null
-        }
-
-        private configureJenkins(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            Jenkinsfile.original = new Expando()
-            Jenkinsfile.original.ApplyJenkinsfileClosure = { closure -> }
-            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
+        @BeforeEach
+        void mockJenkinsfileOriginal() {
+            MockJenkinsfile.withMockedOriginal()
         }
 
         @Test
@@ -30,7 +21,6 @@ class RegressionStageTest {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
-            configureJenkins()
             RegressionStage stage = new RegressionStage().withScm("git:someHost:someUser/someRepo.git")
             stage.build()
 
@@ -42,7 +32,6 @@ class RegressionStageTest {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
-            configureJenkins()
             RegressionStage stage = new RegressionStage().withScm("git:someHost:someUser/someRepo.git")
                                                          .withScm("git:someHost:someUser/someOtherRepo.git")
             stage.build()
@@ -55,7 +44,6 @@ class RegressionStageTest {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
-            configureJenkins()
             RegressionStage stage = new RegressionStage().withScm("git:someHost:someUser/someRepo.git")
                     .withScm("git:someHost:someUser/someOtherRepo.git")
                     .changeDirectory("someDir")
@@ -69,7 +57,6 @@ class RegressionStageTest {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)
             RegressionStage.addPlugin(fakePlugin)
 
-            configureJenkins()
             RegressionStage stage = new RegressionStage()
             stage.build()
 
@@ -79,11 +66,6 @@ class RegressionStageTest {
 
     @Nested
     public class AddedPlugins {
-        @AfterEach
-        void resetPlugins() {
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void willHaveApplyCalled() {
             RegressionStagePlugin fakePlugin = mock(RegressionStagePlugin.class)

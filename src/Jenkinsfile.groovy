@@ -1,4 +1,4 @@
-class Jenkinsfile {
+class Jenkinsfile implements Resettable {
     public static original
     public static docker
     public static defaultNodeName

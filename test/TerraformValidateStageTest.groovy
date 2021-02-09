@@ -4,16 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.CoreMatchers.is
 import static org.hamcrest.CoreMatchers.instanceOf
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformValidateStageTest {
-    @AfterEach
-    void resetPlugins() {
-        TerraformValidateStage.resetPlugins()
-    }
-
     @Nested
     public class PipelineConfiguration {
         @Test
@@ -56,6 +52,7 @@ class TerraformValidateStageTest {
         @Test
         void justExerciseNoAssertions() {
             def stage  = new TerraformValidateStage()
+            MockJenkinsfile.withMockedOriginal()
 
             stage.build()
         }

@@ -1,4 +1,4 @@
-class TerraformInitCommand {
+class TerraformInitCommand implements Resettable {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "init"
@@ -93,7 +93,7 @@ class TerraformInitCommand {
         return this.globalPlugins
     }
 
-    public static resetPlugins() {
+    public static reset() {
         globalPlugins = []
         // This is awkward - what about the applied plugins...?
     }

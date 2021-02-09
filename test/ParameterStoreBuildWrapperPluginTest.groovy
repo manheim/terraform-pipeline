@@ -12,19 +12,14 @@ import static org.mockito.Mockito.never
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.anyString
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class ParameterStoreBuildWrapperPluginTest {
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            TerraformValidateStage.resetPlugins()
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void modifiesTerraformEnvironmentStageCommand() {
             ParameterStoreBuildWrapperPlugin.init()
@@ -44,11 +39,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     public class Apply {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Nested
         class WithTerraformValidateStage {
             @Test
@@ -139,11 +129,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     class GetParameterOptions {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Test
         void returnsEnvironmentOptionWhenSet() {
             String environment                      = "MyEnv"
@@ -196,20 +181,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     public class GetEnvironmentParameterOptions {
-        @AfterEach
-        public void reset() {
-            Jenkinsfile.instance = null
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
-        private configureJenkins(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-            when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName ?: 'repo')
-            when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization ?: 'org')
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-        }
-
         @Test
         void returnsTheCorrectParameterPathBasedOnEnvironment() {
             String environment  = "qa"
@@ -239,27 +210,13 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     public class PathForEnvironment {
-        @AfterEach
-        public void reset() {
-            Jenkinsfile.instance = null
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
-        private configureJenkins(Map config = [:]) {
-            Jenkinsfile.instance = mock(Jenkinsfile.class)
-            when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-            when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName ?: 'repo')
-            when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization ?: 'org')
-            when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-        }
-
         @Test
         void constructPathUsingOrgRepoAndEnvironment() {
             String organization = "MyOrg"
             String repoName = "MyRepo"
             String environment = "qa"
 
-            configureJenkins(repoName: repoName, organization: organization)
+            MockJenkinsfile.withOrganization(organization).withRepoName(repoName)
             ParameterStoreBuildWrapperPlugin plugin = new ParameterStoreBuildWrapperPlugin()
 
             String actual = plugin.pathForEnvironment(environment)
@@ -273,7 +230,7 @@ class ParameterStoreBuildWrapperPluginTest {
             String environment = "qa"
             Closure customPattern = { options -> "/foo/${options['organization']}/${options['environment']}/${options['repoName']}" }
 
-            configureJenkins(repoName: repoName, organization: organization)
+            MockJenkinsfile.withRepoName(repoName).withOrganization(organization)
             ParameterStoreBuildWrapperPlugin.withPathPattern(customPattern)
             ParameterStoreBuildWrapperPlugin plugin = new ParameterStoreBuildWrapperPlugin()
 
@@ -284,11 +241,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     class WithPathPattern {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Test
         void isFluent() {
             def result = ParameterStoreBuildWrapperPlugin.withPathPattern { options -> 'somePattern' }
@@ -299,11 +251,6 @@ class ParameterStoreBuildWrapperPluginTest {
 
     @Nested
     class withGlobalParameter {
-        @AfterEach
-        public void reset() {
-            ParameterStoreBuildWrapperPlugin.reset()
-        }
-
         @Test
         void addGlobalParameterWithNoOptions() {
             String path = '/path/'

@@ -12,35 +12,14 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class BuildWithParametersPluginTest {
-    @BeforeEach
-    @AfterEach
-    void reset() {
-        BuildWithParametersPlugin.reset()
-    }
-
-    private createJenkinsfileSpy() {
-        def dummyJenkinsfile = spy(new DummyJenkinsfile())
-        dummyJenkinsfile.docker = dummyJenkinsfile
-
-        return dummyJenkinsfile
-    }
-
     @Nested
     public class Init {
-        @AfterEach
-        void resetPlugins() {
-            BuildStage.resetPlugins()
-            TerraformValidateStage.resetPlugins()
-            TerraformEnvironmentStage.reset()
-            RegressionStage.resetPlugins()
-        }
-
         @Test
         void modifiesBuildStage() {
             BuildWithParametersPlugin.init()
@@ -205,12 +184,6 @@ class BuildWithParametersPluginTest {
 
     @Nested
     class HasParameters {
-        @BeforeEach
-        @AfterEach
-        void reset() {
-            BuildWithParametersPlugin.reset()
-        }
-
         @Test
         void returnsFalseByDefault() {
             def plugin = new BuildWithParametersPlugin()

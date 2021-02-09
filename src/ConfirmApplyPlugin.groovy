@@ -1,6 +1,6 @@
 import static TerraformEnvironmentStage.CONFIRM
 
-class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin {
+class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin, Resettable {
 
     public static final String DEFAULT_SUBMITTER_PARAMETER = 'approver'
     public static parameters = []

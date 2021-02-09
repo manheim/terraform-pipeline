@@ -1,4 +1,4 @@
-class RegressionStage implements Stage, DecoratableStage {
+class RegressionStage implements Stage, DecoratableStage, Resettable {
 
     public String testCommand
     public List automationRepoList = []
@@ -80,7 +80,7 @@ class RegressionStage implements Stage, DecoratableStage {
         return plugins
     }
 
-    public static void resetPlugins() {
+    public static void reset() {
         this.plugins = []
     }
 

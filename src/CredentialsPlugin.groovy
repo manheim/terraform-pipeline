@@ -1,4 +1,4 @@
-class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, TerraformEnvironmentStagePlugin, TerraformValidateStagePlugin {
+class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, TerraformEnvironmentStagePlugin, TerraformValidateStagePlugin, Resettable {
     private static globalBuildCredentials = []
     private buildCredentials = []
 

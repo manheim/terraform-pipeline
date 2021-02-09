@@ -4,18 +4,12 @@ import static org.hamcrest.Matchers.not
 import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.startsWith
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformFormatCommandTest {
-    @BeforeEach
-    @AfterEach
-    public void reset() {
-        TerraformFormatCommand.reset()
-    }
-
     @Nested
     public class ToString {
         @Test

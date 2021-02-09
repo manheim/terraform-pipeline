@@ -3,29 +3,13 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.MatcherAssert.assertThat
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class ParameterStoreExecPluginTest {
-    @AfterEach
-    public void reset() {
-        Jenkinsfile.instance = null
-        TerraformEnvironmentStage.reset()
-        TerraformPlanCommand.resetPlugins()
-        TerraformApplyCommand.resetPlugins()
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization)
-        when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Nested
     public class Init {
         @Test
@@ -86,7 +70,7 @@ class ParameterStoreExecPluginTest {
             String repoName = 'SomeRepo'
             String environment = "qa"
 
-            configureJenkins(organization: organization, repoName: repoName)
+            MockJenkinsfile.withOrganization(organization).withRepoName(repoName)
             ParameterStoreExecPlugin plugin = new ParameterStoreExecPlugin()
 
             String actual = plugin.pathForEnvironment(environment)

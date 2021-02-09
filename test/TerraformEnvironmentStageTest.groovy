@@ -1,6 +1,4 @@
-import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.mock
-import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.hamcrest.CoreMatchers.is
 import static org.hamcrest.CoreMatchers.instanceOf
@@ -9,17 +7,12 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.MatcherAssert.assertThat
 import static TerraformEnvironmentStage.PLAN
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(ResetStaticStateExtension.class)
 class TerraformEnvironmentStageTest {
-    @AfterEach
-    void resetPlugins() {
-        TerraformEnvironmentStage.reset()
-    }
-
     @Nested
     public class ToString {
         @Test
@@ -149,16 +142,6 @@ class TerraformEnvironmentStageTest {
 
     @Nested
     class PipelineConfigurations {
-        @BeforeEach
-        void resetBefore() {
-            Jenkinsfile.reset()
-        }
-
-        @AfterEach
-        void resetAfter() {
-            Jenkinsfile.reset()
-        }
-
         @Test
         void returnsAClosure() {
             def stage = new TerraformEnvironmentStage('foo')
@@ -170,8 +153,7 @@ class TerraformEnvironmentStageTest {
 
         @Test
         void doesNotBlowUpWhenRunningClosure() {
-            Jenkinsfile.instance = spy(new Jenkinsfile())
-            doReturn([:]).when(Jenkinsfile.instance).getEnv()
+            MockJenkinsfile.withEnv()
             Jenkinsfile.defaultNodeName = 'foo'
             def stage = new TerraformEnvironmentStage('foo')
 
@@ -183,12 +165,6 @@ class TerraformEnvironmentStageTest {
 
     @Nested
     class WithStageNamePattern {
-        @BeforeEach
-        @AfterEach
-        void reset() {
-            TerraformEnvironmentStage.reset()
-        }
-
         @Test
         void constructsTheDefaultStageNameWhenBlank() {
             def stage = new TerraformEnvironmentStage('myenv')
