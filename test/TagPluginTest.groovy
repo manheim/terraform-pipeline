@@ -232,7 +232,7 @@ class TagPluginTest {
             def plugin = new TagPlugin()
             plugin.withTagFromEnvironmentVariable('someTagName', variable)
             def command = mock(TerraformCommand.class)
-            def original = new DummyJenkinsfile()
+            def original = new MockWorkflowScript()
             original.env = [:]
             original.env[variable] = expectedValue
 

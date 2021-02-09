@@ -50,11 +50,11 @@ class ValidateFormatPluginTest {
         void runsTheGivenInnerClosure() {
             def wasRun = false
             def innerClosure = { -> wasRun = true }
-            def dummyJenkinsfile = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             def plugin = new ValidateFormatPlugin()
 
             def formatClosure = plugin.formatClosure()
-            formatClosure.delegate = dummyJenkinsfile
+            formatClosure.delegate = original
             formatClosure.call(innerClosure)
 
             assertTrue(wasRun)
@@ -63,14 +63,14 @@ class ValidateFormatPluginTest {
         @Test
         void runsTerraformFormatCommandInAShell() {
             def expectedFormatCommand = 'terraform fmt'
-            def dummyJenkinsfile = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             def plugin = new ValidateFormatPlugin()
 
             def formatClosure = plugin.formatClosure()
-            formatClosure.delegate = dummyJenkinsfile
+            formatClosure.delegate = original
             formatClosure.call { -> }
 
-            verify(dummyJenkinsfile).sh(expectedFormatCommand)
+            verify(original).sh(expectedFormatCommand)
         }
     }
 }

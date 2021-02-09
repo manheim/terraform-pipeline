@@ -17,11 +17,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ResetStaticStateExtension.class)
 class AgentNodePluginTest {
-    private createJenkinsfileSpy() {
-        def dummyJenkinsfile = spy(new DummyJenkinsfile())
-        dummyJenkinsfile.docker = dummyJenkinsfile
+    private createOriginalSpy() {
+        def workflowScript = spy(new MockWorkflowScript())
+        workflowScript.docker = workflowScript
 
-        return dummyJenkinsfile
+        return workflowScript
     }
 
     @Nested
@@ -101,7 +101,7 @@ class AgentNodePluginTest {
                 def innerClosure = spy { -> }
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = new DummyJenkinsfile()
+                agentClosure.delegate = new MockWorkflowScript()
                 agentClosure(innerClosure)
 
                 verify(innerClosure).call()
@@ -110,13 +110,13 @@ class AgentNodePluginTest {
             @Test
             void usesTheGivenDockerImage() {
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
+                def original = createOriginalSpy()
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).image(expectedImage)
+                verify(original).image(expectedImage)
             }
 
             @Test
@@ -124,14 +124,14 @@ class AgentNodePluginTest {
                 def expectedOptions = 'someOptions'
                 AgentNodePlugin.withAgentDockerImageOptions(expectedOptions)
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
-                jenkinsfile.docker = jenkinsfile
+                def original = createOriginalSpy()
+                original.docker = original
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).inside(eq(expectedOptions), anyObject())
+                verify(original).inside(eq(expectedOptions), anyObject())
             }
         }
 
@@ -150,7 +150,7 @@ class AgentNodePluginTest {
                 def innerClosure = spy { -> }
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = new DummyJenkinsfile()
+                agentClosure.delegate = new MockWorkflowScript()
                 agentClosure(innerClosure)
 
                 verify(innerClosure).call()
@@ -160,13 +160,13 @@ class AgentNodePluginTest {
             void usesTheGivenDockerImage() {
                 AgentNodePlugin.withAgentDockerfile()
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
+                def original = createOriginalSpy()
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).build(eq(expectedImage), anyString())
+                verify(original).build(eq(expectedImage), anyString())
             }
 
             @Test
@@ -174,13 +174,13 @@ class AgentNodePluginTest {
                 def expectedBuildCommand = '-f Dockerfile .'
                 AgentNodePlugin.withAgentDockerfile('Dockerfile')
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
+                def original = createOriginalSpy()
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).build(anyString(), eq(expectedBuildCommand))
+                verify(original).build(anyString(), eq(expectedBuildCommand))
             }
 
             @Test
@@ -189,26 +189,26 @@ class AgentNodePluginTest {
                 AgentNodePlugin.withAgentDockerfile()
                                .withAgentDockerBuildOptions(expectedOptions)
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
+                def original = createOriginalSpy()
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).build(anyString(), contains(expectedOptions))
+                verify(original).build(anyString(), contains(expectedOptions))
             }
 
             @Test
             void usesFileNamedDockerfileByDefault() {
                 AgentNodePlugin.withAgentDockerfile()
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
+                def original = createOriginalSpy()
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).build(anyString(), contains('-f Dockerfile'))
+                verify(original).build(anyString(), contains('-f Dockerfile'))
             }
 
             @Test
@@ -216,13 +216,13 @@ class AgentNodePluginTest {
                 def expectedDockerfile = 'someDockerfile'
                 AgentNodePlugin.withAgentDockerfile(expectedDockerfile)
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
+                def original = createOriginalSpy()
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).build(anyString(), contains("-f ${expectedDockerfile}"))
+                verify(original).build(anyString(), contains("-f ${expectedDockerfile}"))
             }
 
             @Test
@@ -231,13 +231,13 @@ class AgentNodePluginTest {
                 AgentNodePlugin.withAgentDockerfile()
                                .withAgentDockerImageOptions(expectedOptions)
                 def plugin = new AgentNodePlugin()
-                def jenkinsfile = createJenkinsfileSpy()
+                def original = createOriginalSpy()
 
                 def agentClosure = plugin.addAgent()
-                agentClosure.delegate = jenkinsfile
+                agentClosure.delegate = original
                 agentClosure { -> }
 
-                verify(jenkinsfile).inside(eq(expectedOptions), anyObject())
+                verify(original).inside(eq(expectedOptions), anyObject())
             }
         }
     }

@@ -121,7 +121,7 @@ class BuildWithParametersPluginTest {
 
             @Test
             void doesNotAddAnyParameters() {
-                def original = spy(new DummyJenkinsfile())
+                def original = spy(new MockWorkflowScript())
                 def plugin = new BuildWithParametersPlugin()
                 def decoration = plugin.addParameterToFirstStageOnly()
 
@@ -136,7 +136,7 @@ class BuildWithParametersPluginTest {
         class WithParameters {
             @Test
             void runsTheInnerClosure() {
-                def original = spy(new DummyJenkinsfile())
+                def original = spy(new MockWorkflowScript())
                 def innerClosure = spy { -> }
                 def plugin = spy(new BuildWithParametersPlugin())
                 doReturn(true).when(plugin).hasParameters()
@@ -151,7 +151,7 @@ class BuildWithParametersPluginTest {
             @Test
             void addsTheParameters() {
                 def expectedParameters = ['myparams']
-                def original = spy(new DummyJenkinsfile())
+                def original = spy(new MockWorkflowScript())
                 def plugin = spy(new BuildWithParametersPlugin())
                 doReturn(true).when(plugin).hasParameters()
                 doReturn(expectedParameters).when(plugin).getBuildParameters()
@@ -166,7 +166,7 @@ class BuildWithParametersPluginTest {
 
             @Test
             void addParametersOnlyOnceAfterMultipleCalls() {
-                def original = spy(new DummyJenkinsfile())
+                def original = spy(new MockWorkflowScript())
                 def plugin = spy(new BuildWithParametersPlugin())
                 doReturn(true).when(plugin).hasParameters()
                 doReturn(['myparams']).when(plugin).getBuildParameters()

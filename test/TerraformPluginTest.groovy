@@ -52,7 +52,7 @@ class TerraformPluginTest {
         @Test
         void usesDefaultIfFileNotFound() {
             def plugin = new TerraformPlugin()
-            def original = spy(new DummyJenkinsfile())
+            def original = spy(new MockWorkflowScript())
             doReturn(false).when(original).fileExists(TerraformPlugin.TERRAFORM_VERSION_FILE)
             Jenkinsfile.original = original
 
@@ -67,7 +67,7 @@ class TerraformPluginTest {
         // This can be fleshed out.  For now, jusst make sure it runs
         @Test
         void doesNotError() {
-            Jenkinsfile.original = new DummyJenkinsfile()
+            Jenkinsfile.original = new MockWorkflowScript()
             TerraformPlugin.checkVersion()
         }
     }
