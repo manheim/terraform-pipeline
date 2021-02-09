@@ -47,6 +47,15 @@ public class MockJenkinsfile {
         return this
     }
 
+    public static withParsedScmUrl(Map results) {
+        if (needsJenkinsfileInstanceMock()) {
+            mockJenkinsfileInstance()
+        }
+
+        when(Jenkinsfile.instance.getParsedScmUrl()).thenReturn(results)
+        return this
+    }
+
     public static withFile(String filePath, String fileContent = '') {
         def original = spy(new DummyJenkinsfile())
         doReturn(true).when(original).fileExists(filePath)
