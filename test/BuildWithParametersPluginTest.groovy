@@ -18,13 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ResetStaticStateExtension.class)
 class BuildWithParametersPluginTest {
-    private createJenkinsfileSpy() {
-        def dummyJenkinsfile = spy(new DummyJenkinsfile())
-        dummyJenkinsfile.docker = dummyJenkinsfile
-
-        return dummyJenkinsfile
-    }
-
     @Nested
     public class Init {
         @Test
