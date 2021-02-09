@@ -9,8 +9,6 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.MatcherAssert.assertThat
 import static TerraformEnvironmentStage.PLAN
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -146,12 +144,6 @@ class TerraformEnvironmentStageTest {
 
     @Nested
     class PipelineConfigurations {
-        @AfterEach
-        @BeforeEach
-        void resetBefore() {
-            Jenkinsfile.reset()
-        }
-
         @Test
         void returnsAClosure() {
             def stage = new TerraformEnvironmentStage('foo')
@@ -163,8 +155,7 @@ class TerraformEnvironmentStageTest {
 
         @Test
         void doesNotBlowUpWhenRunningClosure() {
-            Jenkinsfile.instance = spy(new Jenkinsfile())
-            doReturn([:]).when(Jenkinsfile.instance).getEnv()
+            MockJenkinsfile.withEnv()
             Jenkinsfile.defaultNodeName = 'foo'
             def stage = new TerraformEnvironmentStage('foo')
 
