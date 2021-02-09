@@ -25,19 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ResetStaticStateExtension.class)
 class GithubPRPlanPluginTest {
-
-    @BeforeEach
-    void resetJenkinsEnv() {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getEnv()).thenReturn([:])
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getStandardizedRepoSlug()).thenReturn(config.repoSlug)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Nested
     public class Init {
         @Test
@@ -76,10 +63,10 @@ class GithubPRPlanPluginTest {
         void decoratesTheTerraformEnvironmentStage()  {
             GithubPRPlanPlugin plugin = new GithubPRPlanPlugin()
             def environment = spy(new TerraformEnvironmentStage())
-            configureJenkins(env: [
+            MockJenkinsfile.withEnv(
                 'BRANCH_NAME': 'master',
                 'BUILD_URL': 'https://my-jenkins/job/my-org/job/my-repo/job/PR-1/2/'
-            ])
+            )
 
             plugin.apply(environment)
 
@@ -90,11 +77,6 @@ class GithubPRPlanPluginTest {
 
     @Nested
     class GetRepoSlug {
-        @AfterEach
-        void resetPlugin() {
-            Jenkinsfile.reset()
-        }
-
         @Test
         void returnsTheProvidedRepoSlug() {
             String expectedSlug = 'some/slug'
@@ -110,9 +92,7 @@ class GithubPRPlanPluginTest {
         void defaultsToCurrentRepoSlug() {
             def expectedOrg = 'someOrg'
             def expectedRepo = 'someRepo'
-            def jenkinsfileInstance = mock(Jenkinsfile.class)
-            doReturn([organization: expectedOrg, repo: expectedRepo]).when(jenkinsfileInstance).getParsedScmUrl()
-            Jenkinsfile.withInstance(jenkinsfileInstance)
+            MockJenkinsfile.withParsedScmUrl([organization: expectedOrg, repo: expectedRepo])
             def plugin = new GithubPRPlanPlugin()
 
             String actualSlug = plugin.getRepoSlug()
@@ -124,16 +104,6 @@ class GithubPRPlanPluginTest {
 
     @Nested
     class GetRepoHost {
-        @BeforeEach
-        void resetBefore() {
-            Jenkinsfile.reset()
-        }
-
-        @AfterEach
-        void reset() {
-            Jenkinsfile.reset()
-        }
-
         @Test
         void returnsTheProvidedHost() {
             String expectedHost = 'somehost'
@@ -147,10 +117,8 @@ class GithubPRPlanPluginTest {
 
         @Test
         void defaultsToTheHostOfTheProject() {
+            MockJenkinsfile.withParsedScmUrl([protocol: 'https', domain: 'my.github.com'])
             def plugin = new GithubPRPlanPlugin()
-            def jenkinsfileInstance = mock(Jenkinsfile.class)
-            doReturn([protocol: 'https', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
-            Jenkinsfile.withInstance(jenkinsfileInstance)
 
             String actualHost = plugin.getRepoHost()
 
@@ -159,10 +127,8 @@ class GithubPRPlanPluginTest {
 
         @Test
         void defaultsToTheProtocolOfTheProject() {
+            MockJenkinsfile.withParsedScmUrl([protocol: 'http', domain: 'my.github.com'])
             def plugin = new GithubPRPlanPlugin()
-            def jenkinsfileInstance = mock(Jenkinsfile.class)
-            doReturn([protocol: 'http', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
-            Jenkinsfile.withInstance(jenkinsfileInstance)
 
             String actualHost = plugin.getRepoHost()
 
@@ -171,10 +137,8 @@ class GithubPRPlanPluginTest {
 
         @Test
         void changesGitProtocolToHttps() {
+            MockJenkinsfile.withParsedScmUrl([protocol: 'git', domain: 'my.github.com'])
             def plugin = new GithubPRPlanPlugin()
-            def jenkinsfileInstance = mock(Jenkinsfile.class)
-            doReturn([protocol: 'git', domain: 'my.github.com']).when(jenkinsfileInstance).getParsedScmUrl()
-            Jenkinsfile.withInstance(jenkinsfileInstance)
 
             String actualHost = plugin.getRepoHost()
 
@@ -383,19 +347,11 @@ class GithubPRPlanPluginTest {
 
     @Nested
     class PostPullRequestComment {
-        @AfterEach
-        void reset() {
-            Jenkinsfile.reset()
-        }
-
-        @BeforeEach
-        void stubJenkins() {
-            Jenkinsfile.original = spy(new DummyJenkinsfile())
-        }
-
         // This needs to be tested better than 'do not blow up'
         @Test
         void doesNotBlowUp() {
+            MockJenkinsfile.withParsedScmUrl([protocol: 'git', domain: 'my.github.com'])
+            Jenkinsfile.original = spy(new DummyJenkinsfile())
             def plugin = spy(new GithubPRPlanPlugin())
             doReturn('HTTP/1.1 201 Created').when(plugin).readFile('comment.headers')
             doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())
