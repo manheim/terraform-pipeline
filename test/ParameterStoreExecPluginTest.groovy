@@ -13,18 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ResetStaticStateExtension.class)
 class ParameterStoreExecPluginTest {
-    @AfterEach
-    public void reset() {
-        Jenkinsfile.instance = null
-    }
-
-    private configureJenkins(Map config = [:]) {
-        Jenkinsfile.instance = mock(Jenkinsfile.class)
-        when(Jenkinsfile.instance.getOrganization()).thenReturn(config.organization)
-        when(Jenkinsfile.instance.getRepoName()).thenReturn(config.repoName)
-        when(Jenkinsfile.instance.getEnv()).thenReturn(config.env ?: [:])
-    }
-
     @Nested
     public class Init {
         @Test
@@ -85,7 +73,7 @@ class ParameterStoreExecPluginTest {
             String repoName = 'SomeRepo'
             String environment = "qa"
 
-            configureJenkins(organization: organization, repoName: repoName)
+            MockJenkinsfile.withOrganization(organization).withRepoName(repoName)
             ParameterStoreExecPlugin plugin = new ParameterStoreExecPlugin()
 
             String actual = plugin.pathForEnvironment(environment)
