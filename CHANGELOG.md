@@ -1,5 +1,6 @@
 # Unreleased
 
+* [Issue #320](https://github.com/manheim/terraform-pipeline/issues/320) Bug Fix: GithubPRPlugin should stop on plan errors, and display error to the user.
 * [Issue #331](https://github.com/manheim/terraform-pipeline/issues/331) Bug Fix: terraform-pipeline should be usable even if Docker-Pipeline-plugin is not installed (and Docker featuers are not used)
 * [Issue #335](https://github.com/manheim/terraform-pipeline/issues/335) Testing: Rename DummyJenkinsfile to MockWorkflowScript to better distinguish Jenkinsfile references.
 * [Issue #271](https://github.com/manheim/terraform-pipeline/issues/271) Testing: Cleanup Test resets for any static state.  New Resettable and ResetStaticStateExtension available.
