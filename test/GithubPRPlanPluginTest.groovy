@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.not
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertThrows
 import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -70,6 +71,93 @@ class GithubPRPlanPluginTest {
             verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN), any(Closure.class))
         }
 
+    }
+
+    @Nested
+    class AddComment {
+        @Nested
+        class AndNotPullRequest {
+            @Test
+            void runsInnerClosure() {
+                def original = new MockWorkflowScript()
+                def innerClosure = spy { -> }
+                GithubPRPlanPlugin plugin = spy(new GithubPRPlanPlugin())
+                doReturn(false).when(plugin).isPullRequest()
+
+                def addCommentClosure = plugin.addComment('myEnv')
+                addCommentClosure.delegate = original
+                addCommentClosure(innerClosure)
+
+                verify(innerClosure, times(1)).call()
+            }
+
+            @Test
+            void throwsErrorWhenInnerClosureFails() {
+                def original = new MockWorkflowScript()
+                def innerClosure = { -> throw new RuntimeException("script returned exit code 1") }
+                GithubPRPlanPlugin plugin = spy(new GithubPRPlanPlugin())
+                doReturn(false).when(plugin).isPullRequest()
+
+                def addCommentClosure = plugin.addComment('myEnv')
+                addCommentClosure.delegate = original
+                Exception exception = assertThrows(RuntimeException.class) {
+                    addCommentClosure(innerClosure)
+                }
+            }
+        }
+
+        @Nested
+        class AndPullRequest {
+            @Test
+            void runsInnerClosure() {
+                def original = new MockWorkflowScript()
+                def innerClosure = spy { -> }
+                GithubPRPlanPlugin plugin = spy(new GithubPRPlanPlugin())
+                doReturn(true).when(plugin).isPullRequest()
+                doReturn("someUrl").when(plugin).getPullRequestCommentUrl()
+                doReturn("commentBody").when(plugin).getCommentBody(any(String.class))
+                doReturn(null).when(plugin).postPullRequestComment(any(String.class), any(String.class))
+
+                def addCommentClosure = plugin.addComment('myEnv')
+                addCommentClosure.delegate = original
+                addCommentClosure(innerClosure)
+
+                verify(innerClosure, times(1)).call()
+            }
+
+            @Test
+            void throwsErrorWhenInnerClosureFails() {
+                def original = new MockWorkflowScript()
+                def innerClosure = { -> throw new RuntimeException("script returned exit code 1") }
+                GithubPRPlanPlugin plugin = spy(new GithubPRPlanPlugin())
+                doReturn(true).when(plugin).isPullRequest()
+
+                def addCommentClosure = plugin.addComment('myEnv')
+                addCommentClosure.delegate = original
+                Exception exception = assertThrows(RuntimeException.class) {
+                    addCommentClosure(innerClosure)
+                }
+            }
+
+            @Test
+            void postsPullRequestResults() {
+                String expectedUrl = 'expectedUrl'
+                String expectedComment = 'expectedComment'
+                def original = new MockWorkflowScript()
+                def innerClosure = { -> }
+                GithubPRPlanPlugin plugin = spy(new GithubPRPlanPlugin())
+                doReturn(true).when(plugin).isPullRequest()
+                doReturn(expectedUrl).when(plugin).getPullRequestCommentUrl()
+                doReturn(expectedComment).when(plugin).getCommentBody(any(String.class))
+                doReturn(null).when(plugin).postPullRequestComment(any(String.class), any(String.class))
+
+                def addCommentClosure = plugin.addComment('myEnv')
+                addCommentClosure.delegate = original
+                addCommentClosure(innerClosure)
+
+                verify(plugin).postPullRequestComment(expectedUrl, expectedComment)
+            }
+        }
     }
 
     @Nested
