@@ -1,6 +1,5 @@
 class Jenkinsfile implements Resettable {
     public static original
-    public static docker
     public static defaultNodeName
     public static repoSlug = null
     public static instance = new Jenkinsfile()
@@ -56,7 +55,6 @@ class Jenkinsfile implements Resettable {
 
     def static void init(original, Class customizations=null) {
         this.original = original
-        this.docker   = original.docker
 
         initializeDefaultPlugins()
 
@@ -134,7 +132,6 @@ class Jenkinsfile implements Resettable {
         instance = new Jenkinsfile()
         original = null
         defaultNodeName = null
-        docker = null
         pipelineTemplate = null
         declarative = false
     }

@@ -125,7 +125,6 @@ class AgentNodePluginTest {
                 AgentNodePlugin.withAgentDockerImageOptions(expectedOptions)
                 def plugin = new AgentNodePlugin()
                 def original = createOriginalSpy()
-                original.docker = original
 
                 def agentClosure = plugin.addAgent()
                 agentClosure.delegate = original
