@@ -38,6 +38,7 @@ class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnviron
 
     @Override
     public void apply(TerraformPlanCommand command) {
+        command.withPrefix("set -o pipefail;")
         command.withArgument("-out=tfplan")
         command.withStandardErrorRedirection('plan.err')
         command.withSuffix('| tee plan.out')
@@ -45,7 +46,13 @@ class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnviron
 
     public Closure addComment(String env) {
         return { closure ->
-            closure()
+            try {
+                closure()
+            } catch (err) {
+                echo "terraform plan failed:"
+                sh "cat plan.err"
+                throw err
+            }
 
             if (isPullRequest()) {
                 String url = getPullRequestCommentUrl()
