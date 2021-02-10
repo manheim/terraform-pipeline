@@ -46,7 +46,13 @@ class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnviron
 
     public Closure addComment(String env) {
         return { closure ->
-            closure()
+            try {
+                closure()
+            } catch (err) {
+                echo "terraform plan failed:"
+                sh "cat plan.err"
+                throw err
+            }
 
             if (isPullRequest()) {
                 String url = getPullRequestCommentUrl()
