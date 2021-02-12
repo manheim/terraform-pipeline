@@ -1,10 +1,11 @@
 # Unreleased
 
+* [Issue #329](https://github.com/manheim/terraform-pipeline/issues/329) Feature: ConditionalApplyPlugin - can be disabled to allow apply on all branches/PRs.
 * [Issue #320](https://github.com/manheim/terraform-pipeline/issues/320) Bug Fix: GithubPRPlugin should stop on plan errors, and display error to the user.
 * [Issue #331](https://github.com/manheim/terraform-pipeline/issues/331) Bug Fix: terraform-pipeline should be usable even if Docker-Pipeline-plugin is not installed (and Docker featuers are not used)
 * [Issue #335](https://github.com/manheim/terraform-pipeline/issues/335) Testing: Rename DummyJenkinsfile to MockWorkflowScript to better distinguish Jenkinsfile references.
 * [Issue #271](https://github.com/manheim/terraform-pipeline/issues/271) Testing: Cleanup Test resets for any static state.  New Resettable and ResetStaticStateExtension available.
-* [Issue #332](https://github.com/manheim/terraform-pipeline/issues/332) Upgrade from Junit 4 to 5.7, upgrade hamcrest from 1.3 to 2.2, remove junit-hierarchicalcontextrunner dependency
+* [Issue #332](https://github.com/manheim/terraform-pipeline/issues/332) Testing: Junit 4 to 5.7, upgrade hamcrest from 1.3 to 2.2, remove junit-hierarchicalcontextrunner dependency
 
 # v5.14
 

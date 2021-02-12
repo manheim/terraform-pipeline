@@ -3,6 +3,7 @@ import static TerraformEnvironmentStage.APPLY
 
 public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, Resettable {
 
+    private static enabled = true
     private static DEFAULT_BRANCHES = ['master']
     private static branches = DEFAULT_BRANCHES
 
@@ -10,8 +11,13 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
         branches = enabledBranches.clone()
     }
 
+    public static disable() {
+        enabled = false
+    }
+
     public static void reset() {
         branches = DEFAULT_BRANCHES
+        enabled = true
     }
 
     @Override
@@ -31,6 +37,10 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
     }
 
     public boolean shouldApply() {
+        if (!enabled) {
+            return true
+        }
+
         if (branches.contains(Jenkinsfile.instance.getEnv().BRANCH_NAME)) {
             println("Current branch '${Jenkinsfile.instance.getEnv().BRANCH_NAME}' matches expected branches '${branches}', stage branch-condition is met and will run.")
             return true

@@ -69,6 +69,34 @@ class ConditionalApplyPluginTest {
 
             assertTrue(plugin.shouldApply())
         }
+
+        @Nested
+        class WhenDisabled {
+            @Test
+            void returnsTrueWhenBranchIsMaster() {
+                ConditionalApplyPlugin.disable()
+                MockJenkinsfile.withEnv(BRANCH_NAME: 'master')
+                def plugin = new ConditionalApplyPlugin()
+
+                assertTrue(plugin.shouldApply())
+            }
+
+            void returnsTrueWhenBranchIsAnythingOtherThanMaster() {
+                ConditionalApplyPlugin.disable()
+                MockJenkinsfile.withEnv(BRANCH_NAME: 'anyPossibleBranch')
+                def plugin = new ConditionalApplyPlugin()
+
+                assertTrue(plugin.shouldApply())
+            }
+
+            void returnsTrueWhenBranchIsUnknown() {
+                ConditionalApplyPlugin.disable()
+                MockJenkinsfile.withEnv()
+                def plugin = new ConditionalApplyPlugin()
+
+                assertTrue(plugin.shouldApply())
+            }
+        }
     }
 }
 
