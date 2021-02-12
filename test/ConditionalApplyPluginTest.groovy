@@ -80,11 +80,16 @@ class ConditionalApplyPluginTest {
 
                 assertTrue(plugin.shouldApply())
             }
-/*
-            void returnsTrueWhenBranchIsAnything() {
 
+            void returnsTrueWhenBranchIsAnythingOtherThanMaster() {
+                ConditionalApplyPlugin.disable()
+                MockJenkinsfile.withEnv(BRANCH_NAME: 'anyPossibleBranch')
+                def plugin = new ConditionalApplyPlugin()
+
+                assertTrue(plugin.shouldApply())
             }
 
+/*
             void returnsTrueWhenBranchIsUnknown() {
 
             }
