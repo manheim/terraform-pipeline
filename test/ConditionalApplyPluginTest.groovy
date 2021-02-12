@@ -89,11 +89,13 @@ class ConditionalApplyPluginTest {
                 assertTrue(plugin.shouldApply())
             }
 
-/*
             void returnsTrueWhenBranchIsUnknown() {
+                ConditionalApplyPlugin.disable()
+                MockJenkinsfile.withEnv()
+                def plugin = new ConditionalApplyPlugin()
 
+                assertTrue(plugin.shouldApply())
             }
-*/
         }
     }
 }
