@@ -29,21 +29,21 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorateAround(CONFIRM, onlyOnExpectedBranch())
-        stage.decorateAround(APPLY, onlyOnExpectedBranch())
+        stage.decorateAround(CONFIRM, onlyOnExpectedBranch(stage.getEnvironment()))
+        stage.decorateAround(APPLY, onlyOnExpectedBranch(stage.getEnvironment()))
     }
 
-    public Closure onlyOnExpectedBranch() {
+    public Closure onlyOnExpectedBranch(String environment) {
         return  { closure ->
-            if (shouldApply()) {
+            if (shouldApply(environment)) {
                 closure()
             } else {
-                echo "This stage can only be run on the '${branches}' branches, but this pipeline is currently running on branch '${Jenkinsfile.instance.getEnv().BRANCH_NAME}'.  Skipping stage."
+                echo "Skipping Confirm/Apply steps, based on the configuration of ConditionalApplyPlugin."
             }
         }
     }
 
-    public boolean shouldApply(String environment = null) {
+    public boolean shouldApply(String environment) {
         if (!enabled) {
             return true
         }
