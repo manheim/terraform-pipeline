@@ -32,7 +32,7 @@ validate.then(deployQa)
 ...
 ```
 
-Alternatively, enable "Confirm" and "Apply" for specific environments with `ConditionalApplyPlugin.withBranchApplyEnabledFor()`.  This method accepts one or more environment names.  "Confirm" and "Apply" steps of TerraformEnvironmentStage will then be visible for each of the specified environments, regardless of the branch or PullRequest.
+Alternatively, enable "Confirm" and "Apply" for specific environments with `ConditionalApplyPlugin.withApplyOnEnvironment()`.  This method accepts one or more environment names.  "Confirm" and "Apply" steps of TerraformEnvironmentStage will then be visible for each of the specified environments, regardless of the branch or PullRequest.
 
 Example:
 
@@ -40,7 +40,7 @@ Example:
 @Library(['terraform-pipeline']) _
 
 Jenkinsfile.init(this)
-ConditionalApplyPlugin.withBranchApplyEnabledFor('qa')
+ConditionalApplyPlugin.withApplyOnEnvironment('qa')
 
 def validate = new TerraformValidateStage()
 // 'qa' stage will run Plan/Confirm/Apply on all branches and PullRequests.
