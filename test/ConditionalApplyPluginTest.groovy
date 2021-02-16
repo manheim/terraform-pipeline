@@ -43,31 +43,34 @@ class ConditionalApplyPluginTest {
             assertTrue(plugin.shouldApply())
         }
 
-        @Test
-        void returnsTrueForFirstConfiguredBranch() {
-            MockJenkinsfile.withEnv(BRANCH_NAME: 'qa')
-            ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
-            def plugin = new ConditionalApplyPlugin()
+        @Nested
+        class WithApplyOnBranchEnabled {
+            @Test
+            void returnsTrueForFirstConfiguredBranch() {
+                MockJenkinsfile.withEnv(BRANCH_NAME: 'qa')
+                ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
+                def plugin = new ConditionalApplyPlugin()
 
-            assertTrue(plugin.shouldApply())
-        }
+                assertTrue(plugin.shouldApply())
+            }
 
-        @Test
-        void returnsTrueForOtherConfiguredBranches() {
-            MockJenkinsfile.withEnv(BRANCH_NAME: 'someOtherBranch')
-            ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
-            def plugin = new ConditionalApplyPlugin()
+            @Test
+            void returnsTrueForOtherConfiguredBranches() {
+                MockJenkinsfile.withEnv(BRANCH_NAME: 'someOtherBranch')
+                ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
+                def plugin = new ConditionalApplyPlugin()
 
-            assertTrue(plugin.shouldApply())
-        }
+                assertTrue(plugin.shouldApply())
+            }
 
-        @Test
-        void returnsFalseForNonMatchingBranch() {
-            MockJenkinsfile.withEnv(BRANCH_NAME: 'notQa')
-            ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
-            def plugin = new ConditionalApplyPlugin()
+            @Test
+            void returnsFalseForNonMatchingBranch() {
+                MockJenkinsfile.withEnv(BRANCH_NAME: 'notQa')
+                ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
+                def plugin = new ConditionalApplyPlugin()
 
-            assertFalse(plugin.shouldApply())
+                assertFalse(plugin.shouldApply())
+            }
         }
 
         @Nested
