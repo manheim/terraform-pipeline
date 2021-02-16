@@ -36,6 +36,14 @@ class ConditionalApplyPluginTest {
         }
 
         @Test
+        void returnsTrueWhenBranchIsUnknown() {
+            MockJenkinsfile.withEnv()
+            def plugin = new ConditionalApplyPlugin()
+
+            assertTrue(plugin.shouldApply())
+        }
+
+        @Test
         void returnsTrueForFirstConfiguredBranch() {
             MockJenkinsfile.withEnv(BRANCH_NAME: 'qa')
             ConditionalApplyPlugin.withApplyOnBranch('qa', 'someOtherBranch')
@@ -60,14 +68,6 @@ class ConditionalApplyPluginTest {
             def plugin = new ConditionalApplyPlugin()
 
             assertFalse(plugin.shouldApply())
-        }
-
-        @Test
-        void returnsTrueWhenBranchIsUnknown() {
-            MockJenkinsfile.withEnv()
-            def plugin = new ConditionalApplyPlugin()
-
-            assertTrue(plugin.shouldApply())
         }
 
         @Nested
