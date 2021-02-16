@@ -12,6 +12,10 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
         return this
     }
 
+    public static withApplyOnEnvironment(String... enabledEnvironments) {
+        return this
+    }
+
     public static disable() {
         enabled = false
     }

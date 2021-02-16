@@ -29,6 +29,16 @@ class ConditionalApplyPluginTest {
     }
 
     @Nested
+    class WithApplyOnEnvironment {
+        @Test
+        public void isFluent() {
+            def result = ConditionalApplyPlugin.withApplyOnEnvironment('someEnv')
+
+            assertEquals(ConditionalApplyPlugin.class, result)
+        }
+    }
+
+    @Nested
     class ShouldApply {
         @Test
         void returnsTrueForMasterByDefault() {
