@@ -6,6 +6,7 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
     private static enabled = true
     private static DEFAULT_BRANCHES = ['master']
     private static branches = DEFAULT_BRANCHES
+    private static environments = []
 
     public static withApplyOnBranch(String... enabledBranches) {
         branches = enabledBranches.clone()
@@ -13,6 +14,7 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
     }
 
     public static withApplyOnEnvironment(String... enabledEnvironments) {
+        environments = enabledEnvironments.clone()
         return this
     }
 
@@ -41,8 +43,12 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
         }
     }
 
-    public boolean shouldApply() {
+    public boolean shouldApply(String environment = null) {
         if (!enabled) {
+            return true
+        }
+
+        if (environments.contains(environment)) {
             return true
         }
 
