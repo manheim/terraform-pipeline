@@ -1,6 +1,7 @@
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
 
@@ -15,6 +16,16 @@ class ConditionalApplyPluginTest {
         Collection actualPlugins = TerraformEnvironmentStage.getPlugins()
 
         assertThat(actualPlugins, hasItem(instanceOf(ConditionalApplyPlugin.class)))
+    }
+
+    @Nested
+    class WithApplyOnBranch {
+        @Test
+        public void isFluent() {
+            def result = ConditionalApplyPlugin.withApplyOnBranch('someBranch')
+
+            assertEquals(ConditionalApplyPlugin.class, result)
+        }
     }
 
     @Nested
