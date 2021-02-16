@@ -95,6 +95,30 @@ class ConditionalApplyPluginTest {
         }
 
         @Nested
+        class WithApplyOnEnvironmentEnabled {
+            @Nested
+            class OnMasterBranch {
+                @Test
+                void returnsTrueForTheGivenEvironment() {
+                    MockJenkinsfile.withEnv(BRANCH_NAME: 'master')
+                    ConditionalApplyPlugin.withApplyOnEnvironment('qa')
+                    def plugin = new ConditionalApplyPlugin()
+
+                    assertTrue(plugin.shouldApply('qa'))
+                }
+
+                @Test
+                void returnsTrueForOtherEnvironments() {
+                    MockJenkinsfile.withEnv(BRANCH_NAME: 'master')
+                    ConditionalApplyPlugin.withApplyOnEnvironment('qa')
+                    def plugin = new ConditionalApplyPlugin()
+
+                    assertTrue(plugin.shouldApply('notQa'))
+                }
+            }
+        }
+
+        @Nested
         class WhenDisabled {
             @Test
             void returnsTrueWhenBranchIsMaster() {
