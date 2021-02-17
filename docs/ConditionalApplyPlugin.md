@@ -2,7 +2,60 @@
 
 This plugin is enabled by default.
 
-Changes should be applied through one and only one branch - master.  The ConditionalApplyPlugin enforces this by making the "Confirm" and "Apply" steps of a TerraformEnvironmentStage visible only on the master branch.  You can continue to use branches and PullRequests, however, branches and PullRequests will only run the Plan step for each environment, and skip over the Confirm/Apply steps.
+By default, changes are applied through one and only one branch - master.  The ConditionalApplyPlugin enforces this by making the "Confirm" and "Apply" steps of a TerraformEnvironmentStage visible only on the master branch.  You can continue to use branches and PullRequests, however, branches and PullRequests will only run the Plan step for each environment, and skip over the Confirm/Apply steps.
+
+This behavior can be changed by using `ConditionalApplyPlugin.withApplyOnBranch()`.  This method accepts one or more branches.  "Confirm" and "Apply" steps of TerraformEnvironmentStage will then be visible for each of the specified branches.  Any branch or PullRequest not in that list will only run the Plan step for each environment, and skip over the Confirm/Apply steps.
+
+Example:
+
+```
+@Library(['terraform-pipeline']) _
+
+Jenkinsfile.init(this)
+ConditionalApplyPlugin.withApplyOnBranch('myMasterReplacement')
+
+def validate = new TerraformValidateStage()
+// 'qa' stage will run Plan/Confirm/Apply on the 'myMasterReplacement' branch.
+// 'qa' stage will only run Plan for all other branches and PullRequests.
+def deployQa = new TerraformEnvironmentStage('qa')
+// 'uat' stage will run Plan/Confirm/Apply on 'myMasterReplacement' branch.
+// 'uat' stage will only run Plan for all other branches and PullRequests.
+def deployUat = new TerraformEnvironmentStage('uat')
+// 'prod' stage will run Plan/Confirm/Apply on 'myMasterReplacement' branch.
+// 'prod' stage will only run Plan for all other branches and PullRequests.
+def deployProd = new TerraformEnvironmentStage('prod')
+
+validate.then(deployQa)
+        .then(deployUat)
+        .then(deployProd)
+        .build()
+...
+```
+
+Alternatively, enable "Confirm" and "Apply" for specific environments with `ConditionalApplyPlugin.withApplyOnEnvironment()`.  This method accepts one or more environment names.  "Confirm" and "Apply" steps of TerraformEnvironmentStage will then be visible for each of the specified environments, regardless of the branch or PullRequest.
+
+Example:
+
+```
+@Library(['terraform-pipeline']) _
+
+Jenkinsfile.init(this)
+ConditionalApplyPlugin.withApplyOnEnvironment('qa')
+
+def validate = new TerraformValidateStage()
+// 'qa' stage will run Plan/Confirm/Apply on all branches and PullRequests.
+def deployQa = new TerraformEnvironmentStage('qa')
+// 'uat' stage will run Plan/Confirm/Apply only on master, and will only run Plan on all other branches and PullRequests.
+def deployUat = new TerraformEnvironmentStage('uat')
+// 'prod' stage will run Plan/Confirm/Apply only on master, and will only run Plan on all other branches and PullRequests.
+def deployProd = new TerraformEnvironmentStage('prod')
+
+validate.then(deployQa)
+        .then(deployUat)
+        .then(deployProd)
+        .build()
+...
+```
 
 Disable this plugin, if you want to allow "Confirm" and "Apply" on any branch or PullRequest.
 

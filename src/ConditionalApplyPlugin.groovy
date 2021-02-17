@@ -6,9 +6,16 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
     private static enabled = true
     private static DEFAULT_BRANCHES = ['master']
     private static branches = DEFAULT_BRANCHES
+    private static environments = []
 
-    public static void withApplyOnBranch(String... enabledBranches) {
+    public static withApplyOnBranch(String... enabledBranches) {
         branches = enabledBranches.clone()
+        return this
+    }
+
+    public static withApplyOnEnvironment(String... enabledEnvironments) {
+        environments = enabledEnvironments.clone()
+        return this
     }
 
     public static disable() {
@@ -22,22 +29,26 @@ public class ConditionalApplyPlugin implements TerraformEnvironmentStagePlugin, 
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorateAround(CONFIRM, onlyOnExpectedBranch())
-        stage.decorateAround(APPLY, onlyOnExpectedBranch())
+        stage.decorateAround(CONFIRM, onlyOnExpectedBranch(stage.getEnvironment()))
+        stage.decorateAround(APPLY, onlyOnExpectedBranch(stage.getEnvironment()))
     }
 
-    public Closure onlyOnExpectedBranch() {
+    public Closure onlyOnExpectedBranch(String environment) {
         return  { closure ->
-            if (shouldApply()) {
+            if (shouldApply(environment)) {
                 closure()
             } else {
-                echo "This stage can only be run on the '${branches}' branches, but this pipeline is currently running on branch '${Jenkinsfile.instance.getEnv().BRANCH_NAME}'.  Skipping stage."
+                echo "Skipping Confirm/Apply steps, based on the configuration of ConditionalApplyPlugin."
             }
         }
     }
 
-    public boolean shouldApply() {
+    public boolean shouldApply(String environment) {
         if (!enabled) {
+            return true
+        }
+
+        if (environments.contains(environment)) {
             return true
         }
 
