@@ -1,6 +1,6 @@
 ## [PlanOnlyPlugin](../src/PlanOnlyPlugin.groovy)
 
-Enable this plugin to change pipeline functionality to `terraform plan`.
+Enable this plugin to add a parameter to the build which will restrict pipeline functionality to `terraform plan` only.
 
 ```
 // Jenkinsfile

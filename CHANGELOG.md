@@ -9,6 +9,8 @@
 * [Issue #335](https://github.com/manheim/terraform-pipeline/issues/335) Testing: Rename DummyJenkinsfile to MockWorkflowScript to better distinguish Jenkinsfile references.
 * [Issue #271](https://github.com/manheim/terraform-pipeline/issues/271) Testing: Cleanup Test resets for any static state.  New Resettable and ResetStaticStateExtension available.
 * [Issue #332](https://github.com/manheim/terraform-pipeline/issues/332) Testing: Junit 4 to 5.7, upgrade hamcrest from 1.3 to 2.2, remove junit-hierarchicalcontextrunner dependency
+* [Issue #344](https://github.com/manheim/terraform-pipeline/issues/344) Add PLAN_ONLY parameter to PlanOnlyPlugin
+  * **BREAKING CHANGE** This change is a breaking change. Prior to this update, applying the PlanOnlyPlugin would restrict the pipeline to only running `terraform plan`. This update changes behavior to simply providing a `PLAN_ONLY` boolean parameter that can be set to restrict the build behavior. It defaults to `false`.
 
 # v5.14
 
