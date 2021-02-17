@@ -4,7 +4,7 @@ This plugin is enabled by default.
 
 By default, changes are applied through one and only one branch - master.  The ConditionalApplyPlugin enforces this by making the "Confirm" and "Apply" steps of a TerraformEnvironmentStage visible only on the master branch.  You can continue to use branches and PullRequests, however, branches and PullRequests will only run the Plan step for each environment, and skip over the Confirm/Apply steps.
 
-This behavior can be changed by using `ConditionalApplyPlugin.withApplyOnBranch()`.  This method accepts one or more branches.  "Confirm" and "Apply" steps of TerraformEnvironmentStage will then be visible for each of the specified branches.  Any branch or PulLRequest not in that list will only run the Plan step for each environment, and skip over the Confirm/Apply steps.
+This behavior can be changed by using `ConditionalApplyPlugin.withApplyOnBranch()`.  This method accepts one or more branches.  "Confirm" and "Apply" steps of TerraformEnvironmentStage will then be visible for each of the specified branches.  Any branch or PullRequest not in that list will only run the Plan step for each environment, and skip over the Confirm/Apply steps.
 
 Example:
 
