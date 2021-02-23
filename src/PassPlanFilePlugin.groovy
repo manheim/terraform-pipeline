@@ -1,5 +1,5 @@
-import static TerraformEnvironmentStage.PLAN
-import static TerraformEnvironmentStage.APPLY
+import static TerraformEnvironmentStage.PLAN_COMMAND
+import static TerraformEnvironmentStage.APPLY_COMMAND
 
 class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
 
@@ -13,8 +13,8 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(PLAN,  stashPlan(stage.getEnvironment()))
-        stage.decorate(APPLY, unstashPlan(stage.getEnvironment()))
+        stage.decorate(PLAN_COMMAND,  stashPlan(stage.getEnvironment()))
+        stage.decorate(APPLY_COMMAND, unstashPlan(stage.getEnvironment()))
     }
 
     @Override
