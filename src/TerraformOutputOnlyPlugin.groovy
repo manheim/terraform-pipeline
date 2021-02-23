@@ -1,3 +1,4 @@
+import static TerraformEnvironmentStage.INIT_COMMAND
 import static TerraformEnvironmentStage.PLAN_COMMAND
 import static TerraformEnvironmentStage.APPLY
 import static TerraformEnvironmentStage.CONFIRM
