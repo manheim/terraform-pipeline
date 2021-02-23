@@ -32,7 +32,7 @@ class TerraformOutputOnlyPlugin implements TerraformEnvironmentStagePlugin, Terr
     }
 
     public Closure runTerraformOutputCommand(String environment) {
-        outputCommand = TerraformOutputCommand.instanceFor(environment)
+        def outputCommand = TerraformOutputCommand.instanceFor(environment)
         return { closure ->
             closure()
             echo "Running 'terraform output'. TerraformOutputOnlyPlugin is enabled."
