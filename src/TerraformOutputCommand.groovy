@@ -1,6 +1,8 @@
 class TerraformOutputCommand implements TerraformCommand, Resettable {
     private static final DEFAULT_PLUGINS = []
     private String command = "output"
+    private boolean json = false
+    private String redirectFile
     private String terraformBinary = "terraform"
     String environment
     private String stateFilePath
@@ -11,12 +13,30 @@ class TerraformOutputCommand implements TerraformCommand, Resettable {
         this.environment = environment
     }
 
+    public TerraformOutputCommand withJson(boolean json) {
+        this.json = json
+        return this
+    }
+
+    public TerraformOutputCommand withRedirectFile(String redirectFile) {
+        this.redirectFile = redirectFile
+        return this
+    }
+
     public String toString() {
         applyPluginsOnce()
 
         def pieces = []
         pieces << terraformBinary
         pieces << command
+
+        if (json) {
+            pieces << "-json"
+        }
+
+        if (redirectFile) {
+            pieces << ">${redirectFile}"
+        }
 
         return pieces.join(' ')
     }
@@ -35,7 +55,7 @@ class TerraformOutputCommand implements TerraformCommand, Resettable {
     }
 
     public static TerraformOutputCommand instanceFor(String environment) {
-        return new TerraformOutputCommand(environment)
+        return new TerraformOutputCommand(environment).withJson(false)
     }
 
     public static getPlugins() {

@@ -2,17 +2,26 @@ import static TerraformEnvironmentStage.PLAN_COMMAND
 import static TerraformEnvironmentStage.APPLY
 import static TerraformEnvironmentStage.CONFIRM
 
-class TerraformOutputOnlyPlugin implements TerraformEnvironmentStagePlugin {
+class TerraformOutputOnlyPlugin implements TerraformEnvironmentStagePlugin, TerraformOutputCommandPlugin {
 
     public static void init() {
         TerraformOutputOnlyPlugin plugin = new TerraformOutputOnlyPlugin()
 
         BuildWithParametersPlugin.withBooleanParameter([
             name: "SHOW_OUTPUTS_ONLY",
-            description: "Only run 'terraform output' to show outputs, skipping plan and apply"
+            description: "Only run 'terraform output' to show outputs, skipping plan and apply."
+        ])
+        BuildWithParametersPlugin.withBooleanParameter([
+            name: "JSON_FORMAT_OUTPUTS",
+            description: "Render 'terraform output' results as JSON. Only applies if SHOW_OUTPUTS_ONLY is selected."
+        ])
+        BuildWithParametersPlugin.withStringParameter([
+            name: "REDIRECT_OUTPUTS_TO_FILE",
+            description: "Filename relative to the current workspace to redirect output to. Only applies if 'SHOW_OUTPUTS_ONLY' is selected."
         ])
 
         TerraformEnvironmentStage.addPlugin(plugin)
+        TerraformOutputCommand.addPlugin(plugin)
     }
 
     public Closure skipStage(String stageName) {
@@ -37,6 +46,16 @@ class TerraformOutputOnlyPlugin implements TerraformEnvironmentStagePlugin {
             stage.decorate(PLAN_COMMAND, skipStage(PLAN_COMMAND))
             stage.decorateAround(CONFIRM, skipStage(CONFIRM))
             stage.decorateAround(APPLY, skipStage(APPLY))
+        }
+    }
+
+    @Override
+    public void apply(TerraformOutputCommand command) {
+        if (Jenkinsfile.instance.getEnv().JSON_FORMAT_OUTPUTS == 'true') {
+            command.withJson(true)
+        }
+        if (Jenkinsfile.instance.getEnv().REDIRECT_OUTPUTS_TO_FILE) {
+            command.withRedirectFile(Jenkinsfile.instance.getEnv().REDIRECT_OUTPUTS_TO_FILE)
         }
     }
 }
