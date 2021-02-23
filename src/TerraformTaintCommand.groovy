@@ -38,4 +38,30 @@ class TerraformTaintCommand implements TerraformCommand {
   public String getEnvironment() {
     return this.environment
   }
+
+  public String toString() {
+    applyPluginsOnce()
+
+    def pattern
+    def parts = []
+    parts << terraformBinary
+    parts << command
+
+    parts.removeAll { it == null }
+    return parts.join(' ')
+  }
+
+  public static addPlugin(TerraformFormatCommandPlugin plugin) {
+    this.globalPlugins << plugin
+  }
+
+  private applyPluginsOnce() {
+    def remainingPlugins = globalPlugins - appliedPlugins
+
+    for (TerraformFormatCommandPlugin plugin in remainingPlugins) {
+      plugin.apply(this)
+      appliedPlugins << plugin
+    }
+  }
 }
+
