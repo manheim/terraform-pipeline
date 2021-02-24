@@ -52,8 +52,8 @@ class PassPlanFilePluginTest {
             def environment = spy(new TerraformEnvironmentStage())
             plugin.apply(environment)
 
-            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN), any(Closure.class))
-            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.APPLY), any(Closure.class))
+            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN_COMMAND), any(Closure.class))
+            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.APPLY_COMMAND), any(Closure.class))
         }
 
         @Test
