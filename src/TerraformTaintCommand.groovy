@@ -6,7 +6,7 @@ class TerraformTaintCommand implements TerraformCommand {
   private String originRepoSlug = ""
   private String terraformBinary = "terraform"
   private String command = "taint"
-  private String args = []
+  private String resource
   private static plugins = []
   private appliedPlugins = []
 
@@ -35,6 +35,10 @@ class TerraformTaintCommand implements TerraformCommand {
     return this
   }
 
+  public TerraformTaintCommand withResource(String resource) {
+    this.resource = resource
+  }
+
   public String getEnvironment() {
     return this.environment
   }
@@ -42,10 +46,10 @@ class TerraformTaintCommand implements TerraformCommand {
   public String toString() {
     applyPluginsOnce()
 
-    def pattern
     def parts = []
     parts << terraformBinary
     parts << command
+    parts << resource
 
     parts.removeAll { it == null }
     return parts.join(' ')
