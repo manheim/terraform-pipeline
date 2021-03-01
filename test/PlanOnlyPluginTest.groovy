@@ -26,7 +26,7 @@ class PlanOnlyPluginTest {
         }
 
         @Test
-        void addsParameter() {
+        void addsFailPlanOnChangesParameter() {
             PlanOnlyPlugin.init()
 
             def parametersPlugin = new BuildWithParametersPlugin()
@@ -39,15 +39,31 @@ class PlanOnlyPluginTest {
                 description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
             ]))
         }
+
+        @Test
+        void addsPlanOnlyParameter() {
+            PlanOnlyPlugin.init()
+
+            def parametersPlugin = new BuildWithParametersPlugin()
+            Collection actualParms = parametersPlugin.getBuildParameters()
+
+            assertThat(actualParms, hasItem([
+                $class: 'hudson.model.BooleanParameterDefinition',
+                name: "PLAN_ONLY",
+                defaultValue: false,
+                description: 'Run `terraform plan` only, skipping `terraform apply`.'
+            ]))
+        }
     }
 
     @Nested
     public class Apply {
 
         @Test
-        void decoratesTheTerraformEnvironmentStage()  {
+        void decoratesTheTerraformEnvironmentStageWhenPlanOnlyTrue()  {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             def environment = spy(new TerraformEnvironmentStage())
+            MockJenkinsfile.withEnv('PLAN_ONLY': 'true')
             plugin.apply(environment)
 
             verify(environment, times(1)).decorateAround(eq(TerraformEnvironmentStage.CONFIRM), any(Closure.class))
@@ -55,7 +71,18 @@ class PlanOnlyPluginTest {
         }
 
         @Test
-        void addsArgumentToTerraformPlan() {
+        void doesNotDecorateTheTerraformEnvironmentStageWhenPlanOnlyTrue()  {
+            PlanOnlyPlugin plugin = new PlanOnlyPlugin()
+            def environment = spy(new TerraformEnvironmentStage())
+            MockJenkinsfile.withEnv('PLAN_ONLY': 'false')
+            plugin.apply(environment)
+
+            verify(environment, times(0)).decorateAround(eq(TerraformEnvironmentStage.CONFIRM), any(Closure.class))
+            verify(environment, times(0)).decorateAround(eq(TerraformEnvironmentStage.APPLY), any(Closure.class))
+        }
+
+        @Test
+        void addsFailPlanOnChangesArgumentToTerraformPlan() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
             MockJenkinsfile.withEnv('FAIL_PLAN_ON_CHANGES': 'true')
@@ -68,7 +95,7 @@ class PlanOnlyPluginTest {
         }
 
         @Test
-        void doesNotAddArgumentToTerraformPlan() {
+        void doesNotAddFailPlanOnChangesArgumentToTerraformPlan() {
             PlanOnlyPlugin plugin = new PlanOnlyPlugin()
             TerraformPlanCommand command = new TerraformPlanCommand()
             MockJenkinsfile.withEnv('FAIL_PLAN_ON_CHANGES': 'false')

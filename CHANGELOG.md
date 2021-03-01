@@ -1,5 +1,8 @@
 # Unreleased
 
+* [Issue #344](https://github.com/manheim/terraform-pipeline/issues/344) Add PLAN_ONLY parameter to PlanOnlyPlugin
+  * **BREAKING CHANGE** This change is a breaking change. Prior to this update, applying the PlanOnlyPlugin would restrict the pipeline to only running `terraform plan`. This update changes behavior to simply providing a `PLAN_ONLY` boolean parameter that can be set to restrict the build behavior. It defaults to `false`.
+
 # v5.15
 
 * [Issue #172](https://github.com/manheim/terraform-pipeline/issues/172) Feature: ConditionalApplyPlugin - can allow apply for specific environments on all branches/PRs.

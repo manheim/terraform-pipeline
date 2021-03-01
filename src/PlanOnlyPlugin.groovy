@@ -7,6 +7,11 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin, TerraformPlanCo
         PlanOnlyPlugin plugin = new PlanOnlyPlugin()
 
         BuildWithParametersPlugin.withBooleanParameter([
+            name: "PLAN_ONLY",
+            description: 'Run `terraform plan` only, skipping `terraform apply`.'
+        ])
+
+        BuildWithParametersPlugin.withBooleanParameter([
             name: "FAIL_PLAN_ON_CHANGES",
             description: 'Plan run with -detailed-exitcode; ANY CHANGES will cause failure'
         ])
@@ -23,8 +28,10 @@ class PlanOnlyPlugin implements TerraformEnvironmentStagePlugin, TerraformPlanCo
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorateAround(CONFIRM, skipStage(CONFIRM))
-        stage.decorateAround(APPLY, skipStage(APPLY))
+        if (Jenkinsfile.instance.getEnv().PLAN_ONLY == 'true') {
+            stage.decorateAround(CONFIRM, skipStage(CONFIRM))
+            stage.decorateAround(APPLY, skipStage(APPLY))
+        }
     }
 
     @Override
