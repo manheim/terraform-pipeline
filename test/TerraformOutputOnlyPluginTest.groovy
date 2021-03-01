@@ -26,7 +26,7 @@ class TerraformOutputOnlyPluginTest {
         }
 
         @Test
-        void addsParameters() {
+        void addsShowOutputsOnlyParameter() {
             TerraformOutputOnlyPlugin.init()
 
             def parametersPlugin = new BuildWithParametersPlugin()
@@ -38,6 +38,14 @@ class TerraformOutputOnlyPluginTest {
                 defaultValue: false,
                 description: "Only run 'terraform output' to show outputs, skipping plan and apply."
             ]))
+        }
+
+        @Test
+        void addsJsonFormatOutputsParameter() {
+            TerraformOutputOnlyPlugin.init()
+
+            def parametersPlugin = new BuildWithParametersPlugin()
+            Collection actualParms = parametersPlugin.getBuildParameters()
 
             assertThat(actualParms, hasItem([
                 $class: 'hudson.model.BooleanParameterDefinition',
@@ -45,6 +53,14 @@ class TerraformOutputOnlyPluginTest {
                 defaultValue: false,
                 description: "Render 'terraform output' results as JSON. Only applies if SHOW_OUTPUTS_ONLY is selected."
             ]))
+        }
+
+        @Test
+        void addsRedirectOutputsToFileParameter() {
+            TerraformOutputOnlyPlugin.init()
+
+            def parametersPlugin = new BuildWithParametersPlugin()
+            Collection actualParms = parametersPlugin.getBuildParameters()
 
             assertThat(actualParms, hasItem([
                 $class: 'hudson.model.StringParameterDefinition',
