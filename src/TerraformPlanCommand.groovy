@@ -1,18 +1,20 @@
-class TerraformPlanCommand implements TerraformCommand, Resettable {
+class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanCommandPlugin>, Resettable {
     private static final DEFAULT_PLUGINS = []
     private boolean input = false
-    private String terraformBinary = "terraform"
     private String command = "plan"
-    String environment
     private prefixes = []
     private suffixes = []
     private arguments = []
-    private static plugins = DEFAULT_PLUGINS.clone()
-    private appliedPlugins = []
     private String directory
     private String errorFile
     private Closure variablePattern
     private Closure mapPattern
+
+    // The static initializer is needed to initialize the static variable inherited
+    // from the Pluggable trait when the class is loaded.
+    static {
+        this.plugins = DEFAULT_PLUGINS.clone()
+    }
 
     public TerraformPlanCommand(String environment) {
         this.environment = environment
@@ -77,9 +79,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         return this
     }
 
-    public String toString() {
-        applyPluginsOnce()
-
+    public String assembleCommandString() {
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary
@@ -103,33 +103,12 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         return pieces.join(' ')
     }
 
-    private applyPluginsOnce() {
-        def remainingPlugins = plugins - appliedPlugins
-
-        for (TerraformPlanCommandPlugin plugin in remainingPlugins) {
-            plugin.apply(this)
-            appliedPlugins << plugin
-        }
-    }
-
-    public static addPlugin(TerraformPlanCommandPlugin plugin) {
-        plugins << plugin
-    }
-
     public static TerraformPlanCommand instanceFor(String environment) {
         return new TerraformPlanCommand(environment)
             .withInput(false)
     }
 
-    public static getPlugins() {
-        return plugins
-    }
-
     public static reset() {
         this.plugins = DEFAULT_PLUGINS.clone()
-    }
-
-    public String getEnvironment() {
-        return environment
     }
 }

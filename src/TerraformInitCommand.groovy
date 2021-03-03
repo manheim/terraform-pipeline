@@ -1,6 +1,5 @@
-class TerraformInitCommand implements Resettable {
+class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitCommandPlugin>, Resettable {
     private boolean input = false
-    private String terraformBinary = "terraform"
     private String command = "init"
     String environment
     private prefixes = []
@@ -8,9 +7,6 @@ class TerraformInitCommand implements Resettable {
     private backendConfigs = []
     private boolean doBackend = true
     private String directory
-
-    private static globalPlugins = []
-    private appliedPlugins = []
 
     public TerraformInitCommand(String environment) {
         this.environment = environment
@@ -46,9 +42,7 @@ class TerraformInitCommand implements Resettable {
         return this
     }
 
-    public String toString() {
-        applyPluginsOnce()
-
+    public String assembleCommandString() {
         def pieces = []
         pieces += prefixes
         pieces << terraformBinary
@@ -72,29 +66,12 @@ class TerraformInitCommand implements Resettable {
         return pieces.join(' ')
     }
 
-    private applyPluginsOnce() {
-        def remainingPlugins = globalPlugins - appliedPlugins
-
-        for (TerraformInitCommandPlugin plugin in remainingPlugins) {
-            plugin.apply(this)
-            appliedPlugins << plugin
-        }
-    }
-
-    public static void addPlugin(TerraformInitCommandPlugin plugin) {
-        this.globalPlugins << plugin
-    }
-
     public static TerraformInitCommand instanceFor(String environment) {
         return new TerraformInitCommand(environment)
     }
 
-    public static getPlugins() {
-        return this.globalPlugins
-    }
-
     public static reset() {
-        globalPlugins = []
+        this.plugins = []
         // This is awkward - what about the applied plugins...?
     }
 }
