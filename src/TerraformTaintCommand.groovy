@@ -1,14 +1,10 @@
-class TerraformTaintCommand implements TerraformCommand {
+class TerraformTaintCommand implements TerraformCommand, Pluggable<TerraformTaintCommandPlugin> {
   private static DEFAULT_BRANCHES = ['master']
   private static branches = DEFAULT_BRANCHES
 
-  String environment
   private String originRepoSlug = ""
-  private String terraformBinary = "terraform"
   private String command = "taint"
   private String resource
-  private static plugins = []
-  private appliedPlugins = []
 
   public TerraformTaintCommand(String environment) {
     this.environment = environment
@@ -43,9 +39,7 @@ class TerraformTaintCommand implements TerraformCommand {
     return this.environment
   }
 
-  public String toString() {
-    applyPluginsOnce()
-
+  public String assembleCommandString() {
     def parts = []
     parts << terraformBinary
     parts << command
@@ -53,19 +47,6 @@ class TerraformTaintCommand implements TerraformCommand {
 
     parts.removeAll { it == null }
     return parts.join(' ')
-  }
-
-  public static addPlugin(TerraformFormatCommandPlugin plugin) {
-    this.globalPlugins << plugin
-  }
-
-  private applyPluginsOnce() {
-    def remainingPlugins = globalPlugins - appliedPlugins
-
-    for (TerraformFormatCommandPlugin plugin in remainingPlugins) {
-      plugin.apply(this)
-      appliedPlugins << plugin
-    }
   }
 }
 
