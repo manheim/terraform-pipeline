@@ -6,7 +6,7 @@ class ConfirmApplyPlugin implements TerraformEnvironmentStagePlugin, Resettable 
     public static parameters = []
     public static confirmConditions = []
     public static enabled = true
-    public static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply"?'
+    public static String confirmMessage = 'Are you absolutely sure the plan above is correct, and should be IMMEDIATELY DEPLOYED via "terraform apply" on stage ${environment}?'
     public static String okMessage = 'Run terraform apply now'
     public static String submitter
 
