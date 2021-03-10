@@ -1,4 +1,4 @@
-trait Pluggable<T> {
+trait Pluggable<T> implements Resettable {
     private static plugins = []
     private appliedPlugins = []
 
@@ -21,5 +21,9 @@ trait Pluggable<T> {
 
     public static getPlugins() {
         return plugins
+    }
+
+    public static void reset() {
+        this.plugins = []
     }
 }

@@ -1,3 +1,4 @@
+import org.codehaus.groovy.transform.trait.Traits
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -27,6 +28,13 @@ public class ResetStaticStateExtension implements BeforeEachCallback,
 
     @Memoized
     public findAllResettableClasses() {
-        return new Reflections(Resettable.getPackage().getName()).getSubTypesOf( Resettable.class )
+        // There's an interesting problem here.
+        def resettableClasses = new Reflections(Resettable.getPackage().getName()).getSubTypesOf( Resettable.class )
+        def traits = resettableClasses.find { Traits.isTrait(it) }
+        traits.each {
+            resettableClasses += new Reflections(it.getPackage().getName()).getSubTypesOf( it )
+            resettableClasses.removeElement(it)
+        }
+        return resettableClasses
     }
 }
