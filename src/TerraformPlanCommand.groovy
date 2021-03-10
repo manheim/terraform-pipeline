@@ -1,7 +1,9 @@
 class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanCommandPlugin>, Resettable {
     private static final DEFAULT_PLUGINS = []
     private boolean input = false
+    private String terraformBinary = "terraform"
     private String command = "plan"
+    String environment
     private prefixes = []
     private suffixes = []
     private arguments = []
@@ -111,5 +113,9 @@ class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanC
 
     public static reset() {
         this.plugins = DEFAULT_PLUGINS.clone()
+    }
+
+    public String getEnvironment() {
+        return environment
     }
 }

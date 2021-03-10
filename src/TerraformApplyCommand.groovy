@@ -1,6 +1,8 @@
 class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformApplyCommandPlugin>, Resettable {
     private boolean input = false
+    private String terraformBinary = "terraform"
     private String command = "apply"
+    String environment
     private prefixes = []
     private suffixes = []
     private args = []
@@ -98,5 +100,9 @@ class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformAppl
 
     public static reset() {
         this.plugins = []
+    }
+
+    public String getEnvironment() {
+        return environment
     }
 }

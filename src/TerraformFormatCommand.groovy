@@ -1,4 +1,4 @@
-class TerraformFormatCommand implements TerraformCommand, Pluggable<TerraformFormatCommandPlugin>, Resettable {
+class TerraformFormatCommand implements Pluggable<TerraformFormatCommandPlugin>, Resettable {
     private static boolean check = false
     private static boolean recursive = false
     private static boolean diff = false

@@ -1,5 +1,7 @@
 class TerraformOutputCommand implements TerraformCommand, Pluggable<TerraformOutputCommandPlugin>,Resettable {
     private String command = "output"
+    private String terraformBinary = "terraform"
+    String environment
     private boolean json = false
     private String redirectFile
     private String stateFilePath
@@ -41,5 +43,9 @@ class TerraformOutputCommand implements TerraformCommand, Pluggable<TerraformOut
 
     public static reset() {
         this.plugins = []
+    }
+
+    public String getEnvironment() {
+        return environment
     }
 }

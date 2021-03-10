@@ -1,5 +1,6 @@
 class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitCommandPlugin>, Resettable {
     private boolean input = false
+    private String terraformBinary = "terraform"
     private String command = "init"
     String environment
     private prefixes = []
@@ -74,5 +75,9 @@ class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitC
     public static reset() {
         this.plugins = []
         // This is awkward - what about the applied plugins...?
+    }
+
+    public String getEnvironment() {
+        return environment
     }
 }
