@@ -18,7 +18,8 @@ class TerraformOutputCommand implements TerraformCommand, Pluggable<TerraformOut
         return this
     }
 
-    public String assembleCommandString() {
+    public String toString() {
+        applyPlugins()
         def pieces = []
         pieces << terraformBinary
         pieces << command

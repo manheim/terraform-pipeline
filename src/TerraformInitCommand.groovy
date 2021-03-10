@@ -42,7 +42,8 @@ class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitC
         return this
     }
 
-    public String assembleCommandString() {
+    public String toString() {
+        applyPlugins()
         def pieces = []
         pieces += prefixes
         pieces << terraformBinary

@@ -17,10 +17,4 @@ trait TerraformCommand {
     public String getTerraformBinary() {
         return this.terraformBinary
     }
-
-    public abstract String assembleCommandString()
-
-    public String toString() {
-        return this.assembleCommandString()
-    }
 }

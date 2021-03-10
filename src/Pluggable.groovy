@@ -22,10 +22,4 @@ trait Pluggable<T> {
     public static getPlugins() {
         return plugins
     }
-
-    public String toString() {
-        applyPlugins()
-        // Chain the toString call to the next trait in the chain
-        return super.toString()
-    }
 }

@@ -7,7 +7,8 @@ class TerraformFormatCommand implements TerraformCommand, Pluggable<TerraformFor
     private Closure recursiveOptionPattern
     private Closure diffOptionPattern
 
-    public String assembleCommandString() {
+    public String toString() {
+        applyPlugins()
         def pattern
         def parts = []
         parts << 'terraform fmt'

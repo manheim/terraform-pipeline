@@ -79,7 +79,8 @@ class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanC
         return this
     }
 
-    public String assembleCommandString() {
+    public String toString() {
+        applyPlugins()
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary

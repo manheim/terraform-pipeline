@@ -28,7 +28,8 @@ class TerraformValidateCommand implements TerraformCommand, Pluggable<TerraformV
         return this
     }
 
-    public String assembleCommandString() {
+    public String toString() {
+        applyPlugins()
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary

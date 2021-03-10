@@ -71,7 +71,8 @@ class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformAppl
         return this
     }
 
-    public String assembleCommandString() {
+    public String toString() {
+        applyPlugins()
         def pieces = []
         pieces += prefixes
         pieces << terraformBinary

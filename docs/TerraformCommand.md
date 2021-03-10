@@ -13,9 +13,6 @@ The trait provides two parameters:
   method can refer to this property when assembling the final command, or
   ignore it entirely.
 
-The `TerraformCommand` trait overrides the default `toString()` method on the
-implementing class to return the output of `assembleCommandString()`.
-
 ```
 class MyTerraformCommand implements TerraformCommand {
   public String assembleCommandString() {
