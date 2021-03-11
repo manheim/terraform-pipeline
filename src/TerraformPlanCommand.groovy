@@ -1,5 +1,4 @@
-class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanCommandPlugin>, Resettable {
-    private static final DEFAULT_PLUGINS = []
+class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanCommandPlugin> {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "plan"
@@ -11,12 +10,6 @@ class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanC
     private String errorFile
     private Closure variablePattern
     private Closure mapPattern
-
-    // The static initializer is needed to initialize the static variable inherited
-    // from the Pluggable trait when the class is loaded.
-    static {
-        this.plugins = DEFAULT_PLUGINS.clone()
-    }
 
     public TerraformPlanCommand(String environment) {
         this.environment = environment
@@ -109,10 +102,6 @@ class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanC
     public static TerraformPlanCommand instanceFor(String environment) {
         return new TerraformPlanCommand(environment)
             .withInput(false)
-    }
-
-    public static reset() {
-        this.plugins = DEFAULT_PLUGINS.clone()
     }
 
     public String getEnvironment() {

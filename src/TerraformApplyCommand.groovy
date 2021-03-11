@@ -1,4 +1,4 @@
-class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformApplyCommandPlugin>, Resettable {
+class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformApplyCommandPlugin> {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "apply"
@@ -96,10 +96,6 @@ class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformAppl
         return new TerraformApplyCommand(environment)
             .withInput(false)
             .withArgument("-auto-approve")
-    }
-
-    public static reset() {
-        this.plugins = []
     }
 
     public String getEnvironment() {

@@ -1,4 +1,4 @@
-class TerraformValidateCommand implements Pluggable<TerraformValidateCommandPlugin>, Resettable {
+class TerraformValidateCommand implements Pluggable<TerraformValidateCommandPlugin> {
     private String terraformBinary = "terraform"
     private String command = "validate"
     private arguments = []
@@ -48,9 +48,5 @@ class TerraformValidateCommand implements Pluggable<TerraformValidateCommandPlug
 
     public static TerraformValidateCommand instance() {
         return new TerraformValidateCommand()
-    }
-
-    public static reset() {
-        this.plugins = []
     }
 }

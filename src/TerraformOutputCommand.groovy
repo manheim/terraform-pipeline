@@ -1,4 +1,4 @@
-class TerraformOutputCommand implements TerraformCommand, Pluggable<TerraformOutputCommandPlugin>,Resettable {
+class TerraformOutputCommand implements TerraformCommand, Pluggable<TerraformOutputCommandPlugin> {
     private String command = "output"
     private String terraformBinary = "terraform"
     String environment
@@ -39,10 +39,6 @@ class TerraformOutputCommand implements TerraformCommand, Pluggable<TerraformOut
 
     public static TerraformOutputCommand instanceFor(String environment) {
         return new TerraformOutputCommand(environment).withJson(false)
-    }
-
-    public static reset() {
-        this.plugins = []
     }
 
     public String getEnvironment() {

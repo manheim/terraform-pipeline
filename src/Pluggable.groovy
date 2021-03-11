@@ -23,7 +23,11 @@ trait Pluggable<T> implements Resettable {
         return plugins
     }
 
+    public static void resetPlugins(defaultPlugins = []) {
+        this.plugins = defaultPlugins.clone()
+    }
+
     public static void reset() {
-        this.plugins = []
+        this.resetPlugins()
     }
 }
