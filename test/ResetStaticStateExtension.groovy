@@ -28,13 +28,6 @@ public class ResetStaticStateExtension implements BeforeEachCallback,
 
     @Memoized
     public findAllResettableClasses() {
-        // There's an interesting problem here.
-        def resettableClasses = new Reflections(Resettable.getPackage().getName()).getSubTypesOf( Resettable.class )
-        def traits = resettableClasses.find { Traits.isTrait(it) }
-        traits.each {
-            resettableClasses += new Reflections(it.getPackage().getName()).getSubTypesOf( it )
-            resettableClasses.removeElement(it)
-        }
-        return resettableClasses
+        return new Reflections(Resettable.getPackage().getName()).getSubTypesOf( Resettable.class ).findAll { !Traits.isTrait(it) }
     }
 }
