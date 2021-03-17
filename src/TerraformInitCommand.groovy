@@ -71,8 +71,4 @@ class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitC
     public static TerraformInitCommand instanceFor(String environment) {
         return new TerraformInitCommand(environment)
     }
-
-    public String getEnvironment() {
-        return environment
-    }
 }
