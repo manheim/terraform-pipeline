@@ -1,4 +1,4 @@
-class TerraformApplyCommand implements TerraformCommand, Resettable {
+class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformApplyCommandPlugin> {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "apply"
@@ -6,8 +6,6 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     private prefixes = []
     private suffixes = []
     private args = []
-    private static plugins = []
-    private appliedPlugins = []
     private String directory
     private Closure variablePattern
     private Closure mapPattern
@@ -76,8 +74,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     }
 
     public String toString() {
-        applyPluginsOnce()
-
+        applyPlugins()
         def pieces = []
         pieces += prefixes
         pieces << terraformBinary
@@ -95,31 +92,10 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         return pieces.join(' ')
     }
 
-    private applyPluginsOnce() {
-        def remainingPlugins = plugins - appliedPlugins
-
-        for (TerraformApplyCommandPlugin plugin in remainingPlugins) {
-            plugin.apply(this)
-            appliedPlugins << plugin
-        }
-    }
-
-    public static void addPlugin(TerraformApplyCommandPlugin plugin) {
-        plugins << plugin
-    }
-
     public static TerraformApplyCommand instanceFor(String environment) {
         return new TerraformApplyCommand(environment)
             .withInput(false)
             .withArgument("-auto-approve")
-    }
-
-    public static getPlugins() {
-        return plugins
-    }
-
-    public static reset() {
-        this.plugins = []
     }
 
     public String getEnvironment() {

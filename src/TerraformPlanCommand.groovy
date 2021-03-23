@@ -1,5 +1,4 @@
-class TerraformPlanCommand implements TerraformCommand, Resettable {
-    private static final DEFAULT_PLUGINS = []
+class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanCommandPlugin> {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "plan"
@@ -7,8 +6,6 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
     private prefixes = []
     private suffixes = []
     private arguments = []
-    private static plugins = DEFAULT_PLUGINS.clone()
-    private appliedPlugins = []
     private String directory
     private String errorFile
     private Closure variablePattern
@@ -78,8 +75,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
     }
 
     public String toString() {
-        applyPluginsOnce()
-
+        applyPlugins()
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary
@@ -103,30 +99,9 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         return pieces.join(' ')
     }
 
-    private applyPluginsOnce() {
-        def remainingPlugins = plugins - appliedPlugins
-
-        for (TerraformPlanCommandPlugin plugin in remainingPlugins) {
-            plugin.apply(this)
-            appliedPlugins << plugin
-        }
-    }
-
-    public static addPlugin(TerraformPlanCommandPlugin plugin) {
-        plugins << plugin
-    }
-
     public static TerraformPlanCommand instanceFor(String environment) {
         return new TerraformPlanCommand(environment)
             .withInput(false)
-    }
-
-    public static getPlugins() {
-        return plugins
-    }
-
-    public static reset() {
-        this.plugins = DEFAULT_PLUGINS.clone()
     }
 
     public String getEnvironment() {

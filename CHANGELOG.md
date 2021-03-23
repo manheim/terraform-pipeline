@@ -2,10 +2,9 @@
 
 * [Issue #344](https://github.com/manheim/terraform-pipeline/issues/344) Add PLAN_ONLY parameter to PlanOnlyPlugin
   * **BREAKING CHANGE** This change is a breaking change. Prior to this update, applying the PlanOnlyPlugin would restrict the pipeline to only running `terraform plan`. This update changes behavior to simply providing a `PLAN_ONLY` boolean parameter that can be set to restrict the build behavior. It defaults to `false`.
-* [Issue #347](https://github.com/manheim/terraform-pipeline/pull/348)
-  Feature: TerraformOutputOnlyPlugin - can restrict a pipeline run to
-  displaying the current state outputs only via new job parameters.
+* [Issue #347](https://github.com/manheim/terraform-pipeline/pull/348) Feature: TerraformOutputOnlyPlugin - can restrict a pipeline run to displaying the current state outputs only via new job parameters.
 * [Issue #318](https://github.com/manheim/terraform-pipeline/issues/318) Feature: Show environment on confirm command page
+* [Issue #349](https://github.com/manheim/terraform-pipeline/pull/349) Extract plugin handling to a `Pluggable` trait to DRY up the existing TerraformCommand classes.
 
 # v5.15
 

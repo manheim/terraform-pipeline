@@ -1,11 +1,9 @@
-class TerraformValidateCommand implements Resettable {
+class TerraformValidateCommand implements Pluggable<TerraformValidateCommandPlugin> {
     private String terraformBinary = "terraform"
     private String command = "validate"
     private arguments = []
     private prefixes = []
     private suffixes = []
-    private static globalPlugins = []
-    private appliedPlugins = []
     private String directory
 
     public TerraformValidateCommand() {
@@ -32,7 +30,7 @@ class TerraformValidateCommand implements Resettable {
     }
 
     public String toString() {
-        applyPluginsOnce()
+        applyPlugins()
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary
@@ -48,28 +46,7 @@ class TerraformValidateCommand implements Resettable {
         return pieces.join(' ')
     }
 
-    private applyPluginsOnce() {
-        def remainingPlugins = globalPlugins - appliedPlugins
-
-        for (TerraformValidateCommandPlugin plugin in remainingPlugins) {
-            plugin.apply(this)
-            appliedPlugins << plugin
-        }
-    }
-
-    public static addPlugin(TerraformValidateCommandPlugin plugin) {
-        this.globalPlugins << plugin
-    }
-
     public static TerraformValidateCommand instance() {
         return new TerraformValidateCommand()
-    }
-
-    public static getPlugins() {
-        return this.globalPlugins
-    }
-
-    public static reset() {
-        this.globalPlugins = []
     }
 }
