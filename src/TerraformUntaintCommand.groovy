@@ -1,6 +1,7 @@
-class TerraformUntaintCommand implements TerraformCommand, Pluggable<TerraformUntaintCommandPlugin>, Resettable {
+class TerraformUntaintCommand implements TerraformCommand, Pluggable<TerraformUntaintCommandPlugin> {
     private String command = "untaint"
     private String resource
+    private String environment
 
     public TerraformUntaintCommand(String environment) {
         this.environment = environment
@@ -12,10 +13,11 @@ class TerraformUntaintCommand implements TerraformCommand, Pluggable<TerraformUn
         return this
     }
 
-    public String assembleCommandString() {
+    public String toString() {
+        applyPlugins()
         if (resource) {
             def parts = []
-            parts << terraformBinary
+            parts << 'terraform'
             parts << command
             parts << resource
 
@@ -26,16 +28,16 @@ class TerraformUntaintCommand implements TerraformCommand, Pluggable<TerraformUn
         return "echo \"No resource set, skipping 'terraform untaint'."
     }
 
-    public static reset() {
-        this.plugins = []
-    }
-
     public String getResource() {
         return this.resource
     }
 
     public static TerraformUntaintCommand instanceFor(String environment) {
         return new TerraformUntaintCommand(environment)
+    }
+
+    public String getEnvironment() {
+        return this.environment
     }
 }
 
