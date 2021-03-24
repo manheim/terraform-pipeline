@@ -23,7 +23,7 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
         TerraformUntaintCommand.addPlugin(plugin)
     }
 
-    public static withOriginRepo(String origin_repo) {
+    public static onlyOnOriginRepo(String origin_repo) {
         this.origin_repo = origin_repo
         return this
     }

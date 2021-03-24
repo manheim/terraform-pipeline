@@ -128,7 +128,7 @@ class TerraformTaintPluginTest {
 
         @Test
         void returnsFalseWhenOriginRepoMismatch() {
-            TerraformTaintPlugin.withOriginRepo('username/repo')
+            TerraformTaintPlugin.onlyOnOriginRepo('username/repo')
             TerraformTaintPlugin plugin = new TerraformTaintPlugin()
             MockJenkinsfile.withEnv(['BRANCH_NAME': 'master', 'GIT_URL': 'https://git.foo/fork/repo'])
 
@@ -138,7 +138,7 @@ class TerraformTaintPluginTest {
 
         @Test
         void returnsTrueWhenOriginRepoMatches() {
-            TerraformTaintPlugin.withOriginRepo('username/repo')
+            TerraformTaintPlugin.onlyOnOriginRepo('username/repo')
             TerraformTaintPlugin plugin = new TerraformTaintPlugin()
             MockJenkinsfile.withEnv(['BRANCH_NAME': 'master', 'GIT_URL': 'https://git.foo/username/repo'])
 
