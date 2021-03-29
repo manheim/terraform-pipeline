@@ -118,35 +118,6 @@ class TerraformTaintPluginTest {
     @Nested
     public class ShouldApply {
         @Test
-        void returnsTrueWhenNoOriginRepoSet() {
-            TerraformTaintPlugin plugin = new TerraformTaintPlugin()
-            MockJenkinsfile.withEnv(['BRANCH_NAME': 'master', 'GIT_URL': 'https://git.foo/username/repo'])
-
-            def result = plugin.shouldApply()
-            assertThat(result, equalTo(true))
-        }
-
-        @Test
-        void returnsFalseWhenOriginRepoMismatch() {
-            TerraformTaintPlugin.onlyOnOriginRepo('username/repo')
-            TerraformTaintPlugin plugin = new TerraformTaintPlugin()
-            MockJenkinsfile.withEnv(['BRANCH_NAME': 'master', 'GIT_URL': 'https://git.foo/fork/repo'])
-
-            def result = plugin.shouldApply()
-            assertThat(result, equalTo(false))
-        }
-
-        @Test
-        void returnsTrueWhenOriginRepoMatches() {
-            TerraformTaintPlugin.onlyOnOriginRepo('username/repo')
-            TerraformTaintPlugin plugin = new TerraformTaintPlugin()
-            MockJenkinsfile.withEnv(['BRANCH_NAME': 'master', 'GIT_URL': 'https://git.foo/username/repo'])
-
-            def result = plugin.shouldApply()
-            assertThat(result, equalTo(true))
-        }
-
-        @Test
         void returnsFalseWhenWrongBranch() {
             TerraformTaintPlugin plugin = new TerraformTaintPlugin()
             MockJenkinsfile.withEnv(['BRANCH_NAME': 'notmaster', 'GIT_URL': 'https://git.foo/username/repo'])

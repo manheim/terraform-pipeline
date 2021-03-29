@@ -11,12 +11,6 @@ untainted, resulting in no change.
 
 There are several ways to customize where and when the taint/untaint can run:
 
-* `onlyOnOriginRepo()`: This method takes in a string of the form
-  `<userOrOrg>/<repoName>`. When specified, the plugin will only apply when
-  the current checkout is from the same repository and not a fork or other
-  clone.
-* `onMasterOnly()`: This takes no arguments. This restricts the plugin from
-  applying to any branch other than master. This is the default behavior.
 * `onBranch()`: This takes in a branch name as a parameter. This adds the
   branch to the list of approved branches.
 
@@ -31,7 +25,6 @@ Jenkinsfile.init(this, env)
 // and will only apply if the current worspace code is checked out from the
 // MyOrg/myrepo repository.
 TerraformTaintPlugin.init()
-TerraformTaintPlugin.onlyOnOriginRepo("MyOrg/myrepo")
 
 def validate = new TerraformValidateStage()
 

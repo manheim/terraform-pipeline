@@ -1,7 +1,6 @@
 import static TerraformEnvironmentStage.PLAN_COMMAND
 
 class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, TerraformTaintCommandPlugin, TerraformUntaintCommandPlugin, Resettable {
-    public static String origin_repo = ''
     private static DEFAULT_BRANCHES = ['master']
     private static branches = DEFAULT_BRANCHES
 
@@ -21,16 +20,6 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
         TerraformEnvironmentStage.addPlugin(plugin)
         TerraformTaintCommand.addPlugin(plugin)
         TerraformUntaintCommand.addPlugin(plugin)
-    }
-
-    public static onlyOnOriginRepo(String origin_repo) {
-        this.origin_repo = origin_repo
-        return this
-    }
-
-    public static onMasterOnly() {
-        this.branches = ['master']
-        return this
     }
 
     public static onBranch(String branchName) {
@@ -58,38 +47,14 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     }
 
     public boolean shouldApply() {
-        def apply = false
-        def current_repo = repoSlug(Jenkinsfile.instance.getEnv().GIT_URL)
-
         // Check branches
         if (branches.contains(Jenkinsfile.instance.getEnv().BRANCH_NAME)) {
-            apply = true
+            return true
         } else if (null == Jenkinsfile.instance.getEnv().BRANCH_NAME) {
-            apply = true
+            return true
         }
 
-        // Check repo slug
-        if (current_repo.toLowerCase() == this.origin_repo.toLowerCase()) {
-            apply = apply && true
-        } else if (! this.origin_repo) { // We assume that no origin repo means run always
-            apply = apply && true
-        } else { // We don't have a match, so reset apply
-            apply = false
-        }
-
-        return apply
-    }
-
-    private String repoSlug(String originUrl) {
-        if (! originUrl.endsWith('.git')) { originUrl = "${originUrl}.git" }
-        def giturl = originUrl =~ /^.*@.*[:\/]([^\/]+\/.*)\.git$/
-        def httpurl = originUrl =~ /^https?:\/\/[^\/]+\/([^\/]+\/[^\/]+)\.git$/
-        if ( giturl.matches() ) {
-            return giturl[0][1]
-        } else if ( httpurl.matches() ) {
-            return httpurl[0][1]
-        }
-        return ""
+        return false
     }
 
     public Closure runTerraformTaintCommand(String environment) {
@@ -115,7 +80,6 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     }
 
     public static reset() {
-        this.origin_repo = ''
         this.branches = DEFAULT_BRANCHES.clone()
     }
 }
