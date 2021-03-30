@@ -9,23 +9,18 @@ class TerraformTaintCommand implements TerraformCommand, Pluggable<TerraformTain
 
     public TerraformTaintCommand withResource(String resource) {
         this.resource = resource
-
         return this
     }
 
     public String toString() {
         applyPlugins()
-        if (resource) {
-            def parts = []
-            parts << 'terraform'
-            parts << command
-            parts << resource
+        def parts = []
+        parts << 'terraform'
+        parts << command
+        parts << resource
 
-            parts.removeAll { it == null }
-            return parts.join(' ')
-        }
-
-        return "echo \"No resource set, skipping 'terraform taint'."
+        parts.removeAll { it == null }
+        return parts.join(' ')
     }
 
     public String getResource() {

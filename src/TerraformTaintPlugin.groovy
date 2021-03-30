@@ -60,7 +60,7 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     public Closure runTerraformTaintCommand(String environment) {
         def taintCommand = TerraformTaintCommand.instanceFor(environment)
         return { closure ->
-            if (taintCommand.resource && shouldApply()) {
+            if (shouldApply()) {
                 echo "Running '${taintCommand.toString()}'. TerraformTaintPlugin is enabled."
                 sh taintCommand.toString()
             }
@@ -71,7 +71,7 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     public Closure runTerraformUntaintCommand(String environment) {
         def untaintCommand = TerraformUntaintCommand.instanceFor(environment)
         return { closure ->
-            if (untaintCommand.resource && shouldApply()) {
+            if (shouldApply()) {
                 echo "Running '${untaintCommand.toString()}'. TerraformTaintPlugin is enabled."
                 sh untaintCommand.toString()
             }

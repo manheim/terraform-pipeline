@@ -9,23 +9,18 @@ class TerraformUntaintCommand implements TerraformCommand, Pluggable<TerraformUn
 
     public TerraformUntaintCommand withResource(String resource) {
         this.resource = resource
-
         return this
     }
 
     public String toString() {
         applyPlugins()
-        if (resource) {
-            def parts = []
-            parts << 'terraform'
-            parts << command
-            parts << resource
+        def parts = []
+        parts << 'terraform'
+        parts << command
+        parts << resource
 
-            parts.removeAll { it == null }
-            return parts.join(' ')
-        }
-
-        return "echo \"No resource set, skipping 'terraform untaint'."
+        parts.removeAll { it == null }
+        return parts.join(' ')
     }
 
     public String getResource() {

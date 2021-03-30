@@ -17,7 +17,7 @@ class TerraformUntaintCommandTest {
             def command = new TerraformUntaintCommand()
 
             def actualCommand = command.toString()
-            assertThat(actualCommand, equalTo("echo \"No resource set, skipping 'terraform untaint'."))
+            assertThat(actualCommand, equalTo("terraform untaint"))
         }
 
         @Test
