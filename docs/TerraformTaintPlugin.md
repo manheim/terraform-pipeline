@@ -22,8 +22,6 @@ Jenkinsfile.init(this, env)
 
 // This enables the "taint" and "untaint" functionality
 // It will only apply to the master branch (default behavior)
-// and will only apply if the current worspace code is checked out from the
-// MyOrg/myrepo repository.
 TerraformTaintPlugin.init()
 
 def validate = new TerraformValidateStage()
