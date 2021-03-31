@@ -40,7 +40,7 @@ class TerraformValidateCommand implements Resettable{
         }
     }
 
-    public static void addPlugin(T plugin) {
+    public static void addPlugin(TerraformValidateCommandPlugin plugin) {
         plugins << plugin
     }
 
