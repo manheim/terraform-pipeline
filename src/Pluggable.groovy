@@ -1,3 +1,5 @@
+import com.cloudbees.groovy.cps.NonCPS
+
 /**
  * The `Pluggable` trait can be used to add plugin management to a class. It
  * takes as a type parameter the plugin type it accepts.
@@ -41,6 +43,7 @@ trait Pluggable<T> implements Resettable {
      *
      * @param defaultPlugins list of plugins to set, default: []
      */
+    @NonCPS
     public static void resetPlugins(defaultPlugins = []) {
         this.plugins = defaultPlugins.clone()
     }
