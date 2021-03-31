@@ -34,7 +34,7 @@ class TerraformValidateCommand implements Resettable{
     public applyPlugins() {
         def remainingPlugins = plugins - appliedPlugins
 
-        for (T plugin in remainingPlugins) {
+        for (TerraformValidateCommandPlugin plugin in remainingPlugins) {
             plugin.apply(this)
             appliedPlugins << plugin
         }
