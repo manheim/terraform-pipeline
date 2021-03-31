@@ -111,6 +111,8 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 ### Terraform Backend Management
 * [ConsulBackendPlugin](./docs/ConsulBackendPlugin.md): Use Consul backend to manage terraform state.
 * [S3BackendPlugin](./docs/S3BackendPlugin.md): Use S3 backend to manage terraform state.
+### Database Migrations
+* [FlywayMigrationPlugin](./docs/FlywayMigrationPlugin.md): Use Flyway to automate your database migrations.
 ### Other
 * [AgentNodePlugin](./docs/AgentNodePlugin.md): Run your pipeline on agents that are configured with Docker.
 * [AnsiColorPlugin](./docs/AnsiColorPlugin.md): Enable ansi-color output.
