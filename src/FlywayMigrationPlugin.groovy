@@ -4,6 +4,13 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin {
     }
 
     public void apply(TerraformEnvironmentStage stage) {
-        println "do the thing"
+        stage.decorate(TerraformEnvironmentStage.PLAN, flywayInfoClosure())
+    }
+
+    public Closure flywayInfoClosure() {
+        return { innerClosure ->
+            innerClosure()
+            sh "echo run flyway info"
+        }
     }
 }
