@@ -1,4 +1,4 @@
-class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitCommandPlugin> {
+class TerraformInitCommand implements TerraformCommand, Resettable {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "init"
@@ -8,6 +8,8 @@ class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitC
     private backendConfigs = []
     private boolean doBackend = true
     private String directory
+    private static plugins = []
+    private appliedPlugins = []
 
     public TerraformInitCommand(String environment) {
         this.environment = environment
@@ -70,5 +72,30 @@ class TerraformInitCommand implements TerraformCommand, Pluggable<TerraformInitC
 
     public static TerraformInitCommand instanceFor(String environment) {
         return new TerraformInitCommand(environment)
+    }
+
+    public applyPlugins() {
+        def remainingPlugins = plugins - appliedPlugins
+
+        for (TerraformInitCommandPlugin plugin in remainingPlugins) {
+            plugin.apply(this)
+            appliedPlugins << plugin
+        }
+    }
+
+    public static void addPlugin(TerraformInitCommandPlugin plugin) {
+        plugins << plugin
+    }
+
+    public static void setPlugins(plugins) {
+        this.plugins = plugins
+    }
+
+    public static getPlugins() {
+        return plugins
+    }
+
+    public static void reset() {
+        this.plugins = []
     }
 }

@@ -1,4 +1,4 @@
-class TerraformFormatCommand implements Pluggable<TerraformFormatCommandPlugin> {
+class TerraformFormatCommand implements Resettable {
     private static boolean check = false
     private static boolean recursive = false
     private static boolean diff = false
@@ -6,6 +6,9 @@ class TerraformFormatCommand implements Pluggable<TerraformFormatCommandPlugin> 
     private Closure checkOptionPattern
     private Closure recursiveOptionPattern
     private Closure diffOptionPattern
+
+    private static plugins = []
+    private appliedPlugins = []
 
     public String toString() {
         applyPlugins()
@@ -60,10 +63,31 @@ class TerraformFormatCommand implements Pluggable<TerraformFormatCommandPlugin> 
         return this
     }
 
+    public applyPlugins() {
+        def remainingPlugins = plugins - appliedPlugins
+
+        for (TerraformFormatCommandPlugin plugin in remainingPlugins) {
+            plugin.apply(this)
+            appliedPlugins << plugin
+        }
+    }
+
+    public static void addPlugin(TerraformFormatCommandPlugin plugin) {
+        plugins << plugin
+    }
+
+    public static void setPlugins(plugins) {
+        this.plugins = plugins
+    }
+
+    public static getPlugins() {
+        return plugins
+    }
+
     public static void reset() {
         check = false
         recursive = false
         diff = false
-        resetPlugins()
+        this.plugins = []
     }
 }
