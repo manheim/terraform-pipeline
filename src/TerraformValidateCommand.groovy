@@ -31,35 +31,6 @@ class TerraformValidateCommand implements Resettable {
         return this
     }
 
-    public applyPlugins() {
-        def remainingPlugins = plugins - appliedPlugins
-
-        for (TerraformValidateCommandPlugin plugin in remainingPlugins) {
-            plugin.apply(this)
-            appliedPlugins << plugin
-        }
-    }
-
-    public static void addPlugin(TerraformValidateCommandPlugin plugin) {
-        plugins << plugin
-    }
-
-    public static void setPlugins(plugins) {
-        this.plugins = plugins
-    }
-
-    public static getPlugins() {
-        return plugins
-    }
-
-    public static void resetPlugins(defaultPlugins = []) {
-        this.plugins = defaultPlugins.clone()
-    }
-
-    public static void reset() {
-        this.resetPlugins()
-    }
-
     public String toString() {
         applyPlugins()
         def pieces = []
