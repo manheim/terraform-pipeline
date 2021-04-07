@@ -1,7 +1,9 @@
-class TerraformUntaintCommand implements TerraformCommand, Pluggable<TerraformUntaintCommandPlugin> {
+class TerraformUntaintCommand implements TerraformCommand, Resettable {
     private String command = "untaint"
     private String resource
     private String environment
+    private static plugins = []
+    private appliedPlugins = []
 
     public TerraformUntaintCommand(String environment) {
         this.environment = environment
@@ -33,6 +35,31 @@ class TerraformUntaintCommand implements TerraformCommand, Pluggable<TerraformUn
 
     public String getEnvironment() {
         return this.environment
+    }
+
+    public applyPlugins() {
+        def remainingPlugins = plugins - appliedPlugins
+
+        for (TerraformUntaintCommandPlugin plugin in remainingPlugins) {
+            plugin.apply(this)
+            appliedPlugins << plugin
+        }
+    }
+
+    public static void addPlugin(TerraformUntaintCommandPlugin plugin) {
+        plugins << plugin
+    }
+
+    public static void setPlugins(plugins) {
+        this.plugins = plugins
+    }
+
+    public static getPlugins() {
+        return plugins
+    }
+
+    public static void reset() {
+        this.plugins = []
     }
 }
 

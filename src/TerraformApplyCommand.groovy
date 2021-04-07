@@ -1,4 +1,4 @@
-class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformApplyCommandPlugin> {
+class TerraformApplyCommand implements TerraformCommand, Resettable {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "apply"
@@ -9,6 +9,8 @@ class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformAppl
     private String directory
     private Closure variablePattern
     private Closure mapPattern
+    private static plugins = []
+    private appliedPlugins = []
 
     public TerraformApplyCommand(String environment) {
         this.environment = environment
@@ -100,5 +102,30 @@ class TerraformApplyCommand implements TerraformCommand, Pluggable<TerraformAppl
 
     public String getEnvironment() {
         return environment
+    }
+
+    public applyPlugins() {
+        def remainingPlugins = plugins - appliedPlugins
+
+        for (TerraformApplyCommandPlugin plugin in remainingPlugins) {
+            plugin.apply(this)
+            appliedPlugins << plugin
+        }
+    }
+
+    public static void addPlugin(TerraformApplyCommandPlugin plugin) {
+        plugins << plugin
+    }
+
+    public static void setPlugins(plugins) {
+        this.plugins = plugins
+    }
+
+    public static getPlugins() {
+        return plugins
+    }
+
+    public static void reset() {
+        this.plugins = []
     }
 }

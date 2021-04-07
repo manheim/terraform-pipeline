@@ -1,4 +1,4 @@
-class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanCommandPlugin> {
+class TerraformPlanCommand implements TerraformCommand, Resettable {
     private boolean input = false
     private String terraformBinary = "terraform"
     private String command = "plan"
@@ -10,6 +10,8 @@ class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanC
     private String errorFile
     private Closure variablePattern
     private Closure mapPattern
+    private static plugins = []
+    private appliedPlugins = []
 
     public TerraformPlanCommand(String environment) {
         this.environment = environment
@@ -106,5 +108,30 @@ class TerraformPlanCommand implements TerraformCommand, Pluggable<TerraformPlanC
 
     public String getEnvironment() {
         return environment
+    }
+
+    public applyPlugins() {
+        def remainingPlugins = plugins - appliedPlugins
+
+        for (TerraformPlanCommandPlugin plugin in remainingPlugins) {
+            plugin.apply(this)
+            appliedPlugins << plugin
+        }
+    }
+
+    public static void addPlugin(TerraformPlanCommandPlugin plugin) {
+        plugins << plugin
+    }
+
+    public static void setPlugins(plugins) {
+        this.plugins = plugins
+    }
+
+    public static getPlugins() {
+        return plugins
+    }
+
+    public static void reset() {
+        this.plugins = []
     }
 }
