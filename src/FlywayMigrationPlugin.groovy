@@ -40,10 +40,15 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
             result << "FLYWAY_PASSWORD=${password}"
         }
 
+        if (this.user) {
+            result << "FLYWAY_USER=${user}"
+        }
+
         return result
     }
 
     public static reset() {
         password = null
+        user = null
     }
 }

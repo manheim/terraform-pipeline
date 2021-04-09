@@ -77,6 +77,16 @@ class FlywayMigrationPluginTest {
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
+
+        @Test
+        void setsFlywayUserEnvironmentVariable() {
+            def expectedUser = 'user'
+
+            FlywayMigrationPlugin.withUser(expectedUser)
+            def environmentVariableList = FlywayMigrationPlugin.getEnvironmentVariableList()
+
+            assertThat(environmentVariableList, equalTo(["FLYWAY_USER=${expectedUser}"]))
+        }
     }
 
     @Nested
