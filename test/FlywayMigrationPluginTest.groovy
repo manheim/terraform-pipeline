@@ -58,5 +58,15 @@ class FlywayMigrationPluginTest {
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
     }
+
+    @Nested
+    public class WithUser {
+        @Test
+        void isFluent() {
+            def result = FlywayMigrationPlugin.withUser('someuser')
+
+            assertThat(result, equalTo(FlywayMigrationPlugin.class))
+        }
+    }
 }
 

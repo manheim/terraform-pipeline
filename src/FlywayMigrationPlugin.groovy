@@ -1,6 +1,7 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin {
     public static Map<String,String> outputMappings = [:]
     public static String password
+    public static String user
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new FlywayMigrationPlugin())
@@ -24,6 +25,11 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin {
 
     public static withPassword(String password) {
         this.password = password
+        return this
+    }
+
+    public static withUser(String user) {
+        this.user = user
         return this
     }
 }
