@@ -70,6 +70,16 @@ class FlywayMigrationPluginTest {
     }
 
     @Nested
+    public class WithLocation {
+        @Test
+        void isFluent() {
+            def result = FlywayMigrationPlugin.withLocation('filesystem:/some/folder')
+
+            assertThat(result, equalTo(FlywayMigrationPlugin.class))
+        }
+    }
+
+    @Nested
     public class FlywayInfoClosure {
         @Test
         void runsTheNestedClosure() {

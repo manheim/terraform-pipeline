@@ -2,6 +2,7 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     public static Map<String,String> outputMappings = [:]
     public static String passwordVariable
     public static String userVariable
+    public static String locations
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new FlywayMigrationPlugin())
@@ -32,7 +33,13 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
 
             def variableName = "TF_VAR_USERNAME"
             withEnv(environmentVariables) {
-                sh "flyway info"
+                def flywayCommand = []
+                flywayCommand << "flyway"
+                if (locations) {
+                    flywayCommand << "-locations=\"${locations}\""
+                }
+                flywayCommand << "info"
+                sh flywayCommand.join(' ')
             }
         }
     }
@@ -52,8 +59,14 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         return this
     }
 
+    public static withLocation(String locations) {
+        this.locations = locations
+        return this
+    }
+
     public static reset() {
         passwordVariable = null
         userVariable = null
+        locations = null
     }
 }
