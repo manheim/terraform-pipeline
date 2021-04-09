@@ -57,6 +57,16 @@ class FlywayMigrationPluginTest {
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
+
+        @Test
+        void setsFlywayPasswordEnvironmentVariable() {
+            def expectedPassword = 'mypass'
+
+            FlywayMigrationPlugin.withPassword(expectedPassword)
+            def environmentVariableList = FlywayMigrationPlugin.getEnvironmentVariableList()
+
+            assertThat(environmentVariableList, equalTo(["FLYWAY_PASSWORD=${expectedPassword}"]))
+        }
     }
 
     @Nested
@@ -66,6 +76,32 @@ class FlywayMigrationPluginTest {
             def result = FlywayMigrationPlugin.withUser('someuser')
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
+        }
+    }
+
+    @Nested
+    public class FlywayInfoClosure {
+        @Test
+        void runsTheNestedClosure() {
+            def plugin = new FlywayMigrationPlugin()
+            def iWasCalled = false
+            def nestedClosure = { -> iWasCalled = true }
+
+            def flywayClosure = plugin.flywayInfoClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure(nestedClosure)
+
+            assertThat(iWasCalled, equalTo(true))
+        }
+    }
+
+    @Nested
+    public class GetEnvironmentVariableList {
+        @Test
+        void isEmptyByDefault() {
+            def result = FlywayMigrationPlugin.getEnvironmentVariableList()
+
+            assertThat(result, equalTo([]))
         }
     }
 }

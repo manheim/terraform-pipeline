@@ -1,4 +1,4 @@
-class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin {
+class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     public static Map<String,String> outputMappings = [:]
     public static String password
     public static String user
@@ -31,5 +31,19 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin {
     public static withUser(String user) {
         this.user = user
         return this
+    }
+
+    public static getEnvironmentVariableList() {
+        def result = []
+
+        if (this.password) {
+            result << "FLYWAY_PASSWORD=${password}"
+        }
+
+        return result
+    }
+
+    public static reset() {
+        password = null
     }
 }
