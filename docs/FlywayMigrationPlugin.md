@@ -30,8 +30,8 @@ Jenkinsfile.init(this, Customizations)
 // Sets FLYWAY_USER to the value of $TF_VAR_MIGRATION_USER
 // Sets FLYWAY_PASSWORD to the value of $TF_VAR_MIGRATION_PASSWORD
 FlywayMigrationPlugin.convertOutputToEnvironmentVariable('jdbc_url_with_database', 'FLYWAY_URL')
-                     .withUser('$TF_VAR_MIGRATION_USER')
-                     .withPassword('$TF_VAR_MIGRATION_PASSWORD')
+                     .withUserVariable('TF_VAR_MIGRATION_USER')
+                     .withPasswordVariable('TF_VAR_MIGRATION_PASSWORD')
                      .init()
 
 def validate = new TerraformValidateStage()

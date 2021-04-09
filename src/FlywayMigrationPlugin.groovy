@@ -1,7 +1,7 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     public static Map<String,String> outputMappings = [:]
-    public static String password
-    public static String user
+    public static String passwordVariable
+    public static String userVariable
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new FlywayMigrationPlugin())
@@ -22,16 +22,17 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
                 "${variable}=${outputValue}"
             }
 
-            if (password) {
-                environmentVariables << "FLYWAY_PASSWORD=${password}"
+            if (passwordVariable) {
+                environmentVariables << "FLYWAY_PASSWORD=${env[passwordVariable]}"
             }
 
-            if (user) {
-                environmentVariables << "FLYWAY_USER=${user}"
+            if (userVariable) {
+                environmentVariables << "FLYWAY_USER=${env[userVariable]}"
             }
 
+            def variableName = "TF_VAR_USERNAME"
             withEnv(environmentVariables) {
-                sh "echo run flyway info, user=\$FLYWAY_USER, url=\$FLYWAY_URL"
+                sh "flyway info"
             }
         }
     }
@@ -41,32 +42,18 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         return this
     }
 
-    public static withPassword(String password) {
-        this.password = password
+    public static withPasswordFromEnvironmentVariable(String passwordVariable) {
+        this.passwordVariable = passwordVariable
         return this
     }
 
-    public static withUser(String user) {
-        this.user = user
+    public static withUserFromEnvironmentVariable(String userVariable) {
+        this.userVariable = userVariable
         return this
-    }
-
-    public static getEnvironmentVariableList() {
-        def result = []
-
-        if (this.password) {
-            result << "FLYWAY_PASSWORD=${password}"
-        }
-
-        if (this.user) {
-            result << "FLYWAY_USER=${user}"
-        }
-
-        return result
     }
 
     public static reset() {
-        password = null
-        user = null
+        passwordVariable = null
+        userVariable = null
     }
 }

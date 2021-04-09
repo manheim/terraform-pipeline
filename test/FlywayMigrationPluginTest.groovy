@@ -50,20 +50,20 @@ class FlywayMigrationPluginTest {
     }
 
     @Nested
-    public class WithPassword {
+    public class WithPasswordFromEnvironmentVariable {
         @Test
         void isFluent() {
-            def result = FlywayMigrationPlugin.withPassword('somepassword')
+            def result = FlywayMigrationPlugin.withPasswordFromEnvironmentVariable('MY_PASSWORD')
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
     }
 
     @Nested
-    public class WithUser {
+    public class WithUserFromEnvironmentVariable {
         @Test
         void isFluent() {
-            def result = FlywayMigrationPlugin.withUser('someuser')
+            def result = FlywayMigrationPlugin.withUserFromEnvironmentVariable('MY_USER')
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
@@ -82,16 +82,6 @@ class FlywayMigrationPluginTest {
             flywayClosure(nestedClosure)
 
             assertThat(iWasCalled, equalTo(true))
-        }
-    }
-
-    @Nested
-    public class GetEnvironmentVariableList {
-        @Test
-        void isEmptyByDefault() {
-            def result = FlywayMigrationPlugin.getEnvironmentVariableList()
-
-            assertThat(result, equalTo([]))
         }
     }
 }
