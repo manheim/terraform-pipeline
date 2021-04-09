@@ -1,4 +1,6 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin {
+    public static Map<String,String> outputMappings = [:]
+
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new FlywayMigrationPlugin())
     }
@@ -12,5 +14,10 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin {
             innerClosure()
             sh "echo run flyway info"
         }
+    }
+
+    public static convertOutputToEnvironmentVariable(String output, String variableName) {
+        outputMappings[variableName] = output
+        return this
     }
 }

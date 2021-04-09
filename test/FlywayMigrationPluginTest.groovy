@@ -1,3 +1,4 @@
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.MatcherAssert.assertThat
@@ -35,6 +36,16 @@ class FlywayMigrationPluginTest {
             plugin.apply(stage)
 
             verify(stage).decorate(TerraformEnvironmentStage.PLAN, infoClosure)
+        }
+    }
+
+    @Nested
+    public class ConvertOutputToEnvironmentVariable {
+        @Test
+        void isFluent() {
+            def result = FlywayMigrationPlugin.convertOutputToEnvironmentVariable('output', 'VARIABLE')
+
+            assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
     }
 }
