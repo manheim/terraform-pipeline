@@ -14,7 +14,25 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     public Closure flywayInfoClosure() {
         return { innerClosure ->
             innerClosure()
-            sh "echo run flyway info"
+            def environmentVariables = outputMappings.collect { variable, outputId ->
+                def outputValue = sh(
+                    script: "terraform output ${outputId}",
+                    returnStdout: true
+                ).trim()
+                "${variable}=${outputValue}"
+            }
+
+            if (password) {
+                environmentVariables << "FLYWAY_PASSWORD=${password}"
+            }
+
+            if (user) {
+                environmentVariables << "FLYWAY_USER=${user}"
+            }
+
+            withEnv(environmentVariables) {
+                sh "echo run flyway info, user=\$FLYWAY_USER, url=\$FLYWAY_URL"
+            }
         }
     }
 

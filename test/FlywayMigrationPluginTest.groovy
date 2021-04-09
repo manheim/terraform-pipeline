@@ -57,16 +57,6 @@ class FlywayMigrationPluginTest {
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
-
-        @Test
-        void setsFlywayPasswordEnvironmentVariable() {
-            def expectedPassword = 'mypass'
-
-            FlywayMigrationPlugin.withPassword(expectedPassword)
-            def environmentVariableList = FlywayMigrationPlugin.getEnvironmentVariableList()
-
-            assertThat(environmentVariableList, equalTo(["FLYWAY_PASSWORD=${expectedPassword}"]))
-        }
     }
 
     @Nested
@@ -76,16 +66,6 @@ class FlywayMigrationPluginTest {
             def result = FlywayMigrationPlugin.withUser('someuser')
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
-        }
-
-        @Test
-        void setsFlywayUserEnvironmentVariable() {
-            def expectedUser = 'user'
-
-            FlywayMigrationPlugin.withUser(expectedUser)
-            def environmentVariableList = FlywayMigrationPlugin.getEnvironmentVariableList()
-
-            assertThat(environmentVariableList, equalTo(["FLYWAY_USER=${expectedUser}"]))
         }
     }
 
