@@ -21,16 +21,18 @@ validate.then(deployQa)
         .build()
 ```
 
-If needed, flyway configuration can be set through the Plugin.
+If needed, flyway configuration can be set through the Plugin, or FlywayCommand.
 
 ```
 @Library(['terraform-pipeline']) _
 Jenkinsfile.init(this, Customizations)
-// Runs `terraform output jdbc_url_with_database` and sets the output to the environment variable FLYWAY_URL
-// Sets FLYWAY_USER to the value of $TF_VAR_MIGRATION_USER
-// Sets FLYWAY_PASSWORD to the value of $TF_VAR_MIGRATION_PASSWORD
-FlywayMigrationPlugin.convertOutputToEnvironmentVariable('jdbc_url_with_database', 'FLYWAY_URL')
-                     .withUserVariable('TF_VAR_MIGRATION_USER')
+// Use the FlywayCommand to modify specific options like `locations` and `url`
+FlywayCommand.withLocations("filesystem:`pwd`/migrations")
+             .withUrl("`terraform output jdbc_url`")
+// Flyway automatically picks up specific enviornment variables (FLYWAY_USER, FLYWAY_PASSWORD)
+//     Sets FLYWAY_USER to the value of $TF_VAR_MIGRATION_USER
+//     Sets FLYWAY_PASSWORD to the value of $TF_VAR_MIGRATION_PASSWORD
+FlywayMigrationPlugin.withUserVariable('TF_VAR_MIGRATION_USER')
                      .withPasswordVariable('TF_VAR_MIGRATION_PASSWORD')
                      .init()
 

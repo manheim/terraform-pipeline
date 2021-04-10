@@ -1,5 +1,4 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettable {
-    public static Map<String,String> outputMappings = [:]
     public static String passwordVariable
     public static String userVariable
 
@@ -14,22 +13,8 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     public Closure flywayInfoClosure() {
         return { innerClosure ->
             innerClosure()
-            def environmentVariables = outputMappings.collect { variable, outputId ->
-                def outputValue = sh(
-                    script: "terraform output ${outputId}",
-                    returnStdout: true
-                ).trim()
-                "${variable}=${outputValue}"
-            }
 
-            if (passwordVariable) {
-                environmentVariables << "FLYWAY_PASSWORD=${env[passwordVariable]}"
-            }
-
-            if (userVariable) {
-                environmentVariables << "FLYWAY_USER=${env[userVariable]}"
-            }
-
+            def environmentVariables = buildEnvironmentVariableList(env)
             withEnv(environmentVariables) {
                 def command = new FlywayCommand('info')
                 sh command.toString()
@@ -37,9 +22,17 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         }
     }
 
-    public static convertOutputToEnvironmentVariable(String output, String variableName) {
-        outputMappings[variableName] = output
-        return this
+    public Collection buildEnvironmentVariableList(env) {
+        def list = []
+        if (passwordVariable) {
+            list << "FLYWAY_PASSWORD=${env[passwordVariable]}"
+        }
+
+        if (userVariable) {
+            list << "FLYWAY_USER=${env[userVariable]}"
+        }
+
+        return list
     }
 
     public static withPasswordFromEnvironmentVariable(String passwordVariable) {

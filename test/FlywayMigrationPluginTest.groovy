@@ -2,7 +2,9 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.MatcherAssert.assertThat
+import static org.mockito.Mockito.any
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -40,16 +42,6 @@ class FlywayMigrationPluginTest {
     }
 
     @Nested
-    public class ConvertOutputToEnvironmentVariable {
-        @Test
-        void isFluent() {
-            def result = FlywayMigrationPlugin.convertOutputToEnvironmentVariable('output', 'VARIABLE')
-
-            assertThat(result, equalTo(FlywayMigrationPlugin.class))
-        }
-    }
-
-    @Nested
     public class WithPasswordFromEnvironmentVariable {
         @Test
         void isFluent() {
@@ -82,6 +74,58 @@ class FlywayMigrationPluginTest {
             flywayClosure(nestedClosure)
 
             assertThat(iWasCalled, equalTo(true))
+        }
+
+        @Test
+        void setsTheListOfOptionalEnvironmentVariables() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            def expectedList = ['KEY=value']
+            doReturn(expectedList).when(plugin).buildEnvironmentVariableList(any(List.class))
+            def flywayClosure = plugin.flywayInfoClosure()
+            def mockWorkflowScript = spy(new MockWorkflowScript())
+            flywayClosure.delegate = mockWorkflowScript
+
+            flywayClosure { -> }
+
+            verify(mockWorkflowScript).withEnv(eq(expectedList), any(Closure.class))
+        }
+    }
+
+    @Nested
+    public class BuildEnvironmentVariableList {
+        @Test
+        void returnsEmptyListByDefault() {
+            def plugin = new FlywayMigrationPlugin()
+
+            def result = plugin.buildEnvironmentVariableList(null)
+
+            assertThat(result, equalTo([]))
+        }
+
+        @Test
+        void setsPasswordWhenVariableProvided() {
+            def expectedVariable = 'MY_PASSWORD_VARIABLE'
+            def expectedValue = 'somePass'
+            FlywayMigrationPlugin.withPasswordFromEnvironmentVariable(expectedVariable)
+            def plugin = new FlywayMigrationPlugin()
+            def env = [(expectedVariable): expectedValue]
+
+            def result = plugin.buildEnvironmentVariableList(env)
+
+            assertThat(result, equalTo(["FLYWAY_PASSWORD=${expectedValue}"]))
+        }
+
+        @Test
+        void setsUserWhenVariableProvided() {
+            def expectedVariable = 'MY_USER_VARIABLE'
+            def expectedValue = 'someUser'
+            FlywayMigrationPlugin.withUserFromEnvironmentVariable(expectedVariable)
+            def plugin = new FlywayMigrationPlugin()
+            def env = [(expectedVariable): expectedValue]
+
+            def result = plugin.buildEnvironmentVariableList(env)
+
+            assertThat(result, equalTo(["FLYWAY_USER=${expectedValue}"]))
         }
     }
 }
