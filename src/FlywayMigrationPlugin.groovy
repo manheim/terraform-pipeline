@@ -8,6 +8,7 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
 
     public void apply(TerraformEnvironmentStage stage) {
         stage.decorate(TerraformEnvironmentStage.PLAN, flywayInfoClosure())
+        stage.decorate(TerraformEnvironmentStage.APPLY, flywayMigrateClosure())
     }
 
     public Closure flywayInfoClosure() {
@@ -17,6 +18,18 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
             def environmentVariables = buildEnvironmentVariableList(env)
             withEnv(environmentVariables) {
                 def command = new FlywayCommand('info')
+                sh command.toString()
+            }
+        }
+    }
+
+    public Closure flywayMigrateClosure() {
+        return { innerClosure ->
+            innerClosure()
+
+            def environmentVariables = buildEnvironmentVariableList(env)
+            withEnv(environmentVariables) {
+                def command = new FlywayCommand('migrate')
                 sh command.toString()
             }
         }

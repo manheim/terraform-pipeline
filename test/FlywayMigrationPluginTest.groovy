@@ -39,6 +39,18 @@ class FlywayMigrationPluginTest {
 
             verify(stage).decorate(TerraformEnvironmentStage.PLAN, infoClosure)
         }
+
+        @Test
+        void addsFlywayMigrateClosureOnApply() {
+            def migrateClosure = { -> }
+            def plugin = spy(new FlywayMigrationPlugin())
+            doReturn(migrateClosure).when(plugin).flywayMigrateClosure()
+            def stage = mock(TerraformEnvironmentStage.class)
+
+            plugin.apply(stage)
+
+            verify(stage).decorate(TerraformEnvironmentStage.APPLY, migrateClosure)
+        }
     }
 
     @Nested
@@ -82,6 +94,36 @@ class FlywayMigrationPluginTest {
             def expectedList = ['KEY=value']
             doReturn(expectedList).when(plugin).buildEnvironmentVariableList(any(List.class))
             def flywayClosure = plugin.flywayInfoClosure()
+            def mockWorkflowScript = spy(new MockWorkflowScript())
+            flywayClosure.delegate = mockWorkflowScript
+
+            flywayClosure { -> }
+
+            verify(mockWorkflowScript).withEnv(eq(expectedList), any(Closure.class))
+        }
+    }
+
+    @Nested
+    public class FlywayMigrateClosure {
+        @Test
+        void runsTheNestedClosure() {
+            def plugin = new FlywayMigrationPlugin()
+            def iWasCalled = false
+            def nestedClosure = { -> iWasCalled = true }
+
+            def flywayClosure = plugin.flywayMigrateClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure(nestedClosure)
+
+            assertThat(iWasCalled, equalTo(true))
+        }
+
+        @Test
+        void setsTheListOfOptionalEnvironmentVariables() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            def expectedList = ['KEY=value']
+            doReturn(expectedList).when(plugin).buildEnvironmentVariableList(any(List.class))
+            def flywayClosure = plugin.flywayMigrateClosure()
             def mockWorkflowScript = spy(new MockWorkflowScript())
             flywayClosure.delegate = mockWorkflowScript
 
