@@ -74,6 +74,16 @@ class FlywayMigrationPluginTest {
     }
 
     @Nested
+    public class WithEchoEnabled {
+        @Test
+        void isFluent() {
+            def result = FlywayMigrationPlugin.withEchoEnabled()
+
+            assertThat(result, equalTo(FlywayMigrationPlugin.class))
+        }
+    }
+
+    @Nested
     public class FlywayInfoClosure {
         @Test
         void runsTheNestedClosure() {
@@ -183,6 +193,19 @@ class FlywayMigrationPluginTest {
             def result = plugin.buildFlywayCommand(command)
 
             assertThat(result, equalTo("set +x\n${flywayCommand}\nset -x".toString()))
+        }
+
+        @Test
+        void returnsTheCommandIfEchoEnabled() {
+            def flywayCommand = 'flyway foo'
+            def command = mock(FlywayCommand.class)
+            doReturn(flywayCommand).when(command).toString()
+            def plugin = new FlywayMigrationPlugin()
+            FlywayMigrationPlugin.withEchoEnabled()
+
+            def result = plugin.buildFlywayCommand(command)
+
+            assertThat(result, equalTo(flywayCommand))
         }
     }
 }

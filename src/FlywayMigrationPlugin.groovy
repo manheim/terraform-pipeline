@@ -1,6 +1,7 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     public static String passwordVariable
     public static String userVariable
+    public static boolean echoEnabled = false
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new FlywayMigrationPlugin())
@@ -49,9 +50,14 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     }
 
     public String buildFlywayCommand(FlywayCommand command) {
-        def pieces = ['set +x']
+        def pieces = []
+        if (!echoEnabled) {
+            pieces << 'set +x'
+        }
         pieces << command.toString()
-        pieces << 'set -x'
+        if (!echoEnabled) {
+            pieces << 'set -x'
+        }
 
         return pieces.join('\n')
     }
@@ -66,8 +72,14 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         return this
     }
 
+    public static withEchoEnabled(boolean trueOrFalse = true) {
+        this.echoEnabled = trueOrFalse
+        return this
+    }
+
     public static reset() {
         passwordVariable = null
         userVariable = null
+        echoEnabled = false
     }
 }
