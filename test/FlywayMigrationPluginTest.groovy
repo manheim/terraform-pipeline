@@ -170,5 +170,20 @@ class FlywayMigrationPluginTest {
             assertThat(result, equalTo(["FLYWAY_USER=${expectedValue}"]))
         }
     }
+
+    @Nested
+    public class BuildFlywayCommand {
+        @Test
+        void disablesEchoBeforeFlywayAndEnablesEchoAfterByDefault() {
+            def flywayCommand = 'flyway foo'
+            def command = mock(FlywayCommand.class)
+            doReturn(flywayCommand).when(command).toString()
+            def plugin = new FlywayMigrationPlugin()
+
+            def result = plugin.buildFlywayCommand(command)
+
+            assertThat(result, equalTo("set +x\n${flywayCommand}\nset -x".toString()))
+        }
+    }
 }
 

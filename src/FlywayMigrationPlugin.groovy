@@ -18,7 +18,7 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
             def environmentVariables = buildEnvironmentVariableList(env)
             withEnv(environmentVariables) {
                 def command = new FlywayCommand('info')
-                sh command.toString()
+                sh buildFlywayCommand(command)
             }
         }
     }
@@ -30,7 +30,7 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
             def environmentVariables = buildEnvironmentVariableList(env)
             withEnv(environmentVariables) {
                 def command = new FlywayCommand('migrate')
-                sh command.toString()
+                sh buildFlywayCommand(command)
             }
         }
     }
@@ -46,6 +46,14 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         }
 
         return list
+    }
+
+    public String buildFlywayCommand(FlywayCommand command) {
+        def pieces = ['set +x']
+        pieces << command.toString()
+        pieces << 'set -x'
+
+        return pieces.join('\n')
     }
 
     public static withPasswordFromEnvironmentVariable(String passwordVariable) {
