@@ -6,6 +6,7 @@
 * [Issue #318](https://github.com/manheim/terraform-pipeline/issues/318) Feature: Show environment on confirm command page
 * [Issue #354](https://github.com/manheim/terraform-pipeline/issues/354) Feature: Add TerraformTaintPlugin - Allows performing `terraform taint` or `terraform untaint` prior to the plan phase.
 * [Issue #21](https://github.com/manheim/terraform-pipeline/issues/21) Feature: Plugin to run database migration scripts
+* [Issue #363](https://github.com/manheim/terraform-pipeline/issues/363) Feature: Optionally disable echo on flyway CLI commands
 
 # v5.15
 
