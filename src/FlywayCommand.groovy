@@ -3,6 +3,7 @@ class FlywayCommand implements Resettable {
     private String binary = "flyway"
     private static String locations
     private static String url
+    private static String user
 
     public FlywayCommand(String command) {
         this.command = command
@@ -21,7 +22,16 @@ class FlywayCommand implements Resettable {
             pieces << "-url=${url}"
         }
 
+        if (user) {
+            pieces << "-user=${user}"
+        }
+
         return pieces.join(' ')
+    }
+
+    public static withUser(String user) {
+        this.user = user
+        return this
     }
 
     public static withLocations(String locations) {
@@ -37,5 +47,6 @@ class FlywayCommand implements Resettable {
     public static reset() {
         this.locations = null
         this.url = null
+        this.user = null
     }
 }

@@ -9,6 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(ResetStaticStateExtension.class)
 class FlywayCommandTest {
     @Nested
+    public class WithUser {
+        @Test
+        void isfluent() {
+            def result = FlywayCommand.withUser('someUser')
+
+            assertThat(result, equalTo(FlywayCommand.class))
+        }
+    }
+
+    @Nested
     public class WithLocations {
         @Test
         void isFluent() {
@@ -37,6 +47,20 @@ class FlywayCommandTest {
             def result = command.toString()
 
             assertThat(result, equalTo("flyway info"))
+        }
+
+        @Nested
+        public class WithUser {
+            @Test
+            void includesTheUserParameter() {
+                def expectedUser = 'someUser'
+                FlywayCommand.withUser(expectedUser)
+                def command = new FlywayCommand('blah')
+
+                def result = command.toString()
+
+                assertThat(result, containsString("-user=${expectedUser}"))
+            }
         }
 
         @Nested
