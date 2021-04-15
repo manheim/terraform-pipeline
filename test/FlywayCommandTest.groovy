@@ -19,6 +19,16 @@ class FlywayCommandTest {
     }
 
     @Nested
+    public class WithPassword {
+        @Test
+        void isfluent() {
+            def result = FlywayCommand.withPassword('somePassword')
+
+            assertThat(result, equalTo(FlywayCommand.class))
+        }
+    }
+
+    @Nested
     public class WithLocations {
         @Test
         void isFluent() {
@@ -60,6 +70,20 @@ class FlywayCommandTest {
                 def result = command.toString()
 
                 assertThat(result, containsString("-user=${expectedUser}"))
+            }
+        }
+
+        @Nested
+        public class WithPassword {
+            @Test
+            void includesThePasswordParameter() {
+                def expectedPassword = 'somePassword'
+                FlywayCommand.withPassword(expectedPassword)
+                def command = new FlywayCommand('blah')
+
+                def result = command.toString()
+
+                assertThat(result, containsString("-password=${expectedPassword}"))
             }
         }
 

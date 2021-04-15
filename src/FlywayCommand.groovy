@@ -4,6 +4,7 @@ class FlywayCommand implements Resettable {
     private static String locations
     private static String url
     private static String user
+    private static String password
 
     public FlywayCommand(String command) {
         this.command = command
@@ -26,11 +27,20 @@ class FlywayCommand implements Resettable {
             pieces << "-user=${user}"
         }
 
+        if (password) {
+            pieces << "-password=${password}"
+        }
+
         return pieces.join(' ')
     }
 
     public static withUser(String user) {
         this.user = user
+        return this
+    }
+
+    public static withPassword(String password) {
+        this.password = password
         return this
     }
 
@@ -48,5 +58,6 @@ class FlywayCommand implements Resettable {
         this.locations = null
         this.url = null
         this.user = null
+        this.password = null
     }
 }
