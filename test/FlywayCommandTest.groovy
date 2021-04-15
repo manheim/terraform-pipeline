@@ -49,6 +49,16 @@ class FlywayCommandTest {
     }
 
     @Nested
+    public class WithAdditionalParameter {
+        @Test
+        void isFluent() {
+            def result = FlywayCommand.withAdditionalParameter('-someParam=someValue')
+
+            assertThat(result, equalTo(FlywayCommand.class))
+        }
+    }
+
+    @Nested
     public class ToString {
         @Test
         void constructsTheCommand() {
@@ -112,6 +122,34 @@ class FlywayCommandTest {
                 def result = command.toString()
 
                 assertThat(result, containsString("-url=${expectedUrl}"))
+            }
+        }
+
+        @Nested
+        public class WithAdditionalParameters {
+            @Test
+            void addsTheAdditionalParameter() {
+                def expectedParameter = "-someParam=someValue"
+                FlywayCommand.withAdditionalParameter(expectedParameter)
+                def command = new FlywayCommand('blah')
+
+                def result = command.toString()
+
+                assertThat(result, containsString(expectedParameter))
+            }
+
+            @Test
+            void addsMultipleAdditionalParameters() {
+                def param1 = '-param1=value1'
+                def param2 = '-param2=value2'
+                FlywayCommand.withAdditionalParameter(param1)
+                             .withAdditionalParameter(param2)
+                def command = new FlywayCommand('blah')
+
+                def result = command.toString()
+
+                assertThat(result, containsString(param1))
+                assertThat(result, containsString(param2))
             }
         }
     }
