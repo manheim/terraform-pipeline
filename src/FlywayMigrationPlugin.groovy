@@ -55,18 +55,13 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         return pieces.join('\n')
     }
 
-    public static withPasswordFromEnvironmentVariable(String passwordVariable) {
-        variableMap['FLYWAY_PASSWORD'] = passwordVariable
-        return this
-    }
-
-    public static withUserFromEnvironmentVariable(String userVariable) {
-        variableMap['FLYWAY_USER'] = userVariable
-        return this
-    }
-
     public static withEchoEnabled(boolean trueOrFalse = true) {
         this.echoEnabled = trueOrFalse
+        return this
+    }
+
+    public static withMappedEnvironmentVariable(String from, String to) {
+        variableMap[to] = from
         return this
     }
 

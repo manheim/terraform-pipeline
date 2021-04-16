@@ -54,20 +54,10 @@ class FlywayMigrationPluginTest {
     }
 
     @Nested
-    public class WithPasswordFromEnvironmentVariable {
+    public class WithMappedEnvironmentVariable {
         @Test
         void isFluent() {
-            def result = FlywayMigrationPlugin.withPasswordFromEnvironmentVariable('MY_PASSWORD')
-
-            assertThat(result, equalTo(FlywayMigrationPlugin.class))
-        }
-    }
-
-    @Nested
-    public class WithUserFromEnvironmentVariable {
-        @Test
-        void isFluent() {
-            def result = FlywayMigrationPlugin.withUserFromEnvironmentVariable('MY_USER')
+            def result = FlywayMigrationPlugin.withMappedEnvironmentVariable('TF_VAR_MY_USER', 'FLYWAY_USER')
 
             assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
@@ -155,29 +145,17 @@ class FlywayMigrationPluginTest {
         }
 
         @Test
-        void setsPasswordWhenVariableProvided() {
-            def expectedVariable = 'MY_PASSWORD_VARIABLE'
-            def expectedValue = 'somePass'
-            FlywayMigrationPlugin.withPasswordFromEnvironmentVariable(expectedVariable)
+        void mapsEnvironmentVariable() {
+            def toVariable = 'FLYWAY_USER'
+            def fromVariable = 'MY_USER_VARIABLE'
+            def fromValue = 'someUser'
+            FlywayMigrationPlugin.withMappedEnvironmentVariable(fromVariable, toVariable)
             def plugin = new FlywayMigrationPlugin()
-            def env = [(expectedVariable): expectedValue]
+            def env = [(fromVariable): fromValue]
 
             def result = plugin.buildEnvironmentVariableList(env)
 
-            assertThat(result, equalTo(["FLYWAY_PASSWORD=${expectedValue}"]))
-        }
-
-        @Test
-        void setsUserWhenVariableProvided() {
-            def expectedVariable = 'MY_USER_VARIABLE'
-            def expectedValue = 'someUser'
-            FlywayMigrationPlugin.withUserFromEnvironmentVariable(expectedVariable)
-            def plugin = new FlywayMigrationPlugin()
-            def env = [(expectedVariable): expectedValue]
-
-            def result = plugin.buildEnvironmentVariableList(env)
-
-            assertThat(result, equalTo(["FLYWAY_USER=${expectedValue}"]))
+            assertThat(result, equalTo(["${toVariable}=${fromValue}"]))
         }
     }
 
