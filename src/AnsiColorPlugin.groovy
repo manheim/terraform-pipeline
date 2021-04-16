@@ -13,7 +13,7 @@ class AnsiColorPlugin implements TerraformEnvironmentStagePlugin {
         stage.decorate(APPLY, addColor())
     }
 
-    public static Closure addColor() {
+    public Closure addColor() {
         return { closure -> ansiColor('xterm') { closure() } }
     }
 
