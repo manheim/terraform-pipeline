@@ -7,6 +7,7 @@
 * [Issue #354](https://github.com/manheim/terraform-pipeline/issues/354) Feature: Add TerraformTaintPlugin - Allows performing `terraform taint` or `terraform untaint` prior to the plan phase.
 * [Issue #21](https://github.com/manheim/terraform-pipeline/issues/21) Feature: Plugin to run database migration scripts
 * [Issue #363](https://github.com/manheim/terraform-pipeline/issues/363) Feature: Optionally disable echo on flyway CLI commands
+* [Issue #365](https://github.com/manheim/terraform-pipeline/issues/365) Feature: Optionally configure flyway username/password through CLI options
 
 # v5.15
 
