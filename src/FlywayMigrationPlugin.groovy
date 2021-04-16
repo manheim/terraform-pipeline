@@ -1,6 +1,5 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettable {
-    public static String passwordVariable
-    public static String userVariable
+    public static Map<String,String> variableMap = [:]
     public static boolean echoEnabled = false
 
     public static void init() {
@@ -37,16 +36,10 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     }
 
     public Collection buildEnvironmentVariableList(env) {
-        def list = []
-        if (passwordVariable) {
-            list << "FLYWAY_PASSWORD=${env[passwordVariable]}"
+        variableMap.inject([]) { list, key, value ->
+            list << "${key}=${env[value]}"
+            list
         }
-
-        if (userVariable) {
-            list << "FLYWAY_USER=${env[userVariable]}"
-        }
-
-        return list
     }
 
     public String buildFlywayCommand(FlywayCommand command) {
@@ -63,12 +56,12 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     }
 
     public static withPasswordFromEnvironmentVariable(String passwordVariable) {
-        this.passwordVariable = passwordVariable
+        variableMap['FLYWAY_PASSWORD'] = passwordVariable
         return this
     }
 
     public static withUserFromEnvironmentVariable(String userVariable) {
-        this.userVariable = userVariable
+        variableMap['FLYWAY_USER'] = userVariable
         return this
     }
 
@@ -78,8 +71,7 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     }
 
     public static reset() {
-        passwordVariable = null
-        userVariable = null
+        variableMap = [:]
         echoEnabled = false
     }
 }
