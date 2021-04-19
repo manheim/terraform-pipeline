@@ -2,7 +2,9 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -88,6 +90,18 @@ class AnsiColorPluginTest {
             colorClosure(innerClosure)
 
             assertThat(wasCalled, equalTo(true))
+        }
+
+        @Test
+        void callsAnsiColorWithXTermArgument() {
+            def mockWorkflowScript = spy(new MockWorkflowScript())
+            def plugin = new AnsiColorPlugin()
+
+            def colorClosure = plugin.addColor()
+            colorClosure.delegate = mockWorkflowScript
+            colorClosure() { -> }
+
+            verify(mockWorkflowScript).ansiColor(eq('xterm'), any(Closure.class))
         }
     }
 }
