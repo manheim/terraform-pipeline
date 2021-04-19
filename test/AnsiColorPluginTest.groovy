@@ -16,6 +16,14 @@ class AnsiColorPluginTest {
     @Nested
     public class Init {
         @Test
+        void modifiesTerraformValidateStage() {
+            AnsiColorPlugin.init()
+
+            Collection actualPlugins = TerraformValidateStage.getPlugins()
+            assertThat(actualPlugins, hasItem(instanceOf(AnsiColorPlugin.class)))
+        }
+
+        @Test
         void modifiesTerraformEnvironmentStage() {
             AnsiColorPlugin.init()
 
@@ -25,7 +33,22 @@ class AnsiColorPluginTest {
     }
 
     @Nested
-    public class Apply {
+    public class ApplyTerraformValidateStage {
+        @Test
+        void decoratesTheStage() {
+            def stage = mock(TerraformValidateStage.class)
+            def plugin = spy(new AnsiColorPlugin())
+            def expectedClosure = { -> }
+            doReturn(expectedClosure).when(plugin).addColor()
+
+            plugin.apply(stage)
+
+            verify(stage).decorate(expectedClosure)
+        }
+    }
+
+    @Nested
+    public class ApplyTerraformEnvironmentStage {
         @Test
         void decoratesThePlanStep() {
             def stage = mock(TerraformEnvironmentStage.class)

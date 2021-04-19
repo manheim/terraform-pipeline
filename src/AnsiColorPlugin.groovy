@@ -1,10 +1,16 @@
 import static TerraformEnvironmentStage.PLAN
 import static TerraformEnvironmentStage.APPLY
 
-class AnsiColorPlugin implements TerraformEnvironmentStagePlugin {
+class AnsiColorPlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin {
 
     public static void init() {
+        TerraformValidateStage.addPlugin(new AnsiColorPlugin())
         TerraformEnvironmentStage.addPlugin(new AnsiColorPlugin())
+    }
+
+    @Override
+    public void apply(TerraformValidateStage stage) {
+        stage.decorate(addColor())
     }
 
     @Override
