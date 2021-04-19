@@ -1,4 +1,5 @@
 import static org.hamcrest.MatcherAssert.assertThat
+import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.mockito.Mockito.doReturn;
@@ -47,6 +48,23 @@ class AnsiColorPluginTest {
             plugin.apply(stage)
 
             verify(stage).decorate(TerraformEnvironmentStage.APPLY, expectedClosure)
+        }
+    }
+
+    @Nested
+    public class AddColor {
+        @Test
+        void executesTheInnerClosure() {
+            def wasCalled = false
+            def mockWorkflowScript = new MockWorkflowScript()
+            def innerClosure = { -> wasCalled = true }
+            def plugin = new AnsiColorPlugin()
+
+            def colorClosure = plugin.addColor()
+            colorClosure.delegate = mockWorkflowScript
+            colorClosure(innerClosure)
+
+            assertThat(wasCalled, equalTo(true))
         }
     }
 }

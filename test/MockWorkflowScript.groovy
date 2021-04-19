@@ -74,4 +74,11 @@ class MockWorkflowScript {
     public resolveScm(Map args) {
         println "MockWorkflowScript.resolveScm(${args})"
     }
+
+    public ansiColor(String arg, Closure closure) {
+        print "MockWorkflowScript.ansiColor(${arg})"
+        closure.delegate = this
+        closure()
+    }
 }
+
