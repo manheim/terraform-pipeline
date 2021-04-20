@@ -9,6 +9,7 @@
 * [Issue #363](https://github.com/manheim/terraform-pipeline/issues/363) Feature: Optionally disable echo on flyway CLI commands
 * [Issue #365](https://github.com/manheim/terraform-pipeline/issues/365) Feature: Optionally configure flyway username/password through CLI options
 * [Issue #362](https://github.com/manheim/terraform-pipeline/issues/362) Bug Fix: Apply AnsiColorPlugin on `terraform validate` and `terraform init`
+* [Issue #368](https://github.com/manheim/terraform-pipeline/issues/368) Feature: Optionally prompt user *again* before applying migration.
 
 # v5.15
 
