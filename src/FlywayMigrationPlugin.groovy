@@ -65,6 +65,10 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         return this
     }
 
+    public static confirmBeforeApplyingMigration() {
+        return this
+    }
+
     public static reset() {
         variableMap = [:]
         echoEnabled = false

@@ -186,5 +186,15 @@ class FlywayMigrationPluginTest {
             assertThat(result, equalTo(flywayCommand))
         }
     }
+
+    @Nested
+    public class ConfirmBeforeApplyingMigration {
+        @Test
+        void isFluent() {
+            def result = FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+
+            assertThat(result, equalTo(FlywayMigrationPlugin.class))
+        }
+    }
 }
 
