@@ -1,6 +1,7 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     public static Map<String,String> variableMap = [:]
     public static boolean echoEnabled = false
+    public static boolean confirmBeforeApply = false
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new FlywayMigrationPlugin())
@@ -47,6 +48,11 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         if (!echoEnabled) {
             pieces << 'set +x'
         }
+
+        if (confirmBeforeApply) {
+            pieces << 'set -o pipefail'
+        }
+
         pieces << command.toString()
         if (!echoEnabled) {
             pieces << 'set -x'
@@ -66,11 +72,13 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
     }
 
     public static confirmBeforeApplyingMigration() {
+        this.confirmBeforeApply = true
         return this
     }
 
     public static reset() {
         variableMap = [:]
         echoEnabled = false
+        confirmBeforeApply = false
     }
 }

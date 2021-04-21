@@ -1,6 +1,7 @@
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.any
 import static org.mockito.Mockito.doReturn;
@@ -184,6 +185,19 @@ class FlywayMigrationPluginTest {
             def result = plugin.buildFlywayCommand(command)
 
             assertThat(result, equalTo(flywayCommand))
+        }
+
+        @Nested
+        public class WithConfirmBeforeApplyingMigration {
+            @Test
+            void prefixesFlywayCommandWithPipelineFail() {
+                def plugin = spy(new FlywayMigrationPlugin())
+                FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+
+                def result = plugin.buildFlywayCommand(mock(FlywayCommand.class))
+
+                assertThat(result, containsString("set -o pipefail"))
+            }
         }
     }
 
