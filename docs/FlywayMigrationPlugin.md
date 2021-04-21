@@ -73,3 +73,33 @@ validate.then(deployQa)
         .build()
 ```
 
+Since new migrations may be an infrequent occurrence, it may be easy to overlook migrations in the Plan stage.  You can optionally enable a *second* confirmation, when a Pending migration is detected using `FlywayMigrationPlugin.confirmBeforeApplyingMigration()`.  This is intended to bring added attention to migrations that will be run on the Apply stage.
+
+```
+@Library(['terraform-pipeline']) _
+Jenkinsfile.init(this, Customizations)
+// Use the FlywayCommand to modify specific options like `user`, `password`, `locations`, and `url`
+FlywayCommand.withUser("\$TF_VAR_USER")
+             .withPassword("\$TF_VAR_PASSWORD")
+             .withLocations("filesystem:`pwd`/migrations")
+             .withUrl("`terraform output jdbc_url`")
+FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+                     .init()
+
+Jenkinsfile.init(this, Customizations)
+Jenkinsfile.defaultNodeName = 'docker'
+ConditionalApplyPlugin.withApplyOnEnvironment('qa')
+
+AgentNodePlugin.withAgentDockerImage("custom-terraform-fakedb")
+               .withAgentDockerfile()
+               .withAgentDockerImageOptions("--entrypoint=''")
+               .init()
+
+def validate = new TerraformValidateStage()
+def deployQa = new TerraformEnvironmentStage('qa')
+def deployUat = new TerraformEnvironmentStage('uat')
+
+validate.then(deployQa)
+        .then(deployUat)
+        .build()
+```
