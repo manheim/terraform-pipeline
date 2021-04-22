@@ -20,8 +20,33 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
             withEnv(environmentVariables) {
                 def command = new FlywayCommand('info')
                 sh buildFlywayCommand(command)
+                if (confirmBeforeApply && hasPendingMigration(delegate)) {
+                    confirmMigration(delegate)
+                }
             }
         }
+    }
+
+    public boolean hasPendingMigration(workflowScript) {
+        def closure = {
+            def resultString = sh (
+                script: 'set +e; grep Pending flyway_output.txt > /dev/null; if [ $? -eq 0 ]; then echo true; else echo false; fi',
+                returnStdout: true
+            ).trim()
+            return new Boolean(resultString)
+        }
+
+        closure.delegate = workflowScript
+        return closure()
+    }
+
+    public void confirmMigration(workflowScript) {
+        def closure = {
+            sh "echo Pending migration detected, prompt again"
+        }
+
+        closure.delegate = workflowScript
+        closure()
     }
 
     public Closure flywayMigrateClosure() {
