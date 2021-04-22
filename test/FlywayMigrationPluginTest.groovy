@@ -198,6 +198,16 @@ class FlywayMigrationPluginTest {
 
                 assertThat(result, containsString("set -o pipefail"))
             }
+
+            @Test
+            void pipesFlywayCommandWithToFileTee() {
+                def plugin = spy(new FlywayMigrationPlugin())
+                FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+
+                def result = plugin.buildFlywayCommand(mock(FlywayCommand.class))
+
+                assertThat(result, containsString("| tee flyway_output.txt"))
+            }
         }
     }
 

@@ -53,7 +53,13 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
             pieces << 'set -o pipefail'
         }
 
-        pieces << command.toString()
+        def commandString = command.toString()
+        if (confirmBeforeApply) {
+            commandString += "| tee flyway_output.txt"
+        }
+
+        pieces << commandString
+
         if (!echoEnabled) {
             pieces << 'set -x'
         }
