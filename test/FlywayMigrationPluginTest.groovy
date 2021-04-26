@@ -141,6 +141,7 @@ class FlywayMigrationPluginTest {
         void runsConfirmMigrationIfConfirmBeforeApplyAndHasPendingMigration() {
             def plugin = spy(new FlywayMigrationPlugin())
             doReturn(true).when(plugin).hasPendingMigration(any(Object.class))
+            FlywayMigrationPlugin.confirmBeforeApplyingMigration(true)
 
             def flywayClosure = plugin.flywayMigrateClosure()
             flywayClosure.delegate = new MockWorkflowScript()
@@ -166,7 +167,7 @@ class FlywayMigrationPluginTest {
         void doesNotRunConfirmMigrationIfConfirmBeforeApplyAndDoesNotHavePendingMigration() {
             def plugin = spy(new FlywayMigrationPlugin())
             doReturn(false).when(plugin).hasPendingMigration(any(Object.class))
-            FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+            FlywayMigrationPlugin.confirmBeforeApplyingMigration(true)
 
             def flywayClosure = plugin.flywayMigrateClosure()
             flywayClosure.delegate = new MockWorkflowScript()
@@ -286,7 +287,7 @@ class FlywayMigrationPluginTest {
         }
 
         @Test
-        void pipesFlywayCommandWithToFileTee() {
+        void pipesFlywayCommandToFileWithTee() {
             def plugin = spy(new FlywayMigrationPlugin())
 
             def result = plugin.buildFlywayCommand(mock(FlywayCommand.class))
@@ -326,7 +327,7 @@ class FlywayMigrationPluginTest {
         @Nested
         public class WithConfirmBeforeApplyingMigrationDisabled {
             @Test
-            void prefixesFlywayCommandWithPipelineFail() {
+            void doesNotPrefixFlywayCommandWithPipelineFail() {
                 def plugin = spy(new FlywayMigrationPlugin())
                 FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)
 
@@ -336,7 +337,7 @@ class FlywayMigrationPluginTest {
             }
 
             @Test
-            void pipesFlywayCommandWithToFileTee() {
+            void doesNotPipeFlywayCommandToFileWthTee() {
                 def plugin = spy(new FlywayMigrationPlugin())
                 FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)
 
