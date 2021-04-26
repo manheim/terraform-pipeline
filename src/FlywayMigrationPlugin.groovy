@@ -1,6 +1,7 @@
 class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     public static Map<String,String> variableMap = [:]
     public static boolean echoEnabled = false
+    public static boolean confirmBeforeApply = true
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new FlywayMigrationPlugin())
@@ -23,8 +24,36 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         }
     }
 
+    public boolean hasPendingMigration(workflowScript) {
+        def closure = {
+            def resultString = sh (
+                script: 'set +e; grep Pending flyway_output.txt > /dev/null; if [ $? -eq 0 ]; then echo true; else echo false; fi',
+                returnStdout: true
+            ).trim()
+            return new Boolean(resultString)
+        }
+
+        closure.delegate = workflowScript
+        return closure()
+    }
+
+    public void confirmMigration(workflowScript) {
+        def closure = {
+            timeout(time: 1, unit: 'MINUTES') {
+                input("One or more pending migrations will be applied immediately if you continue - please review the flyway info output.  Are you sure you want to continue?")
+            }
+        }
+
+        closure.delegate = workflowScript
+        closure()
+    }
+
     public Closure flywayMigrateClosure() {
         return { innerClosure ->
+            if (confirmBeforeApply && hasPendingMigration(delegate)) {
+                confirmMigration(delegate)
+            }
+
             innerClosure()
 
             def environmentVariables = buildEnvironmentVariableList(env)
@@ -47,7 +76,18 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         if (!echoEnabled) {
             pieces << 'set +x'
         }
-        pieces << command.toString()
+
+        if (confirmBeforeApply) {
+            pieces << 'set -o pipefail'
+        }
+
+        def commandString = command.toString()
+        if (confirmBeforeApply) {
+            commandString += "| tee flyway_output.txt"
+        }
+
+        pieces << commandString
+
         if (!echoEnabled) {
             pieces << 'set -x'
         }
@@ -65,8 +105,14 @@ class FlywayMigrationPlugin implements TerraformEnvironmentStagePlugin, Resettab
         return this
     }
 
+    public static confirmBeforeApplyingMigration(boolean trueOrFalse = true) {
+        this.confirmBeforeApply = trueOrFalse
+        return this
+    }
+
     public static reset() {
         variableMap = [:]
         echoEnabled = false
+        confirmBeforeApply = true
     }
 }

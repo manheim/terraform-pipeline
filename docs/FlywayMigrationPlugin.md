@@ -1,6 +1,6 @@
 ## [FlywayMigrationPlugin](../src/FlywayMigrationPlugin.groovy)
 
-Enable this plugin to run automated database migrations with [Flyway](https://flywaydb.org/).  Flyway can be configured through standard configuration files, or through environment variables.
+Enable this plugin to run automated database migrations with [Flyway](https://flywaydb.org/).  Flyway can be configured through standard configuration files, or through environment variables.  Since migrations may happen less frequently than terrform changes, by default, if a pending migration is detected the pipeline will prompt you *again* to confirm that you want to proceed with the migration.
 
 ```
 @Library(['terraform-pipeline']) _
@@ -73,3 +73,29 @@ validate.then(deployQa)
         .build()
 ```
 
+If you don't want to be prompted a second time when migrations are detected, you can disable the migration confirmation with `FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)`.
+
+```
+@Library(['terraform-pipeline']) _
+Jenkinsfile.init(this, Customizations)
+// Disable second confirmation when pending migration is detected.
+FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)
+                     .init()
+
+Jenkinsfile.init(this, Customizations)
+Jenkinsfile.defaultNodeName = 'docker'
+ConditionalApplyPlugin.withApplyOnEnvironment('qa')
+
+AgentNodePlugin.withAgentDockerImage("custom-terraform-fakedb")
+               .withAgentDockerfile()
+               .withAgentDockerImageOptions("--entrypoint=''")
+               .init()
+
+def validate = new TerraformValidateStage()
+def deployQa = new TerraformEnvironmentStage('qa')
+def deployUat = new TerraformEnvironmentStage('uat')
+
+validate.then(deployQa)
+        .then(deployUat)
+        .build()
+```

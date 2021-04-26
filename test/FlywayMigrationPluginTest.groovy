@@ -1,13 +1,18 @@
+import static org.hamcrest.Matchers.containsString
+import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
+import static org.hamcrest.Matchers.not
+import static org.hamcrest.Matchers.startsWith
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.any
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.eq
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.spy
+import static org.mockito.Mockito.times
+import static org.mockito.Mockito.verify
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -131,6 +136,81 @@ class FlywayMigrationPluginTest {
 
             verify(mockWorkflowScript).withEnv(eq(expectedList), any(Closure.class))
         }
+
+        @Test
+        void runsConfirmMigrationIfConfirmBeforeApplyAndHasPendingMigration() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            doReturn(true).when(plugin).hasPendingMigration(any(Object.class))
+            FlywayMigrationPlugin.confirmBeforeApplyingMigration(true)
+
+            def flywayClosure = plugin.flywayMigrateClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure { -> }
+
+            verify(plugin).confirmMigration(any(Object.class))
+        }
+
+        @Test
+        void doesNotRunConfirmMigrationIfNotConfirmBeforeApplyAndHasPendingMigration() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            doReturn(true).when(plugin).hasPendingMigration(any(Object.class))
+            FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)
+
+            def flywayClosure = plugin.flywayMigrateClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure { -> }
+
+            verify(plugin, times(0)).confirmMigration(any(Object.class))
+        }
+
+        @Test
+        void doesNotRunConfirmMigrationIfConfirmBeforeApplyAndDoesNotHavePendingMigration() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            doReturn(false).when(plugin).hasPendingMigration(any(Object.class))
+            FlywayMigrationPlugin.confirmBeforeApplyingMigration(true)
+
+            def flywayClosure = plugin.flywayMigrateClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure { -> }
+
+            verify(plugin, times(0)).confirmMigration(any(Object.class))
+        }
+    }
+
+    @Nested
+    public class HasPendingMigration {
+        @Test
+        void returnsTrueWhenShellReturnsTrueString() {
+            def plugin = new FlywayMigrationPlugin()
+            def workflowScript = spy(new MockWorkflowScript())
+            doReturn('true').when(workflowScript).sh(any(Map.class))
+
+            def result = plugin.hasPendingMigration(workflowScript)
+
+            assertThat(result, equalTo(true))
+        }
+
+        @Test
+        void returnsFalseWhenShellReturnsFalseString() {
+            def plugin = new FlywayMigrationPlugin()
+            def workflowScript = spy(new MockWorkflowScript())
+            doReturn('false').when(workflowScript).sh(any(Map.class))
+
+            def result = plugin.hasPendingMigration(workflowScript)
+
+            assertThat(result, equalTo(false))
+        }
+
+        @Test
+        void returnsFalseWhenShellReturnsAnyOtherString() {
+            def plugin = new FlywayMigrationPlugin()
+            def workflowScript = spy(new MockWorkflowScript())
+            doReturn('blahblah').when(workflowScript).sh(any(Map.class))
+
+            def result = plugin.hasPendingMigration(workflowScript)
+
+            assertThat(result, equalTo(false))
+        }
     }
 
     @Nested
@@ -162,7 +242,7 @@ class FlywayMigrationPluginTest {
     @Nested
     public class BuildFlywayCommand {
         @Test
-        void disablesEchoBeforeFlywayAndEnablesEchoAfterByDefault() {
+        void constructsTheFlywayCommand() {
             def flywayCommand = 'flyway foo'
             def command = mock(FlywayCommand.class)
             doReturn(flywayCommand).when(command).toString()
@@ -170,20 +250,111 @@ class FlywayMigrationPluginTest {
 
             def result = plugin.buildFlywayCommand(command)
 
-            assertThat(result, equalTo("set +x\n${flywayCommand}\nset -x".toString()))
+            assertThat(result, containsString(flywayCommand))
         }
 
         @Test
-        void returnsTheCommandIfEchoEnabled() {
+        void disablesEchoBeforeFlywayByDefault() {
             def flywayCommand = 'flyway foo'
             def command = mock(FlywayCommand.class)
             doReturn(flywayCommand).when(command).toString()
             def plugin = new FlywayMigrationPlugin()
-            FlywayMigrationPlugin.withEchoEnabled()
 
             def result = plugin.buildFlywayCommand(command)
 
-            assertThat(result, equalTo(flywayCommand))
+            assertThat(result, startsWith("set +x"))
+        }
+
+        @Test
+        void disablesEchoAfterFlywayByDefault() {
+            def flywayCommand = 'flyway foo'
+            def command = mock(FlywayCommand.class)
+            doReturn(flywayCommand).when(command).toString()
+            def plugin = new FlywayMigrationPlugin()
+
+            def result = plugin.buildFlywayCommand(command)
+
+            assertThat(result, endsWith("set -x"))
+        }
+
+        @Test
+        void prefixesFlywayCommandWithPipelineFail() {
+            def plugin = spy(new FlywayMigrationPlugin())
+
+            def result = plugin.buildFlywayCommand(mock(FlywayCommand.class))
+
+            assertThat(result, containsString("set -o pipefail"))
+        }
+
+        @Test
+        void pipesFlywayCommandToFileWithTee() {
+            def plugin = spy(new FlywayMigrationPlugin())
+
+            def result = plugin.buildFlywayCommand(mock(FlywayCommand.class))
+
+            assertThat(result, containsString("| tee flyway_output.txt"))
+        }
+
+        @Nested
+        public class WithEchoEnabled {
+            @Test
+            void doesNotDisbleEchoBeforeFlyway() {
+                def flywayCommand = 'flyway foo'
+                def command = mock(FlywayCommand.class)
+                doReturn(flywayCommand).when(command).toString()
+                def plugin = new FlywayMigrationPlugin()
+
+                FlywayMigrationPlugin.withEchoEnabled()
+                def result = plugin.buildFlywayCommand(command)
+
+                assertThat(result, not(startsWith("set +x")))
+            }
+
+            @Test
+            void doesNotReenbleEchoAfterFlyway() {
+                def flywayCommand = 'flyway foo'
+                def command = mock(FlywayCommand.class)
+                doReturn(flywayCommand).when(command).toString()
+                def plugin = new FlywayMigrationPlugin()
+
+                FlywayMigrationPlugin.withEchoEnabled()
+                def result = plugin.buildFlywayCommand(command)
+
+                assertThat(result, not(endsWith("set -x")))
+            }
+        }
+
+        @Nested
+        public class WithConfirmBeforeApplyingMigrationDisabled {
+            @Test
+            void doesNotPrefixFlywayCommandWithPipelineFail() {
+                def plugin = spy(new FlywayMigrationPlugin())
+                FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)
+
+                def result = plugin.buildFlywayCommand(mock(FlywayCommand.class))
+
+                assertThat(result, not(containsString("set -o pipefail")))
+            }
+
+            @Test
+            void doesNotPipeFlywayCommandToFileWthTee() {
+                def plugin = spy(new FlywayMigrationPlugin())
+                FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)
+
+                def result = plugin.buildFlywayCommand(mock(FlywayCommand.class))
+
+                assertThat(result, not(containsString("| tee flyway_output.txt")))
+            }
+        }
+    }
+
+    @Nested
+    public class ConfirmBeforeApplyingMigration {
+        @Test
+        void isFluent() {
+            def result = FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+
+            assertThat(result, equalTo(FlywayMigrationPlugin.class))
         }
     }
 }
