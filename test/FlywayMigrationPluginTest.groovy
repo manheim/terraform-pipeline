@@ -103,44 +103,6 @@ class FlywayMigrationPluginTest {
 
             verify(mockWorkflowScript).withEnv(eq(expectedList), any(Closure.class))
         }
-
-        @Test
-        void runsConfirmMigrationIfConfirmBeforeApplyAndHasPendingMigration() {
-            def plugin = spy(new FlywayMigrationPlugin())
-            doReturn(true).when(plugin).hasPendingMigration(any(Object.class))
-            FlywayMigrationPlugin.confirmBeforeApplyingMigration()
-
-            def flywayClosure = plugin.flywayInfoClosure()
-            flywayClosure.delegate = new MockWorkflowScript()
-            flywayClosure { -> }
-
-            verify(plugin).confirmMigration(any(Object.class))
-        }
-
-        @Test
-        void doesNotRunConfirmMigrationIfNotConfirmBeforeApplyAndHasPendingMigration() {
-            def plugin = spy(new FlywayMigrationPlugin())
-            doReturn(true).when(plugin).hasPendingMigration(any(Object.class))
-
-            def flywayClosure = plugin.flywayInfoClosure()
-            flywayClosure.delegate = new MockWorkflowScript()
-            flywayClosure { -> }
-
-            verify(plugin, times(0)).confirmMigration(any(Object.class))
-        }
-
-        @Test
-        void doesNotRunConfirmMigrationIfConfirmBeforeApplyAndDoesNotHavePendingMigration() {
-            def plugin = spy(new FlywayMigrationPlugin())
-            doReturn(false).when(plugin).hasPendingMigration(any(Object.class))
-            FlywayMigrationPlugin.confirmBeforeApplyingMigration()
-
-            def flywayClosure = plugin.flywayInfoClosure()
-            flywayClosure.delegate = new MockWorkflowScript()
-            flywayClosure { -> }
-
-            verify(plugin, times(0)).confirmMigration(any(Object.class))
-        }
     }
 
     @Nested
@@ -170,6 +132,44 @@ class FlywayMigrationPluginTest {
             flywayClosure { -> }
 
             verify(mockWorkflowScript).withEnv(eq(expectedList), any(Closure.class))
+        }
+
+        @Test
+        void runsConfirmMigrationIfConfirmBeforeApplyAndHasPendingMigration() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            doReturn(true).when(plugin).hasPendingMigration(any(Object.class))
+            FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+
+            def flywayClosure = plugin.flywayMigrateClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure { -> }
+
+            verify(plugin).confirmMigration(any(Object.class))
+        }
+
+        @Test
+        void doesNotRunConfirmMigrationIfNotConfirmBeforeApplyAndHasPendingMigration() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            doReturn(true).when(plugin).hasPendingMigration(any(Object.class))
+
+            def flywayClosure = plugin.flywayMigrateClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure { -> }
+
+            verify(plugin, times(0)).confirmMigration(any(Object.class))
+        }
+
+        @Test
+        void doesNotRunConfirmMigrationIfConfirmBeforeApplyAndDoesNotHavePendingMigration() {
+            def plugin = spy(new FlywayMigrationPlugin())
+            doReturn(false).when(plugin).hasPendingMigration(any(Object.class))
+            FlywayMigrationPlugin.confirmBeforeApplyingMigration()
+
+            def flywayClosure = plugin.flywayMigrateClosure()
+            flywayClosure.delegate = new MockWorkflowScript()
+            flywayClosure { -> }
+
+            verify(plugin, times(0)).confirmMigration(any(Object.class))
         }
     }
 
