@@ -1,6 +1,6 @@
 ## [FlywayMigrationPlugin](../src/FlywayMigrationPlugin.groovy)
 
-Enable this plugin to run automated database migrations with [Flyway](https://flywaydb.org/).  Flyway can be configured through standard configuration files, or through environment variables.  Since migrations maybe less frequent than terrform changes, by default, if a pending migrtion is detected, the pipeline will prompt you *again* to confirm that you want to proceed with the migration.
+Enable this plugin to run automated database migrations with [Flyway](https://flywaydb.org/).  Flyway can be configured through standard configuration files, or through environment variables.  Since migrations may happen less frequently than terrform changes, by default, if a pending migration is detected the pipeline will prompt you *again* to confirm that you want to proceed with the migration.
 
 ```
 @Library(['terraform-pipeline']) _
@@ -78,11 +78,7 @@ If you don't want to be prompted a second time when migrations are detected, you
 ```
 @Library(['terraform-pipeline']) _
 Jenkinsfile.init(this, Customizations)
-// Use the FlywayCommand to modify specific options like `user`, `password`, `locations`, and `url`
-FlywayCommand.withUser("\$TF_VAR_USER")
-             .withPassword("\$TF_VAR_PASSWORD")
-             .withLocations("filesystem:`pwd`/migrations")
-             .withUrl("`terraform output jdbc_url`")
+// Disable second confirmation when pending migration is detected.
 FlywayMigrationPlugin.confirmBeforeApplyingMigration(false)
                      .init()
 
