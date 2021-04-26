@@ -1,18 +1,19 @@
 ## [CrqPlugin](../src/CrqPlugin.groovy)
 
-Enable this plugin to wrap your terraform apply step with an automated Change Request, using the manheim_remedier ruby gem.
+Enable this plugin to wrap your terraform apply step with an automated Change Request, using the jenkins-crq library.
 
 One-time setup:
-* Install the manheim_remedier gem on your Jenkins slaves.
-* Optional: Define global variables that match your environment name, to enable automated Change Requests across all pipelines with that environment:
-  * UAT_CRQ_ENVIRONMENT = 'Cloud-CRQ' (all 'uat' environments will be assigned a CRQ_ENVIRONMENT = 'Cloud-CRQ')
-  * PROD_CRQ_ENVIRONMENT = 'Cloud' (all 'prod' environments will be assigned a CRQ_ENVIRONMENT = 'Cloud')
+* Install the jenkins-crq-library. Using this library requires a one-time setup as a shared library in your Jenkins instance.
 * Define the following environment variables, which will be used when submitting a Change Request:
-  * DEFAULT_PIPELINE_CRQ_FIRST_NAME
-  * DEFAULT_PIPELINE_CRQ_LAST_NAME
-  * DEFAULT_PIPELINE_CRQ_LOGIN
+   * `CRQ_COMPONENT` OR `CRQ_COMPONENT_ID`
+   * `CRQ_SHORT_DESCRIPTION`
+   * `CRQ_DESCRIPTION`
+   * `CRQ_NOTES`       (optional)
+   * `CRQ_WORK_NOTES`  (optional) - comma-seperated string of work notes to add to the CRQ (defaults to '')
+   * `CRQ_SANDBOX`     (optional) - defaults to `false`
+   * `CRQ_AUTH_METHOD` (optional) - All steps can take a auth_method parameter, which defaults to `machine_auth` if unset.
 
-An automated Change Request will only be created for environments that specify a `CRQ_ENVIRONMENT`, or match a global `<environment>_CRQ_ENVIRONMENT`.  For each such environments, a Change Request will be opened before applying the terraform plan, then closed and marked as either successful or failed, depending on the result of `terraform apply`.
+For each environment, a Change Request will be opened before applying the terraform plan, then closed and marked as either successful or failed, depending on the result of `terraform apply`.
 
 ```
 // Jenkinsfile

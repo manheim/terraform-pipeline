@@ -1,5 +1,4 @@
 class CrqPlugin implements TerraformEnvironmentStagePlugin {
-    public static defaultBau = 152
 
     public static void init() {
         TerraformEnvironmentStage.addPlugin(new CrqPlugin())
@@ -15,68 +14,66 @@ class CrqPlugin implements TerraformEnvironmentStagePlugin {
         stage.decorate(TerraformEnvironmentStage.APPLY, addCrq(environment))
     }
 
-    public String getCrqEnvironment(String environment) {
-        def env = getEnv()
-        String crqEnvironment = env['CRQ_ENVIRONMENT']
-
-        if (crqEnvironment == null) {
-            crqEnvironment = env["${environment.toUpperCase()}_CRQ_ENVIRONMENT"]
-        }
-
-        return crqEnvironment
-    }
-
     public Closure addCrq(String environment) {
-        return { closure ->
-            def crqEnvironment = getCrqEnvironment(environment)
+        def env = getEnv()
 
-            if (crqEnvironment) {
+        return { closure ->
+
+            // Only Open CRQ's for prod/uat environments
+            if (environment == "prod" or environment == "uat") {
                 def config = [
-                    environment: environment,
-                    app: getRepoName(),
-                    crqEnvironment: crqEnvironment
+                    component:         env['CRQ_COMPONENT'],
+                    component_id:      env['CRQ_COMPONENT_ID'],
+                    short_description: env['CRQ_SHORT_DESCRIPTION'],
+                    description:       env['CRQ_DESCRIPTION'],
+                    notes:             env['CRQ_NOTES']       ?: '',
+                    work_notes:        env['CRQ_WORK_NOTES']  ?: '',
+                    sandbox:           env['CRQ_SANDBOX']     ?: 'false',
+                    auth_method:       env['CRQ_AUTH_METHOD'] ?: 'machine_auth'
                 ]
 
-                sh "${remedierOpen(config)}"
+                // OpenCRQ
+                sh "${crqOpen(config)}"
+
+                // Add Work Notes
+                for (note in config.work_notes.split(',')) {
+                    sh "${crqAddWorkNote(note, config)}"
+                }
+
+                // Close or BackoutCRQ
                 try {
                     closure()
-                    sh "${remedierClose(config)}"
+                    sh "${crqClose(config)}"
                 } catch (err) {
-                    sh "${remedierBackout(config)}"
+                    sh "${crqBackout(config)}"
                     throw err
                 }
             } else {
-                sh "echo No CRQ_ENVIRONMENT found, set this to trigger automated CRQs"
+                sh "echo environment not 'prod' or 'uat', set this to trigger automated CRQs"
                 closure()
             }
         }
     }
 
-    public static String remedierOpen(config = [:]) {
-        def app = config.app ?: "\$APP"
-        def bau = config.bau ?: defaultBau
-        def environment = config.environment ?: "\$ENVIRONMENT"
-        def crqEnvironment = config.crqEnvironment ?: '$CRQ_ENVIRONMENT'
-        def summary     = config.summary ?: "${app} - Deploy - ${environment}"
-        def productName = config.productName ?: "Software Delivery Pipeline"
-        def firstName   = config.firstName ?: "\$DEFAULT_PIPELINE_CRQ_FIRST_NAME"
-        def lastName    = config.lastName ?: "\$DEFAULT_PIPELINE_CRQ_LAST_NAME"
-        def login       = config.login ?: "\$DEFAULT_PIPELINE_CRQ_LOGIN"
-        def tier1       = config.tier1 ?: "Software"
-        def tier2       = config.tier2 ?: "Application"
-        def tier3       = config.tier3 ?: "Release Management"
+    public static String crqOpen(config = [:]) {
+        // The component can be specified by name or ID. If both are specified, then only the ID will be used.
+        if (config.component_id):
+            return "config.crqNumber = openCrq(component_id: \"${config.component_id}\", short_description: \"${config.short_description}\", description: \"${config.description}\", sandbox: \"${config.sandbox}\", auth_method: \"${config.auth_method}\")"
+        else:
+            return "config.crqNumber = openCrq(component: \"${config.component}\", short_description: \"${config.short_description}\", description: \"${config.description}\", sandbox: \"${config.sandbox}\", auth_method: \"${config.auth_method}\")"
 
-        def message = "See \$BUILD_URL"
-        return "manheim_remedy open \"${bau}\" \"${productName}\" \"${firstName}\" \"${lastName}\" \"${login}\" \"${tier1}\" \"${tier2}\" \"${tier3}\" \"${summary}\" \"${crqEnvironment}\" \"${message}\""
     }
 
-    public static String remedierClose(config = [:]) {
-        return "manheim_remedy close `cat ChangeID.txt | sed 's/ChangeID=//g'`"
+    public static String crqClose(config = [:]) {
+        return "closeCrq(number: \"config.crqNumber\", notes: \"Change Successful\", sandbox: \"${config.sandbox}\", auth_method: \"${config.auth_method}\")"
     }
 
-    public static String remedierBackout(config = [:]) {
-        def reason = "Change failed"
-        return "manheim_remedy error `cat ChangeID.txt | sed 's/ChangeID=//g'` \"${reason}\""
+    public static String crqBackout(config = [:]) {
+        return "closeCrq(number: \"config.crqNumber\", notes: \"Change Failed\", state: \"Unsuccessful\", sandbox: \"${config.sandbox}\", auth_method: \"${config.auth_method}\")"
+    }
+
+    public static String crqAddWorkNote(note, config = [:]) {
+        return "addWorkNoteCrq(number: \"config.crqNumber\", work_note: \"${note}\", sandbox: \"${config.sandbox}\", auth_method: \"${config.auth_method}\")"
     }
 
     public getEnv() {
