@@ -28,8 +28,8 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     }
 
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(PLAN_COMMAND, runTerraformTaintCommand(stage.getEnvironment()))
         stage.decorate(PLAN_COMMAND, runTerraformUntaintCommand(stage.getEnvironment()))
+        stage.decorate(PLAN_COMMAND, runTerraformTaintCommand(stage.getEnvironment()))
     }
 
     public void apply(TerraformTaintCommand command) {
