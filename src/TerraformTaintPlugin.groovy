@@ -28,8 +28,8 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     }
 
     public void apply(TerraformEnvironmentStage stage) {
-        stage.decorate(PLAN_COMMAND, runTerraformTaintCommand(stage.getEnvironment()))
         stage.decorate(PLAN_COMMAND, runTerraformUntaintCommand(stage.getEnvironment()))
+        stage.decorate(PLAN_COMMAND, runTerraformTaintCommand(stage.getEnvironment()))
     }
 
     public void apply(TerraformTaintCommand command) {
@@ -60,7 +60,7 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     public Closure runTerraformTaintCommand(String environment) {
         def taintCommand = TerraformTaintCommand.instanceFor(environment)
         return { closure ->
-            if (shouldApply()) {
+            if (shouldApply() && Jenkinsfile.instance.getEnv().TAINT_RESOURCE) {
                 echo "Running '${taintCommand.toString()}'. TerraformTaintPlugin is enabled."
                 sh taintCommand.toString()
             }
@@ -71,7 +71,7 @@ class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, Terraform
     public Closure runTerraformUntaintCommand(String environment) {
         def untaintCommand = TerraformUntaintCommand.instanceFor(environment)
         return { closure ->
-            if (shouldApply()) {
+            if (shouldApply() && Jenkinsfile.instance.getEnv().UNTAINT_RESOURCE) {
                 echo "Running '${untaintCommand.toString()}'. TerraformTaintPlugin is enabled."
                 sh untaintCommand.toString()
             }
