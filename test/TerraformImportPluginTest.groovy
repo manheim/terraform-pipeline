@@ -52,6 +52,21 @@ class TerraformImportPluginTest {
                 description: "The path in the Terraform state to import the spcified resource to."
             ]))
         }
+
+        @Test
+        void addsImportEnvironmentParameter() {
+            TerraformImportPlugin.init()
+
+            def parametersPlugin = new BuildWithParametersPlugin()
+            Collection actualParms = parametersPlugin.getBuildParameters()
+
+            assertThat(actualParms, hasItem([
+                $class: 'hudson.model.StringParameterDefinition',
+                name: "IMPORT_ENVIRONMENT",
+                defaultValue: "",
+                description: "The environment in which to run the import."
+            ]))
+        }
     }
 
     @Nested
@@ -81,12 +96,40 @@ class TerraformImportPluginTest {
         }
 
         @Test
-        void decoratesTheTerraformEnvironmentStageIfResourceAndTargetSet() {
+        void doesNotDecorateTheTerraformEnvironmentStageIfNoEnvironment() {
             TerraformImportPlugin plugin = new TerraformImportPlugin()
-            def environment = spy(new TerraformEnvironmentStage())
+            def environment = spy(new TerraformEnvironmentStage('foobar'))
             MockJenkinsfile.withEnv([
                 'IMPORT_RESOURCE': 'foo',
-                'IMPORT_TARGET_PATH': 'target.foo'
+                'IMPORT_TARGET_PATH': 'foo'
+            ])
+            plugin.apply(environment)
+
+            verify(environment, times(0)).decorate(eq(TerraformEnvironmentStage.PLAN_COMMAND), any(Closure.class))
+        }
+
+        @Test
+        void doesNotDecorateTheTerraformEnvironmentStageIfEnvironmentMismatch() {
+            TerraformImportPlugin plugin = new TerraformImportPlugin()
+            def environment = spy(new TerraformEnvironmentStage('foobar'))
+            MockJenkinsfile.withEnv([
+                'IMPORT_RESOURCE': 'foo',
+                'IMPORT_TARGET_PATH': 'foo',
+                'IMPORT_ENVIRONMENT': 'barbaz'
+            ])
+            plugin.apply(environment)
+
+            verify(environment, times(0)).decorate(eq(TerraformEnvironmentStage.PLAN_COMMAND), any(Closure.class))
+        }
+
+        @Test
+        void decoratesTheTerraformEnvironmentStageIfResourceEnvironmentAndTargetSet() {
+            TerraformImportPlugin plugin = new TerraformImportPlugin()
+            def environment = spy(new TerraformEnvironmentStage('foobar'))
+            MockJenkinsfile.withEnv([
+                'IMPORT_RESOURCE': 'foo',
+                'IMPORT_TARGET_PATH': 'target.foo',
+                'IMPORT_ENVIRONMENT': 'foobar'
             ])
             plugin.apply(environment)
 
