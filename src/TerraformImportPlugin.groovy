@@ -13,6 +13,10 @@ class TerraformImportPlugin implements TerraformEnvironmentStagePlugin, Terrafor
             name: "IMPORT_TARGET_PATH",
             description: "The path in the Terraform state to import the spcified resource to."
         ])
+        BuildWithParametersPlugin.withStringParameter([
+            name: "IMPORT_ENVIRONMENT",
+            description: "The environment in which to run the import."
+        ])
 
         TerraformEnvironmentStage.addPlugin(plugin)
         TerraformImportCommand.addPlugin(plugin)
@@ -22,8 +26,9 @@ class TerraformImportPlugin implements TerraformEnvironmentStagePlugin, Terrafor
     public void apply(TerraformEnvironmentStage stage) {
         def resource = Jenkinsfile.instance.getEnv().IMPORT_RESOURCE
         def targetPath = Jenkinsfile.instance.getEnv().IMPORT_TARGET_PATH
-        if (resource && targetPath) {
-            stage.decorate(PLAN_COMMAND, runTerraformImportCommand(stage.getEnvironment()))
+        def environment = Jenkinsfile.instance.getEnv().IMPORT_ENVIRONMENT
+        if (resource && targetPath && stage.environment == environment) {
+            stage.decorate(PLAN_COMMAND, runTerraformImportCommand(stage.environment))
         }
     }
 
