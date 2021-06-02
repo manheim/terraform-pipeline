@@ -6,6 +6,8 @@ resource into state, and adds two new job parameters.
 * `IMPORT_RESOURCE`: This is the resource identifier to import into state.
 * `IMPORT_TARGET_PATH`: This is the Terraform state path into which the
   resource should be imported.
+* `IMPORT_ENVIRONMENT`: This should be set to the terraform-pipeline
+  environment stage that should perform the import.
 
 ```
 // Jenkinsfile
