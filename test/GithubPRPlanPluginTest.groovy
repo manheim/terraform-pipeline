@@ -53,7 +53,6 @@ class GithubPRPlanPluginTest {
             plugin.apply(command)
 
             String result = command.toString()
-            assertThat(result, containsString("-out=tfplan"))
             assertThat(result, containsString("2>plan.err | tee plan.out"))
         }
 

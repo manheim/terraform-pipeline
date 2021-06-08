@@ -39,7 +39,6 @@ class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnviron
     @Override
     public void apply(TerraformPlanCommand command) {
         command.withPrefix("set -o pipefail;")
-        command.withArgument("-out=tfplan")
         command.withStandardErrorRedirection('plan.err')
         command.withSuffix('| tee plan.out')
     }
