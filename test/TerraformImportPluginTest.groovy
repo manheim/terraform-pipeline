@@ -221,13 +221,12 @@ class TerraformImportPluginTest {
             def closure = plugin.runTerraformImportCommand("env")
             def innerClosure = spy { -> }
             def original = spy(new MockWorkflowScript())
-            def commandToString = new TerraformImportCommand("env").toString()
 
             closure.delegate = original
             closure.call(innerClosure)
 
             verify(innerClosure, times(1)).call()
-            verify(original, times(1)).sh(commandToString)
+            verify(original, times(1)).sh("terraform import bar foo")
         }
     }
 }
