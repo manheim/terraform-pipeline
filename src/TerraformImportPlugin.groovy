@@ -44,6 +44,7 @@ class TerraformImportPlugin implements TerraformEnvironmentStagePlugin, Terrafor
     public Closure runTerraformImportCommand(String environment) {
         def importCommand = TerraformImportCommand.instanceFor(environment)
         return { closure ->
+            importCommand.applyPlugins()
             if (importCommand.resource) {
                 echo "Running '${importCommand.toString()}'. TerraformImportPlugin is enabled."
                 sh importCommand.toString()
