@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 
@@ -70,7 +71,7 @@ class TerraformImportPluginTest {
     }
 
     @Nested
-    public class Apply {
+    public class ApplyEnvironment {
         @Test
         void doesNotDecorateTheTerraformEnvironmentStageIfNoResource() {
             TerraformImportPlugin plugin = new TerraformImportPlugin()
@@ -134,6 +135,99 @@ class TerraformImportPluginTest {
             plugin.apply(environment)
 
             verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN_COMMAND), any(Closure.class))
+        }
+    }
+
+    @Nested
+    public class ApplyCommand {
+        @Test
+        void doesNotCallImportIfNoParameters() {
+            TerraformImportPlugin plugin = new TerraformImportPlugin()
+            def command = spy(new TerraformImportCommand())
+            MockJenkinsfile.withEnv()
+            plugin.apply(command)
+
+            verify(command, times(0)).withResource()
+            verify(command, times(0)).withTargetPath()
+        }
+
+        @Test
+        void doesNotCallImportIfNoTarget() {
+            TerraformImportPlugin plugin = new TerraformImportPlugin()
+            def command = spy(new TerraformImportCommand())
+            MockJenkinsfile.withEnv([
+                'IMPORT_RESOURCE': 'foo'
+            ])
+            plugin.apply(command)
+
+            verify(command, times(0)).withResource()
+            verify(command, times(0)).withTargetPath()
+        }
+
+        @Test
+        void doesNotCallImportIfNoResource() {
+            TerraformImportPlugin plugin = new TerraformImportPlugin()
+            def command = spy(new TerraformImportCommand())
+            MockJenkinsfile.withEnv([
+                'IMPORT_TARGET_PATH': 'target.foo'
+            ])
+            plugin.apply(command)
+
+            verify(command, times(0)).withResource()
+            verify(command, times(0)).withTargetPath()
+        }
+
+        @Test
+        void callsImportIfResourceAndTarget() {
+            TerraformImportPlugin plugin = new TerraformImportPlugin()
+            def command = spy(new TerraformImportCommand())
+            MockJenkinsfile.withEnv([
+                'IMPORT_RESOURCE': 'foo',
+                'IMPORT_TARGET_PATH': 'bar'
+            ])
+            plugin.apply(command)
+
+            verify(command, times(1)).withResource("foo")
+            verify(command, times(1)).withTargetPath("bar")
+        }
+    }
+
+    @Nested
+    public class RunTerraformImport {
+        @Test
+        void doesNotCallImportIfNoResource() {
+            def plugin = new TerraformImportPlugin()
+            MockJenkinsfile.withEnv()
+            TerraformImportCommand.addPlugin(plugin)
+            def closure = plugin.runTerraformImportCommand("env")
+            def innerClosure = spy { -> }
+            def original = spy(new MockWorkflowScript())
+
+            closure.delegate = original
+            closure.call(innerClosure)
+
+            verify(innerClosure, times(1)).call()
+            verify(original, times(0)).sh(anyString())
+        }
+
+        @Test
+        void callsImportIfResource() {
+            def plugin = new TerraformImportPlugin()
+            MockJenkinsfile.withEnv([
+                'IMPORT_RESOURCE': 'foo',
+                'IMPORT_TARGET_PATH': 'bar'
+            ])
+            TerraformImportCommand.addPlugin(plugin)
+            def closure = plugin.runTerraformImportCommand("env")
+            def innerClosure = spy { -> }
+            def original = spy(new MockWorkflowScript())
+            def commandToString = new TerraformImportCommand("env").toString()
+
+            closure.delegate = original
+            closure.call(innerClosure)
+
+            verify(innerClosure, times(1)).call()
+            verify(original, times(1)).sh(commandToString)
         }
     }
 }
