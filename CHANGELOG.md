@@ -1,6 +1,6 @@
 # Unreleased
 
-- [Issue #280 (partial)](https://github.com/manheim/terraform-pipeline/issues/280) Feature: Add TerraformImportPlugin and TerraformImportCommand
+- [Issue #280 (partial)](https://github.com/manheim/terraform-pipeline/issues/280) Feature: Add TerraformImportPlugin & TerraformImportCommand
 
 # v5.16
 
