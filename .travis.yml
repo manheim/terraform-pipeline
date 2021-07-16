@@ -1,6 +1,0 @@
-language: groovy
-jdk:
-  - openjdk9
-script: ./gradlew check --info
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
