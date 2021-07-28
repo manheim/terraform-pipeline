@@ -4,8 +4,6 @@ import static TerraformEnvironmentStage.ALL
 public class TerraformStartDirectoryPlugin implements TerraformValidateStagePlugin, TerraformEnvironmentStagePlugin, Resettable {
     private static String directory = "./terraform/"
 
-    TerraformStartDirectoryPlugin() { }
-
     public static void init() {
         def plugin = new TerraformStartDirectoryPlugin()
 
