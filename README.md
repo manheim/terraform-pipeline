@@ -123,6 +123,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 * [PlanOnlyPlugin](./docs/PlanOnlyPlugin.md): Use this to change the pipeline functionality to `terraform plan` only.
 * [TargetPlugin](./docs/TargetPlugin.md): set `-target` parameter for terraform plan and apply.
 * [TerraformDirectoryPlugin](./docs/TerraformDirectoryPlugin.md): Change the default directory containing your terraform code.
+* [TerraformStartDirectoryPlugin](./docs/TerraformStartDirectoryPlugin.md): Change the starting execution workspace directory.
 * [TerraformEnvironmentStageShellHookPlugin](./docs/TerraformEnvironmentStageShellHookPlugin.md): Run arbitrary shell scripts at various points in the TerraformEnvironmentStage process.
 * [TerraformLandscapePlugin](./docs/TerraformLandscapePlugin.md): Enable terraform-landscape plan output.
 * [ValidateFormatPlugin](./docs/ValidateFormatPlugin.md): Validate correct code format as part of the TerraformValidateStage.
