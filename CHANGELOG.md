@@ -1,5 +1,7 @@
 # Unreleased
 
+- [Issue #309](https://github.com/manheim/terraform-pipeline/issues/309) Add the ability to specify terraform-pipeline starting execution workspace directory
+
 # v5.17
 
 - [Issue #393](https://github.com/manheim/terraform-pipeline/issues/393) Testing: Convert from TravisCI to GithubActions
