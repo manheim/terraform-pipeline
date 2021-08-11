@@ -1,5 +1,6 @@
 # Unreleased
 
+- [Issue #399](https://github.com/manheim/terraform-pipeline/issues/399) Add pull request templates, with checkboxes for necessary tasks
 - [Issue #309](https://github.com/manheim/terraform-pipeline/issues/309) Add the ability to specify terraform-pipeline starting execution workspace directory
 
 # v5.17
