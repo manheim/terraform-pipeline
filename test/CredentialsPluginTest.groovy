@@ -46,6 +46,32 @@ class CredentialsPluginTest {
     }
 
     @Nested
+    public class WithBinding {
+        @Test
+        void addsABinding() {
+            def binding = { usernameColonPassword(credentialsId: 'my-user-colon-pass', variable: 'USERPASS') }
+            CredentialsPlugin.withBinding(binding)
+
+            def bindings = CredentialsPlugin.getBindings()
+            assertThat(bindings, hasItem(binding))
+        }
+
+        @Test
+        void addsMultipleBindingsIfCalledAgain() {
+            def binding1 = { string(credentialsId: 'my-token', variable: 'TOKEN') }
+            def binding2 = { usernamePassword(credentialsId: 'my-user-pass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD') }
+
+            CredentialsPlugin.withBinding(binding1)
+            CredentialsPlugin.withBinding(binding2)
+
+            def bindings = CredentialsPlugin.getBindings()
+            assertThat(bindings.size(), equalTo(2))
+            assertThat(bindings, hasItem(binding1))
+            assertThat(bindings, hasItem(binding2))
+        }
+    }
+
+    @Nested
     public class WithBuildCredentials {
         @Test
         void addsUsernamePasswordBinding() {

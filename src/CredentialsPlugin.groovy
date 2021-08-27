@@ -10,6 +10,9 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
         TerraformValidateStage.addPlugin(plugin)
     }
 
+    public static withBinding(Closure binding) {
+        bindings << binding
+    }
     public static withBuildCredentials(Map options = [:], String credentialsId) {
         Map optionsWithDefaults = populateDefaults(options, credentialsId)
         bindings << { usernamePassword(optionsWithDefaults) }
