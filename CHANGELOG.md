@@ -1,5 +1,6 @@
 # Unreleased
 
+- [Issue #214](https://github.com/manheim/terraform-pipeline/issues/214) CredentialsPlugin: support more than username/password
 - [Issue #399](https://github.com/manheim/terraform-pipeline/issues/399) Add pull request templates, with checkboxes for necessary tasks
 - [Issue #309](https://github.com/manheim/terraform-pipeline/issues/309) Add the ability to specify terraform-pipeline starting execution workspace directory
 - [Issue #283](https://github.com/manheim/terraform-pipeline/issues/283) Remove CrqPlugin, as it relies on a Manheim internal tool that is deprecated. Users of CrqPlugin will find a replacement in the Manheim internal ``terraform-pipeline-cai-plugins`` project.
