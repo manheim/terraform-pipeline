@@ -44,7 +44,7 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
 
     private addBuildCredentials() {
         return { innerClosure ->
-            def appliedBindings = bindings.collect { it -> it() }
+            def appliedBindings = getBindings().collect { it -> it() }
 
             withCredentials(appliedBindings, innerClosure)
         }
