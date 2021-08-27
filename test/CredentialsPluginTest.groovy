@@ -48,20 +48,20 @@ class CredentialsPluginTest {
     @Nested
     public class WithBuildCredentials {
         @Test
-        void addsCredentialsForBuildStage() {
+        void addsUsernamePasswordBindingForBuildStage() {
             CredentialsPlugin.withBuildCredentials("credentials1")
 
-            def buildCredentials = CredentialsPlugin.getBuildCredentials()
-            assertThat(buildCredentials, hasSize(1))
+            def bindings = CredentialsPlugin.getBindings()
+            assertThat(bindings, hasSize(1))
         }
 
         @Test
-        void addsMultipleCredentialsForBuildStage() {
+        void addsMultipleBindingsForBuildStage() {
             CredentialsPlugin.withBuildCredentials("credentials1")
             CredentialsPlugin.withBuildCredentials("credentials2")
 
-            def buildCredentials = CredentialsPlugin.getBuildCredentials()
-            assertThat(buildCredentials, hasSize(2))
+            def bindings = CredentialsPlugin.getBindings()
+            assertThat(bindings, hasSize(2))
         }
     }
 

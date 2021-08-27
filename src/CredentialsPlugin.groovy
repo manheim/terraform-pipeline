@@ -57,7 +57,7 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
         value.toUpperCase().replaceAll('-', '_')
     }
 
-    public static getBuildCredentials() {
+    public static getBindings() {
         return bindings
     }
 
