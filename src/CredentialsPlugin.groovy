@@ -14,6 +14,8 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
         bindings << binding
         return this
     }
+
+    // Deprecated: Remove this with Issue #404 and the next major release
     public static withBuildCredentials(Map options = [:], String credentialsId) {
         Map optionsWithDefaults = populateDefaults(options, credentialsId)
         bindings << { usernamePassword(optionsWithDefaults) }

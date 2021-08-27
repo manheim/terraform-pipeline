@@ -78,6 +78,7 @@ class CredentialsPluginTest {
         }
     }
 
+    // Deprecated: Remove this with Issue #404 and the next major release
     @Nested
     public class WithBuildCredentials {
         @Test
