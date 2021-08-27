@@ -48,6 +48,13 @@ class CredentialsPluginTest {
     @Nested
     public class WithBinding {
         @Test
+        void isFluent() {
+            def result = CredentialsPlugin.withBinding { }
+
+            assertThat(result, equalTo(CredentialsPlugin))
+        }
+
+        @Test
         void addsABinding() {
             def binding = { usernameColonPassword(credentialsId: 'my-user-colon-pass', variable: 'USERPASS') }
             CredentialsPlugin.withBinding(binding)

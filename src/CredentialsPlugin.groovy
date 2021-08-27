@@ -12,6 +12,7 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
 
     public static withBinding(Closure binding) {
         bindings << binding
+        return this
     }
     public static withBuildCredentials(Map options = [:], String credentialsId) {
         Map optionsWithDefaults = populateDefaults(options, credentialsId)
