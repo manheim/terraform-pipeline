@@ -48,7 +48,7 @@ class CredentialsPluginTest {
     @Nested
     public class WithBuildCredentials {
         @Test
-        void addsUsernamePasswordBindingForBuildStage() {
+        void addsUsernamePasswordBinding() {
             CredentialsPlugin.withBuildCredentials("credentials1")
 
             def bindings = CredentialsPlugin.getBindings()
@@ -56,7 +56,7 @@ class CredentialsPluginTest {
         }
 
         @Test
-        void addsMultipleBindingsForBuildStage() {
+        void addsMultipleBindings() {
             CredentialsPlugin.withBuildCredentials("credentials1")
             CredentialsPlugin.withBuildCredentials("credentials2")
 
