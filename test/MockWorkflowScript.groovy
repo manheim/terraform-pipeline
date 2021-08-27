@@ -80,5 +80,11 @@ class MockWorkflowScript {
         closure.delegate = this
         closure()
     }
+
+    public withCredentials(bindings, Closure closure) {
+        print "MockworkflowScript.withCredentials(${bindings})"
+        closure.delegate = this
+        closure()
+    }
 }
 

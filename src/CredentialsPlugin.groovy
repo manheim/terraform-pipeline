@@ -1,6 +1,5 @@
 class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, TerraformEnvironmentStagePlugin, TerraformValidateStagePlugin, Resettable {
     private static globalBuildCredentials = []
-    private buildCredentials = []
 
     public static void init() {
         def plugin = new CredentialsPlugin()
@@ -11,14 +10,9 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
         TerraformValidateStage.addPlugin(plugin)
     }
 
-    public CredentialsPlugin() {
-        this.buildCredentials = globalBuildCredentials.clone()
-    }
-
     public static withBuildCredentials(Map options = [:], String credentialsId) {
-        // Groovy is terrible
         Map optionsWithDefaults = populateDefaults(options, credentialsId)
-        globalBuildCredentials << optionsWithDefaults
+        globalBuildCredentials << { usernamePassword(optionsWithDefaults) }
         return this
     }
 
@@ -43,15 +37,10 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
     }
 
     private addBuildCredentials() {
-        def credentials = this.buildCredentials
-        return { closure ->
-            def results = credentials.collect { credential ->
-                usernamePassword(credential)
-            }
+        return { innerClosure ->
+            def credentials = globalBuildCredentials.collect { it -> it() }
 
-            withCredentials(results) {
-                closure()
-            }
+            withCredentials(credentials, innerClosure)
         }
     }
 

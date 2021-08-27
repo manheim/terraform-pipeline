@@ -3,7 +3,6 @@ import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.hasSize
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.Matchers.is
-import static org.hamcrest.Matchers.notNullValue
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
@@ -54,9 +53,6 @@ class CredentialsPluginTest {
 
             def buildCredentials = CredentialsPlugin.getBuildCredentials()
             assertThat(buildCredentials, hasSize(1))
-
-            def credential = buildCredentials.find { it['credentialsId'] == "credentials1" }
-            assertThat(credential, notNullValue())
         }
 
         @Test
@@ -66,11 +62,6 @@ class CredentialsPluginTest {
 
             def buildCredentials = CredentialsPlugin.getBuildCredentials()
             assertThat(buildCredentials, hasSize(2))
-
-            def credential1 = buildCredentials.find { it['credentialsId'] == "credentials1" }
-            assertThat(credential1, notNullValue())
-            def credential2 = buildCredentials.find { it['credentialsId'] == "credentials2" }
-            assertThat(credential2, notNullValue())
         }
     }
 
@@ -194,6 +185,34 @@ class CredentialsPluginTest {
             plugin.apply(environment)
 
             verify(environment).decorate(any(Closure.class))
+        }
+    }
+
+    @Nested
+    public class AddBuildCredentials {
+        @Test
+        public void runsTheInnerClosure() {
+            def wasRun = false
+            def innerClosure = { wasRun = true }
+            def plugin = new CredentialsPlugin()
+
+            def addCredentialsClosure = plugin.addBuildCredentials()
+            addCredentialsClosure.delegate = new MockWorkflowScript()
+            addCredentialsClosure(innerClosure)
+
+            assertThat(wasRun, equalTo(true))
+        }
+
+        @Test
+        public void callsWithCredentialsOnWorkflowScript() {
+            def workflowScript = spy(new MockWorkflowScript())
+            def plugin = new CredentialsPlugin()
+
+            def addCredentialsClosure = plugin.addBuildCredentials()
+            addCredentialsClosure.delegate = workflowScript
+            addCredentialsClosure { }
+
+            verify(workflowScript).withCredentials(any(List), any(Closure))
         }
     }
 }
