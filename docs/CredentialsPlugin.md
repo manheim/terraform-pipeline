@@ -6,7 +6,7 @@ One-time setup:
 * Install the [Jenkins Credentials Binding Plugin](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) on your Jenkins master.
 * Define a credential that you want to inject.
 
-Add any number of credentials bindings that you want to wrap your stages, with `withBinding`.  Each call to this method cumulatively add more credentials.  See the [Credentials Binding Plugin homepage](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) for the list of supported bindings.
+Add any number of credentials bindings that you want to wrap your stages, with `withBinding`.  Each call to this method will cumulatively add more credentials.  See the [Credentials Binding Plugin homepage](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) for the list of supported bindings.
 
 ```
 // Jenkinsfile
@@ -14,7 +14,7 @@ Add any number of credentials bindings that you want to wrap your stages, with `
 
 Jenkinsfile.init(this)
 
-// Add credentials to all Stages from usernamePassword, usernameColonPassowrd, and string credentials
+// Add credentials to all Stages from usernamePassword, usernameColonPassword, and string credentials
 CredentialsPlugin.withBinding { usernamePassword(credentialsId: 'my-user-pass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD') }
                  .withBinding { usernameColonPassword(credentialsId: 'my-user-colon-pass', variable: 'USERPASS') }
 		 .withBinding { string(credentialsId: 'my-string-token', variable: 'TOKEN') }
