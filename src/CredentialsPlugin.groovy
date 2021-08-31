@@ -1,6 +1,5 @@
 class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, TerraformEnvironmentStagePlugin, TerraformValidateStagePlugin, Resettable {
-    private static globalBuildCredentials = []
-    private buildCredentials = []
+    private static bindings = []
 
     public static void init() {
         def plugin = new CredentialsPlugin()
@@ -11,14 +10,15 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
         TerraformValidateStage.addPlugin(plugin)
     }
 
-    public CredentialsPlugin() {
-        this.buildCredentials = globalBuildCredentials.clone()
+    public static withBinding(Closure binding) {
+        bindings << binding
+        return this
     }
 
+    // Deprecated: Remove this with Issue #404 and the next major release
     public static withBuildCredentials(Map options = [:], String credentialsId) {
-        // Groovy is terrible
         Map optionsWithDefaults = populateDefaults(options, credentialsId)
-        globalBuildCredentials << optionsWithDefaults
+        bindings << { usernamePassword(optionsWithDefaults) }
         return this
     }
 
@@ -43,15 +43,11 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
     }
 
     private addBuildCredentials() {
-        def credentials = this.buildCredentials
-        return { closure ->
-            def results = credentials.collect { credential ->
-                usernamePassword(credential)
-            }
+        return { innerClosure ->
+            def workflowScript = delegate
+            def appliedBindings = getBindings().collect { it -> it.delegate = workflowScript; it() }
 
-            withCredentials(results) {
-                closure()
-            }
+            withCredentials(appliedBindings, innerClosure)
         }
     }
 
@@ -68,12 +64,12 @@ class CredentialsPlugin implements BuildStagePlugin, RegressionStagePlugin, Terr
         value.toUpperCase().replaceAll('-', '_')
     }
 
-    public static getBuildCredentials() {
-        return globalBuildCredentials
+    public static getBindings() {
+        return bindings
     }
 
     public static void reset() {
-        globalBuildCredentials = []
+        bindings = []
     }
 
 }

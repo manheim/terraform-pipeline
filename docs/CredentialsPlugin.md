@@ -3,10 +3,10 @@
 Enable this plugin to inject credentials into your stages using the [Jenkins Credentials Plugin](https://wiki.jenkins.io/display/JENKINS/Credentials+Plugin).
 
 One-time setup:
-* Install the [Jenkins Credentials Plugin](https://wiki.jenkins.io/display/JENKINS/Credentials+Plugin) on your Jenkins master.
-* Define a credential that you want to inject.  Currently, only usernamePassword credentials are supported.
+* Install the [Jenkins Credentials Binding Plugin](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) on your Jenkins master.
+* Define a credential that you want to inject.
 
-Specify the credential that you want to inject in your stages.  Optionally provide custom username/password environment variables that will contain the credential values for your use.
+Add any number of credentials bindings that you want to wrap your stages, with `withBinding`.  Each call to this method will cumulatively add more credentials.  See the [Credentials Binding Plugin homepage](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) for the list of supported bindings.
 
 ```
 // Jenkinsfile
@@ -14,8 +14,11 @@ Specify the credential that you want to inject in your stages.  Optionally provi
 
 Jenkinsfile.init(this)
 
-// MY_CREDENTIALS_USERNAME and MY_CREDENTIALS_PASSWORD will contain the respective username/password values of the 'my-credentials' credential.
-CredentialsPlugin.withBuildCredentials('my-credentials').init()
+// Add credentials to all Stages from usernamePassword, usernameColonPassword, and string credentials
+CredentialsPlugin.withBinding { usernamePassword(credentialsId: 'my-user-pass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD') }
+                 .withBinding { usernameColonPassword(credentialsId: 'my-user-colon-pass', variable: 'USERPASS') }
+		 .withBinding { string(credentialsId: 'my-string-token', variable: 'TOKEN') }
+		 .init()
 
 def validate = new TerraformValidateStage()
 def build = new BuildStage()
