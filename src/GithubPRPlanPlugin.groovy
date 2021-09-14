@@ -179,7 +179,7 @@ class GithubPRPlanPlugin implements TerraformPlanCommandPlugin, TerraformEnviron
                 def output = sh(script: cmd, returnStdout: true).trim()
 
                 def headers = readFile('comment.headers').trim()
-                if (! headers.contains('HTTP/1.1 201 Created')) {
+                if (! (headers.contains('HTTP/1.1 201 Created') || headers.contains('HTTP/2 201 Created'))) {
                     error("Creating GitHub comment failed: ${headers}\n")
                 }
                 // ok, success
