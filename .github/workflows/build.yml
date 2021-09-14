@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK 9
         uses: actions/setup-java@v2
         with:
-          java-version: '9.181'
+          java-version: '9.0.0+181'
           distribution: 'adopt'
 
       - name: Validate Gradle wrapper
