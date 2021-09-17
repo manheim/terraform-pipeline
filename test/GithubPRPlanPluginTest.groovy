@@ -454,7 +454,7 @@ class GithubPRPlanPluginTest {
                 MockJenkinsfile.withParsedScmUrl([protocol: 'git', domain: 'my.github.com'])
                 Jenkinsfile.original = spy(new MockWorkflowScript())
                 def plugin = spy(new GithubPRPlanPlugin())
-                doReturn('HTTP/2 201 Created').when(plugin).readFile('comment.headers')
+                doReturn('HTTP/2 201').when(plugin).readFile('comment.headers')
                 doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())
 
                 plugin.postPullRequestComment('someUrl', 'myPrComment')
