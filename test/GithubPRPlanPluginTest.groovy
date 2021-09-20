@@ -431,22 +431,39 @@ class GithubPRPlanPluginTest {
 
     @Nested
     class PostPullRequestComment {
-        // This needs to be tested better than 'do not blow up'
-        @Test
-        void doesNotBlowUp() {
-            MockJenkinsfile.withParsedScmUrl([protocol: 'git', domain: 'my.github.com'])
-            Jenkinsfile.original = spy(new MockWorkflowScript())
-            def plugin = spy(new GithubPRPlanPlugin())
-            doReturn('HTTP/1.1 201 Created').when(plugin).readFile('comment.headers')
-            doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())
+        // This needs to be tested better than 'do not blow up x 2'
+        @Nested
+        class doesNotBlowUp {
+            @Test
+            void forHttp1_1() {
+                MockJenkinsfile.withParsedScmUrl([protocol: 'git', domain: 'my.github.com'])
+                Jenkinsfile.original = spy(new MockWorkflowScript())
+                def plugin = spy(new GithubPRPlanPlugin())
+                doReturn('HTTP/1.1 201 Created').when(plugin).readFile('comment.headers')
+                doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())
 
-            plugin.postPullRequestComment('someUrl', 'myPrComment')
+                plugin.postPullRequestComment('someUrl', 'myPrComment')
+            }
+            // Test executes passed closure
+            // Test raises error on non HTTP/1.1 201 Created
+            // Uses the correct pullRequestUrl
+            // Uses the correct git auth token
+            // Chunks requests correct if over 65536
+
+            void forHttp2() {
+                MockJenkinsfile.withParsedScmUrl([protocol: 'git', domain: 'my.github.com'])
+                Jenkinsfile.original = spy(new MockWorkflowScript())
+                def plugin = spy(new GithubPRPlanPlugin())
+                doReturn('HTTP/2 201').when(plugin).readFile('comment.headers')
+                doReturn('{ "id": "someId", "html_url": "some_url" }').when(Jenkinsfile.original).sh(anyObject())
+
+                plugin.postPullRequestComment('someUrl', 'myPrComment')
+            }
+            // Test executes passed closure
+            // Test raises error on non HTTP/2 201 Created
+            // Uses the correct pullRequestUrl
+            // Uses the correct git auth token
+            // Chunks requests correct if over 65536
         }
-
-        // Test executes passed closure
-        // Test raises error on non HTTP/1.1 201 Created
-        // Uses the correct pullRequestUrl
-        // Uses the correct git auth token
-        // Chunks requests correct if over 65536
     }
 }
