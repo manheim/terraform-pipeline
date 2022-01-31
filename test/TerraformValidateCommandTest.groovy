@@ -18,7 +18,7 @@ class TerraformValidateCommandTest {
             def command = new TerraformValidateCommand().withDirectory("foobar")
 
             def actualCommand = command.toString()
-            assertThat(actualCommand, endsWith(" foobar"))
+            assertThat(actualCommand, containsString(" -chdir=foobar"))
         }
     }
 
