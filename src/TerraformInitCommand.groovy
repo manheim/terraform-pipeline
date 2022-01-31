@@ -50,6 +50,9 @@ class TerraformInitCommand implements TerraformCommand, Resettable {
         def pieces = []
         pieces += prefixes
         pieces << terraformBinary
+        if (directory) {
+            pieces << "-chdir=${directory}"
+        }
         pieces << command
         if (!input) {
             pieces << "-input=false"
@@ -60,9 +63,6 @@ class TerraformInitCommand implements TerraformCommand, Resettable {
             }
         } else {
             pieces << "-backend=false"
-        }
-        if (directory) {
-            pieces << "-chdir=${directory}"
         }
 
         pieces += suffixes

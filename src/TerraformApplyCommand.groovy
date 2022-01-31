@@ -80,14 +80,14 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         def pieces = []
         pieces += prefixes
         pieces << terraformBinary
+        if (directory) {
+            pieces << "-chdir=${directory}"
+        }
         pieces << command
         if (!input) {
             pieces << "-input=false"
         }
         pieces += args
-        if (directory) {
-            pieces << "-chdir=${directory}"
-        }
 
         pieces += suffixes
 

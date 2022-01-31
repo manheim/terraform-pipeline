@@ -81,14 +81,14 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary
+        if (directory) {
+            pieces << "-chdir=${directory}"
+        }
         pieces << command
         if (!input) {
             pieces << "-input=false"
         }
         pieces += arguments
-        if (directory) {
-            pieces << "-chdir=${directory}"
-        }
 
         // This should be built out to handle more complex redirection
         // and should be standardized across all TerraformCommands

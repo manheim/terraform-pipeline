@@ -36,12 +36,12 @@ class TerraformValidateCommand implements Resettable {
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary
+        if (directory) {
+            pieces << "-chdir=${directory}"
+        }
         pieces << command
         for (String argument in arguments) {
             pieces << argument
-        }
-        if (directory) {
-            pieces << "-chdir=${directory}"
         }
         pieces += suffixes
 
