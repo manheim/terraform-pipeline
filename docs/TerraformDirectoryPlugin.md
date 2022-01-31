@@ -5,7 +5,7 @@ This plugin allows Terraform to run in a specific directory so that the number o
 It works by appending `-chdir=<directory>` to the end of any Terraform command run by terraform-pipeline. You can either specify a directory when initializing the plugin, or it will default to the `./terraform/` directory.
 
 ### Terraform Version Notes
-Previous versions of this plugin would append the directory to the end of the Terraform commands. This practice has been removed as of Terraform 0.15 and replaced with the `-chdir` argument.
+Previous versions of this plugin would append the directory to the end of the Terraform commands. This has been removed as of Terraform 0.15 and replaced with the `-chdir` argument.
 
 ```
 // Jenkinsfile
