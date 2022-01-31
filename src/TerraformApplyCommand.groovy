@@ -86,7 +86,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         }
         pieces += args
         if (directory) {
-            pieces << directory
+            pieces << "-chdir=${directory}"
         }
 
         pieces += suffixes

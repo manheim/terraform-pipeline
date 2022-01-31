@@ -62,7 +62,7 @@ class TerraformInitCommand implements TerraformCommand, Resettable {
             pieces << "-backend=false"
         }
         if (directory) {
-            pieces << directory
+            pieces << "-chdir=${directory}"
         }
 
         pieces += suffixes

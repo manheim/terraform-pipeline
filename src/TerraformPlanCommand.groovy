@@ -87,7 +87,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         }
         pieces += arguments
         if (directory) {
-            pieces << directory
+            pieces << "-chdir=${directory}"
         }
 
         // This should be built out to handle more complex redirection

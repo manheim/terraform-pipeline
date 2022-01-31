@@ -41,7 +41,7 @@ class TerraformValidateCommand implements Resettable {
             pieces << argument
         }
         if (directory) {
-            pieces << directory
+            pieces << "-chdir=${directory}"
         }
         pieces += suffixes
 
