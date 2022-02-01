@@ -7,6 +7,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
     private suffixes = []
     private arguments = []
     private String directory
+    private boolean chdir_flag = false
     private String errorFile
     private Closure variablePattern
     private Closure mapPattern
@@ -34,6 +35,11 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
 
     public TerraformPlanCommand withDirectory(String directory) {
         this.directory = directory
+        return this
+    }
+
+    public TerraformApplyCommand withChangeDirectoryFlag() {
+        this.chdir_flag = true
         return this
     }
 
@@ -81,7 +87,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary
-        if (directory) {
+        if (directory && chdir_flag) {
             pieces << "-chdir=${directory}"
         }
         pieces << command
@@ -89,6 +95,9 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
             pieces << "-input=false"
         }
         pieces += arguments
+        if (directory && !chdir_flag) {
+            pieces << directory
+        }
 
         // This should be built out to handle more complex redirection
         // and should be standardized across all TerraformCommands

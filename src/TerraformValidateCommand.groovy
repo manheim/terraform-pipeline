@@ -5,6 +5,7 @@ class TerraformValidateCommand implements Resettable {
     private prefixes = []
     private suffixes = []
     private String directory
+    private boolean chdir_flag = false
     private static plugins = []
     private appliedPlugins = []
 
@@ -31,17 +32,25 @@ class TerraformValidateCommand implements Resettable {
         return this
     }
 
+    public TerraformValidateCommand withChangeDirectoryFlag() {
+        this.chdir_flag = true
+        return this
+    }
+
     public String toString() {
         applyPlugins()
         def pieces = []
         pieces = pieces + prefixes
         pieces << terraformBinary
-        if (directory) {
+        if (directory && chdir_flag) {
             pieces << "-chdir=${directory}"
         }
         pieces << command
         for (String argument in arguments) {
             pieces << argument
+        }
+        if (directory && !chdir_flag) {
+            pieces << directory
         }
         pieces += suffixes
 
