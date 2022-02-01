@@ -119,6 +119,24 @@ class TerraformPluginTest {
             assertThat(foundStrategy, instanceOf(TerraformPluginVersion15.class))
         }
 
+        @Test
+        void returnsVersion15For1_0_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('1.0.0')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion15.class))
+        }
+
+        @Test
+        void returnsVersion15ForMoreThan1_0_0() {
+            def plugin = new TerraformPlugin()
+
+            def foundStrategy = plugin.strategyFor('1.1.4')
+
+            assertThat(foundStrategy, instanceOf(TerraformPluginVersion15.class))
+        }
+
     }
 
     @Nested
