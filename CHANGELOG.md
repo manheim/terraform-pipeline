@@ -1,5 +1,5 @@
 # Unreleased
-- [Issue #379](https://github.com/manheim/terraform-pipeline/issues/379) Support Terraform 0.15. Added `-chdir` argument.
+- [Issue #379](https://github.com/manheim/terraform-pipeline/issues/379) Support Terraform 0.15+. Added `-chdir` argument.
 
 # v5.18
 
