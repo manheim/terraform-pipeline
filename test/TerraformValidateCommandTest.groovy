@@ -19,6 +19,15 @@ class TerraformValidateCommandTest {
             def command = new TerraformValidateCommand().withDirectory("foobar")
 
             def actualCommand = command.toString()
+            assertThat(actualCommand, endsWith(" foobar"))
+        }
+
+        @Test
+        void addsDirectoryArgumentWithChangeDirectoryFlag() {
+            def command = new TerraformValidateCommand().withDirectory("foobar")
+                                                        .withChangeDirectoryFlag()
+
+            def actualCommand = command.toString()
             assertThat(actualCommand, containsString(" -chdir=foobar"))
         }
     }
