@@ -38,7 +38,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         return this
     }
 
-    public TerraformApplyCommand withChangeDirectoryFlag() {
+    public TerraformPlanCommand withChangeDirectoryFlag() {
         this.chdir_flag = true
         return this
     }

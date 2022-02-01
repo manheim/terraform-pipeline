@@ -36,7 +36,7 @@ class TerraformInitCommand implements TerraformCommand, Resettable {
         return this
     }
 
-    public TerraformApplyCommand withChangeDirectoryFlag() {
+    public TerraformInitCommand withChangeDirectoryFlag() {
         this.chdir_flag = true
         return this
     }
