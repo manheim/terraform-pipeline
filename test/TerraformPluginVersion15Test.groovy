@@ -1,13 +1,5 @@
 import static org.hamcrest.Matchers.containsString
-import static org.hamcrest.Matchers.endsWith
-import static org.hamcrest.Matchers.is
-import static org.hamcrest.Matchers.not
 import static org.hamcrest.MatcherAssert.assertThat
-import static org.mockito.Matchers.any
-import static org.mockito.Matchers.eq
-import static org.mockito.Mockito.spy
-import static org.mockito.Mockito.verify;
-
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -73,7 +65,5 @@ class TerraformPluginVersion15Test {
             assertThat(result, containsString(" -chdir=foobar"))
         }
     }
-
-
 }
 
