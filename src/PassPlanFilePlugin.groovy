@@ -33,7 +33,7 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     @Override
     public void apply(TerraformApplyCommand command) {
         String env = command.getEnvironment()
-        command.withDirectory("tfplan-" + env)
+        command.withPlanFile("tfplan-" + env)
     }
 
     public Closure stashPlan(String env) {

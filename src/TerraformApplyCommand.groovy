@@ -8,6 +8,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     private args = []
     private String directory
     private boolean chdir_flag = false
+    private String planFile
     private Closure variablePattern
     private Closure mapPattern
     private static plugins = []
@@ -81,6 +82,11 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         return this
     }
 
+    public TerraformApplyCommand withPlanFile(String planFile) {
+        this.planFile = planFile
+        return this
+    }
+
     public String toString() {
         applyPlugins()
         def pieces = []
@@ -96,6 +102,10 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         pieces += args
         if (directory && !chdir_flag) {
             pieces << directory
+        }
+
+        if (planFile) {
+            pieces << planFile
         }
 
         pieces += suffixes
