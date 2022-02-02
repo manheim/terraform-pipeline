@@ -3,12 +3,19 @@ import static TerraformEnvironmentStage.APPLY_COMMAND
 
 class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
 
+    private static String directory = "./"
+
     public static void init() {
         PassPlanFilePlugin plugin = new PassPlanFilePlugin()
 
         TerraformEnvironmentStage.addPlugin(plugin)
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
+    }
+
+    public static withDirectory(String directory) {
+        PassPlanFilePlugin.directory = directory
+        return this
     }
 
     @Override
@@ -32,7 +39,7 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
     public Closure stashPlan(String env) {
         return { closure ->
             closure()
-            String planFile = "tfplan-" + env
+            String planFile = directory + "tfplan-" + env
             echo "Stashing ${planFile} file"
             stash name: planFile, includes: planFile
         }
@@ -40,11 +47,15 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
 
     public Closure unstashPlan(String env) {
         return { closure ->
-            String planFile = "tfplan-" + env
+            String planFile = directory + "tfplan-" + env
             echo "Unstashing ${planFile} file"
             unstash planFile
             closure()
         }
+    }
+
+    public static reset() {
+        directory = "./"
     }
 
 }
