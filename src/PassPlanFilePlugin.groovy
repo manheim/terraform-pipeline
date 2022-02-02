@@ -41,7 +41,9 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
             closure()
             String planFile = "tfplan-" + env
             echo "Stashing ${planFile} file"
-            stash name: planFile, includes: directory
+            dir(directory) {
+                stash name: planFile, includes: planFile
+            }
         }
     }
 
@@ -49,7 +51,9 @@ class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCo
         return { closure ->
             String planFile = "tfplan-" + env
             echo "Unstashing ${planFile} file"
-            unstash planFile
+            dir(directory) {
+                unstash planFile
+            }
             closure()
         }
     }
