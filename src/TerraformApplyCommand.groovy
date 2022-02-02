@@ -100,7 +100,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
             pieces << "-input=false"
         }
         pieces += args
-        if (directory && !chdir_flag) {
+        if (directory && !chdir_flag && !planFile) {
             pieces << directory
         }
 
