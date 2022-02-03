@@ -61,11 +61,15 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
         // if (new SemanticVersion(version) >= new SemanticVersion('0.12.0')) should be used
         // here.  Unit tests pass with the above, but running Jenkinsfile in a pipeline context
         // does not.  Debug statements show that the above will return 0 when it should return 'true'.
-        if ((new SemanticVersion(version) <=> new SemanticVersion('0.12.0')) >= 0) {
+        if ((new SemanticVersion(version) <=> new SemanticVersion('0.15.0')) >= 0) {
+            return new TerraformPluginVersion15()
+        }
+        else if ((new SemanticVersion(version) <=> new SemanticVersion('0.12.0')) >= 0) {
             return new TerraformPluginVersion12()
         }
-
-        return new TerraformPluginVersion11()
+        else {
+            return new TerraformPluginVersion11()
+        }
     }
 
     static void withVersion(String userVersion) {

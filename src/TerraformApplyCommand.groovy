@@ -7,6 +7,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     private suffixes = []
     private args = []
     private String directory
+    private boolean chdir_flag = false
     private Closure variablePattern
     private Closure mapPattern
     private static plugins = []
@@ -75,17 +76,25 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         return this
     }
 
+    public TerraformApplyCommand withChangeDirectoryFlag() {
+        this.chdir_flag = true
+        return this
+    }
+
     public String toString() {
         applyPlugins()
         def pieces = []
         pieces += prefixes
         pieces << terraformBinary
+        if (directory && chdir_flag) {
+            pieces << "-chdir=${directory}"
+        }
         pieces << command
         if (!input) {
             pieces << "-input=false"
         }
         pieces += args
-        if (directory) {
+        if (directory && !chdir_flag) {
             pieces << directory
         }
 
