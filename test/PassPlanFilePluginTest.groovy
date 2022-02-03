@@ -1,8 +1,8 @@
 import static org.hamcrest.Matchers.containsString
-import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.MatcherAssert.assertThat
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
@@ -83,15 +83,40 @@ class PassPlanFilePluginTest {
 
         @Test
         void runsStashPlan() {
-            def wasCalled = false
-            def passedClosure = { -> wasCalled = true }
             def plugin = new PassPlanFilePlugin()
+            def workflowScript = spy(new MockWorkflowScript())
 
             def stashClosure = plugin.stashPlan('dev')
-            stashClosure.delegate = new MockWorkflowScript()
-            stashClosure.call(passedClosure)
+            stashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            assertThat(wasCalled, equalTo(true))
+            verify(workflowScript, times(1)).stash(eq(name: 'tfplan-dev', includes: 'tfplan-dev'))
+        }
+
+        @Test
+        void usesCurrentDirectoryByDefault() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = mock(MockWorkflowScript.class)
+
+            def stashClosure = plugin.stashPlan('dev')
+            stashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).dir(eq('./'), any(Closure))
+        }
+
+        @Test
+        void usesDirectoryIfGiven() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = mock(MockWorkflowScript.class)
+            def expectedDirectory = 'myDir'
+            plugin.withDirectory(expectedDirectory)
+
+            def stashClosure = plugin.stashPlan('dev')
+            stashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).dir(eq(expectedDirectory), any(Closure))
         }
 
     }
@@ -101,15 +126,40 @@ class PassPlanFilePluginTest {
 
         @Test
         void runsUnstashPlan() {
-            def wasCalled = false
-            def passedClosure = { -> wasCalled = true }
             def plugin = new PassPlanFilePlugin()
+            def workflowScript = spy(new MockWorkflowScript())
 
             def unstashClosure = plugin.unstashPlan('dev')
-            unstashClosure.delegate = new MockWorkflowScript()
-            unstashClosure.call(passedClosure)
+            unstashClosure.delegate = workflowScript
+            unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            assertThat(wasCalled, equalTo(true))
+            verify(workflowScript, times(1)).unstash(eq('tfplan-dev'))
+        }
+
+        @Test
+        void usesCurrentDirectoryByDefault() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = mock(MockWorkflowScript.class)
+
+            def unstashClosure = plugin.unstashPlan('dev')
+            unstashClosure.delegate = workflowScript
+            unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).dir(eq('./'), any(Closure))
+        }
+
+        @Test
+        void usesDirectoryIfGiven() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = mock(MockWorkflowScript.class)
+            def expectedDirectory = 'myDir'
+            plugin.withDirectory(expectedDirectory)
+
+            def unstashClosure = plugin.unstashPlan('dev')
+            unstashClosure.delegate = workflowScript
+            unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).dir(eq(expectedDirectory), any(Closure))
         }
 
     }

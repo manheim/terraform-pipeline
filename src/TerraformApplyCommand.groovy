@@ -7,6 +7,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     private suffixes = []
     private args = []
     private String directory
+    private String planFile
     private boolean chdir_flag = false
     private Closure variablePattern
     private Closure mapPattern
@@ -76,6 +77,11 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         return this
     }
 
+    public TerraformApplyCommand withPlanFile(String planFile) {
+        this.planFile = planFile
+        return this
+    }
+
     public TerraformApplyCommand withChangeDirectoryFlag() {
         this.chdir_flag = true
         return this
@@ -94,8 +100,12 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
             pieces << "-input=false"
         }
         pieces += args
-        if (directory && !chdir_flag) {
+        if (directory && !chdir_flag && !planFile) {
             pieces << directory
+        }
+
+        if (planFile) {
+            pieces << planFile
         }
 
         pieces += suffixes
