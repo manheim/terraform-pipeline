@@ -131,7 +131,7 @@ class PassPlanFilePluginTest {
 
             def unstashClosure = plugin.unstashPlan('dev')
             unstashClosure.delegate = workflowScript
-            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+            unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
             verify(workflowScript, times(1)).unstash()
         }
