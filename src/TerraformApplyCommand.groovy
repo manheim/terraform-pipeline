@@ -7,6 +7,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     private suffixes = []
     private args = []
     private String directory
+    private String planFile
     private Closure variablePattern
     private Closure mapPattern
     private static plugins = []
@@ -75,6 +76,11 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         return this
     }
 
+    public TerraformApplyCommand withPlanFile(String planFile) {
+        this.planFile = planFile
+        return this
+    }
+
     public String toString() {
         applyPlugins()
         def pieces = []
@@ -85,8 +91,12 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
             pieces << "-input=false"
         }
         pieces += args
-        if (directory) {
+        if (directory && !planFile) {
             pieces << directory
+        }
+
+        if (planFile) {
+            pieces << planFile
         }
 
         pieces += suffixes

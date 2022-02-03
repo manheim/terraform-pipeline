@@ -1,4 +1,5 @@
 # Unreleased
+- [Issue #420](https://github.com/manheim/terraform-pipeline/issues/420) Add `withDirectory` argument to PassPlanFilePlugin
 
 # v5.18
 
