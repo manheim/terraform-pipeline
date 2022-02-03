@@ -84,13 +84,13 @@ class PassPlanFilePluginTest {
         @Test
         void runsStashPlan() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = mock(MockWorkflowScript.class)
+            def workflowScript = spy(new MockWorkflowScript())
 
             def stashClosure = plugin.stashPlan('dev')
             stashClosure.delegate = workflowScript
             stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).stash(eq({name: 'tfplan-dev', includes: 'tfplan-dev'}))
+            verify(workflowScript, times(1)).stash(eq(name: 'tfplan-dev', includes: 'tfplan-dev'))
         }
 
         @Test
@@ -127,7 +127,7 @@ class PassPlanFilePluginTest {
         @Test
         void runsUnstashPlan() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = mock(MockWorkflowScript.class)
+            def workflowScript = spy(new MockWorkflowScript())
 
             def unstashClosure = plugin.unstashPlan('dev')
             unstashClosure.delegate = workflowScript
