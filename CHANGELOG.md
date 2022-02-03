@@ -1,8 +1,6 @@
 # Unreleased
 - [Issue #379](https://github.com/manheim/terraform-pipeline/issues/379) Support Terraform 0.15. Added `-chdir` argument.
 - [Issue #395](https://github.com/manheim/terraform-pipeline/issues/395) Support Terraform 1.0. Added `-chdir` argument.
-- Modified ``PassPlanFilePlugin``
-  - Additional argument ``withDirectory``. This allows stash and unstash commands to be run in subdirectory.
 
 
 # v5.18

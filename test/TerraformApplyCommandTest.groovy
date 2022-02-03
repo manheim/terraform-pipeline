@@ -167,37 +167,6 @@ class TerraformApplyCommandTest {
     }
 
     @Nested
-    public class WithPlanFile {
-        @Test
-        void addsPlanFileArgument() {
-            def command = new TerraformApplyCommand().withPlanFile("foobar")
-
-            def actualCommand = command.toString()
-            assertThat(actualCommand, endsWith(" foobar"))
-        }
-
-        @Test
-        void addsPlanFileArgumentInPlaceOfDirectory() {
-            def command = new TerraformApplyCommand().withDirectory("dir")
-                                                     .withPlanFile("foobar")
-
-            def actualCommand = command.toString()
-            assertThat(actualCommand, endsWith(" foobar"))
-        }
-
-        @Test
-        void addsPlanFileArgumentWithChangeDirectoryFlag() {
-            def command = new TerraformApplyCommand().withDirectory("dir")
-                                                     .withPlanFile("foobar")
-                                                     .withChangeDirectoryFlag()
-
-            def actualCommand = command.toString()
-            assertThat(actualCommand, containsString(" -chdir=dir"))
-            assertThat(actualCommand, endsWith(" foobar"))
-        }
-    }
-
-    @Nested
     public class WithPrefix {
         @Test
         void addsPrefixToBeginningOfCommand() {

@@ -11,7 +11,6 @@
  */
 class TerraformPlugin implements TerraformValidateCommandPlugin,
                                  TerraformFormatCommandPlugin,
-                                 TerraformInitCommandPlugin,
                                  TerraformPlanCommandPlugin,
                                  TerraformApplyCommandPlugin,
                                  TerraformValidateStagePlugin,
@@ -26,7 +25,6 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
 
         TerraformValidateCommand.addPlugin(plugin)
         TerraformFormatCommand.addPlugin(plugin)
-        TerraformInitCommand.addPlugin(plugin)
         TerraformPlanCommand.addPlugin(plugin)
         TerraformApplyCommand.addPlugin(plugin)
         TerraformValidateStage.addPlugin(plugin)
@@ -81,7 +79,6 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
 
         TerraformValidateCommand.reset()
         TerraformFormatCommand.reset()
-        TerraformInitCommand.reset()
         TerraformPlanCommand.reset()
         TerraformApplyCommand.reset()
         TerraformValidateStage.reset()
@@ -94,11 +91,6 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
 
     @Override
     void apply(TerraformFormatCommand command) {
-        applyToCommand(command)
-    }
-
-    @Override
-    void apply(TerraformInitCommand command) {
         applyToCommand(command)
     }
 
