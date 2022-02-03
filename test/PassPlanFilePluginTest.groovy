@@ -133,7 +133,7 @@ class PassPlanFilePluginTest {
             unstashClosure.delegate = workflowScript
             unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).unstash()
+            verify(workflowScript, times(1)).unstash('tfplan-dev')
         }
 
         @Test
