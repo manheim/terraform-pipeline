@@ -64,7 +64,7 @@ class TerraformPlugin implements TerraformValidateCommandPlugin,
         if ((new SemanticVersion(version) <=> new SemanticVersion('0.12.0')) >= 0) {
             return new TerraformPluginVersion12()
         }
-        
+
         return new TerraformPluginVersion11()
     }
 
