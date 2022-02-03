@@ -184,6 +184,17 @@ class TerraformApplyCommandTest {
             def actualCommand = command.toString()
             assertThat(actualCommand, endsWith(" foobar"))
         }
+        
+        @Test
+        void addsPlanFileArgumentWithChangeDirectoryFlag() {
+            def command = new TerraformApplyCommand().withDirectory("dir")
+                                                     .withPlanFile("foobar")
+                                                     .withChangeDirectoryFlag()
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString(" -chdir=dir"))
+            assertThat(actualCommand, endsWith(" foobar"))
+        }
     }
 
     @Nested
