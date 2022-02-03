@@ -1,3 +1,4 @@
+import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.endsWith
 import static org.hamcrest.Matchers.startsWith
@@ -19,6 +20,15 @@ class TerraformValidateCommandTest {
 
             def actualCommand = command.toString()
             assertThat(actualCommand, endsWith(" foobar"))
+        }
+
+        @Test
+        void addsDirectoryArgumentWithChangeDirectoryFlag() {
+            def command = new TerraformValidateCommand().withDirectory("foobar")
+                                                        .withChangeDirectoryFlag()
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString(" -chdir=foobar"))
         }
     }
 
