@@ -45,35 +45,73 @@ class PassPlanFilePluginTest {
 
     @Nested
     public class Apply {
+        @Nested
+        public class WithDirectoryProvided {
+            @Test
+            void decoratesTheTerraformEnvironmentStage()  {
+                PassPlanFilePlugin.withDirectory('./terraform/')
+                PassPlanFilePlugin plugin = new PassPlanFilePlugin()
+                def environment = spy(new TerraformEnvironmentStage())
+                plugin.apply(environment)
 
-        @Test
-        void decoratesTheTerraformEnvironmentStage()  {
-            PassPlanFilePlugin plugin = new PassPlanFilePlugin()
-            def environment = spy(new TerraformEnvironmentStage())
-            plugin.apply(environment)
+                verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN_COMMAND), any(Closure.class))
+                verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.APPLY_COMMAND), any(Closure.class))
+            }
 
-            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN_COMMAND), any(Closure.class))
-            verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.APPLY_COMMAND), any(Closure.class))
+            @Test
+            void addsArgumentToTerraformPlan() {
+                PassPlanFilePlugin.withDirectory('./terraform/')
+                PassPlanFilePlugin plugin = new PassPlanFilePlugin()
+                TerraformPlanCommand command = new TerraformPlanCommand("dev")
+                plugin.apply(command)
+
+                String result = command.toString()
+                assertThat(result, containsString("-out=tfplan-dev"))
+            }
+
+            @Test
+            void addsArgumentToTerraformApply() {
+                PassPlanFilePlugin.withDirectory('./terraform/')
+                PassPlanFilePlugin plugin = new PassPlanFilePlugin()
+                TerraformApplyCommand command = new TerraformApplyCommand("dev")
+                plugin.apply(command)
+
+                String result = command.toString()
+                assertThat(result, containsString("tfplan-dev"))
+            }
         }
 
-        @Test
-        void addsArgumentToTerraformPlan() {
-            PassPlanFilePlugin plugin = new PassPlanFilePlugin()
-            TerraformPlanCommand command = new TerraformPlanCommand("dev")
-            plugin.apply(command)
+        @Nested
+        public class WithoutDirectoryProvided {
+            @Test
+            void decoratesTheTerraformEnvironmentStage()  {
+                PassPlanFilePlugin plugin = new PassPlanFilePlugin()
+                def environment = spy(new TerraformEnvironmentStage())
+                plugin.apply(environment)
 
-            String result = command.toString()
-            assertThat(result, containsString("-out=tfplan-dev"))
-        }
+                verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.PLAN_COMMAND), any(Closure.class))
+                verify(environment, times(1)).decorate(eq(TerraformEnvironmentStage.APPLY_COMMAND), any(Closure.class))
+            }
 
-        @Test
-        void addsArgumentToTerraformApply() {
-            PassPlanFilePlugin plugin = new PassPlanFilePlugin()
-            TerraformApplyCommand command = new TerraformApplyCommand("dev")
-            plugin.apply(command)
+            @Test
+            void addsArgumentToTerraformPlan() {
+                PassPlanFilePlugin plugin = new PassPlanFilePlugin()
+                TerraformPlanCommand command = new TerraformPlanCommand("dev")
+                plugin.apply(command)
 
-            String result = command.toString()
-            assertThat(result, containsString("tfplan-dev"))
+                String result = command.toString()
+                assertThat(result, containsString("-out=tfplan-dev"))
+            }
+
+            @Test
+            void addsArgumentToTerraformApply() {
+                PassPlanFilePlugin plugin = new PassPlanFilePlugin()
+                TerraformApplyCommand command = new TerraformApplyCommand("dev")
+                plugin.apply(command)
+
+                String result = command.toString()
+                assertThat(result, containsString("tfplan-dev"))
+            }
         }
 
     }
