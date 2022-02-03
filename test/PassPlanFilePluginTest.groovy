@@ -2,6 +2,7 @@ import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.instanceOf
 import static org.hamcrest.MatcherAssert.assertThat
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
