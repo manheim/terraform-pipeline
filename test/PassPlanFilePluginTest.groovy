@@ -90,7 +90,7 @@ class PassPlanFilePluginTest {
             stashClosure.delegate = workflowScript
             stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).stash(eq(name: 'tfplan-dev'), includes: 'tfplan-dev')
+            verify(workflowScript, times(1)).stash(eq({name: 'tfplan-dev', includes: 'tfplan-dev'}))
         }
 
         @Test
