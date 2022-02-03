@@ -121,15 +121,40 @@ class PassPlanFilePluginTest {
 
         @Test
         void runsStashPlan() {
-            def wasCalled = false
-            def passedClosure = { -> wasCalled = true }
             def plugin = new PassPlanFilePlugin()
+            def workflowScript = new MockWorkflowScript()
+
+            def unstashClosure = plugin.stashPlan('dev')
+            unstashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).stash()
+        }
+
+        @Test
+        void usesCurrentDirectoryByDefault() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = new MockWorkflowScript()
 
             def stashClosure = plugin.stashPlan('dev')
-            stashClosure.delegate = new MockWorkflowScript()
-            stashClosure.call(passedClosure)
+            stashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            assertThat(wasCalled, equalTo(true))
+            verify(workflowScript, times(1)).dir('./', any(Closure))
+        }
+
+        @Test
+        void usesDirectoryIfGiven() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = new MockWorkflowScript()
+            def expectedDirectory = 'myDir'
+            plugin.withDirectory(expectedDirectory)
+
+            def stashClosure = plugin.stashPlan('dev')
+            stashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).dir(expectedDirectory, any(Closure))
         }
 
     }
@@ -139,15 +164,40 @@ class PassPlanFilePluginTest {
 
         @Test
         void runsUnstashPlan() {
-            def wasCalled = false
-            def passedClosure = { -> wasCalled = true }
             def plugin = new PassPlanFilePlugin()
+            def workflowScript = new MockWorkflowScript()
 
             def unstashClosure = plugin.unstashPlan('dev')
-            unstashClosure.delegate = new MockWorkflowScript()
-            unstashClosure.call(passedClosure)
+            unstashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            assertThat(wasCalled, equalTo(true))
+            verify(workflowScript, times(1)).unstash()
+        }
+
+        @Test
+        void usesCurrentDirectoryByDefault() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = new MockWorkflowScript()
+
+            def stashClosure = plugin.unstashPlan('dev')
+            stashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).dir('./', any(Closure))
+        }
+
+        @Test
+        void usesDirectoryIfGiven() {
+            def plugin = new PassPlanFilePlugin()
+            def workflowScript = new MockWorkflowScript()
+            def expectedDirectory = 'myDir'
+            plugin.withDirectory(expectedDirectory)
+
+            def stashClosure = plugin.unstashPlan('dev')
+            stashClosure.delegate = workflowScript
+            stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
+
+            verify(workflowScript, times(1)).dir(expectedDirectory, any(Closure))
         }
 
     }
