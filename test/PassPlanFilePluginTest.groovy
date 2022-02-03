@@ -90,7 +90,7 @@ class PassPlanFilePluginTest {
             stashClosure.delegate = workflowScript
             stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).stash(name: 'tfplan-dev', includes: 'tfplan-dev')
+            verify(workflowScript, times(1)).stash(eq(name: 'tfplan-dev', includes: 'tfplan-dev'))
         }
 
         @Test
@@ -102,7 +102,7 @@ class PassPlanFilePluginTest {
             stashClosure.delegate = workflowScript
             stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).dir('./', any(Closure))
+            verify(workflowScript, times(1)).dir(eq('./', any(Closure)))
         }
 
         @Test
@@ -116,7 +116,7 @@ class PassPlanFilePluginTest {
             stashClosure.delegate = workflowScript
             stashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).dir(expectedDirectory, any(Closure))
+            verify(workflowScript, times(1)).dir(eq(expectedDirectory, any(Closure)))
         }
 
     }
@@ -133,7 +133,7 @@ class PassPlanFilePluginTest {
             unstashClosure.delegate = workflowScript
             unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).unstash('tfplan-dev')
+            verify(workflowScript, times(1)).unstash(eq('tfplan-dev'))
         }
 
         @Test
@@ -145,7 +145,7 @@ class PassPlanFilePluginTest {
             unstashClosure.delegate = workflowScript
             unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).dir('./', any(Closure))
+            verify(workflowScript, times(1)).dir(eq('./', any(Closure)))
         }
 
         @Test
@@ -159,7 +159,7 @@ class PassPlanFilePluginTest {
             unstashClosure.delegate = workflowScript
             unstashClosure.call { } // we don't care about the inner closure, so we're passing an empty one
 
-            verify(workflowScript, times(1)).dir(expectedDirectory, any(Closure))
+            verify(workflowScript, times(1)).dir(eq(expectedDirectory, any(Closure)))
         }
 
     }
