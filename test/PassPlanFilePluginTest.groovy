@@ -83,7 +83,7 @@ class PassPlanFilePluginTest {
         @Test
         void runsStashPlan() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = new MockWorkflowScript()
+            def workflowScript = mock(MockWorkflowScript.class)
 
             def stashClosure = plugin.stashPlan('dev')
             stashClosure.delegate = workflowScript
@@ -95,7 +95,7 @@ class PassPlanFilePluginTest {
         @Test
         void usesCurrentDirectoryByDefault() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = new MockWorkflowScript()
+            def workflowScript = mock(MockWorkflowScript.class)
 
             def stashClosure = plugin.stashPlan('dev')
             stashClosure.delegate = workflowScript
@@ -107,7 +107,7 @@ class PassPlanFilePluginTest {
         @Test
         void usesDirectoryIfGiven() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = new MockWorkflowScript()
+            def workflowScript = mock(MockWorkflowScript.class)
             def expectedDirectory = 'myDir'
             plugin.withDirectory(expectedDirectory)
 
@@ -126,7 +126,7 @@ class PassPlanFilePluginTest {
         @Test
         void runsUnstashPlan() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = new MockWorkflowScript()
+            def workflowScript = mock(MockWorkflowScript.class)
 
             def unstashClosure = plugin.unstashPlan('dev')
             unstashClosure.delegate = workflowScript
@@ -138,7 +138,7 @@ class PassPlanFilePluginTest {
         @Test
         void usesCurrentDirectoryByDefault() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = new MockWorkflowScript()
+            def workflowScript = mock(MockWorkflowScript.class)
 
             def unstashClosure = plugin.unstashPlan('dev')
             unstashClosure.delegate = workflowScript
@@ -150,7 +150,7 @@ class PassPlanFilePluginTest {
         @Test
         void usesDirectoryIfGiven() {
             def plugin = new PassPlanFilePlugin()
-            def workflowScript = new MockWorkflowScript()
+            def workflowScript = mock(MockWorkflowScript.class)
             def expectedDirectory = 'myDir'
             plugin.withDirectory(expectedDirectory)
 
