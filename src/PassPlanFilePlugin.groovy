@@ -1,7 +1,7 @@
 import static TerraformEnvironmentStage.PLAN_COMMAND
 import static TerraformEnvironmentStage.APPLY_COMMAND
 
-class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin {
+class PassPlanFilePlugin implements TerraformPlanCommandPlugin, TerraformApplyCommandPlugin, TerraformEnvironmentStagePlugin, Resettable {
 
     private static String directory = "./"
 
