@@ -1,4 +1,5 @@
 # Unreleased
+- [Issue #422](https://github.com/manheim/terraform-pipeline/issues/422) TerraformPlugin and TerraformPluginVersion should implement TerraformInitCommandPlugin
 
 # v5.18
 

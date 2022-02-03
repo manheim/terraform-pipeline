@@ -129,6 +129,22 @@ class TerraformPluginTest {
     }
 
     @Nested
+    class ApplyTerraformInitCommand {
+        @Test
+        void shouldApplyTheCorrectStrategyToTerraformInitCommand() {
+            def initCommand = mock(TerraformInitCommand.class)
+            def strategy = mock(TerraformPluginVersion.class)
+            def plugin = spy(new TerraformPlugin())
+            doReturn('someVersion').when(plugin).detectVersion()
+            doReturn(strategy).when(plugin).strategyFor('someVersion')
+
+            plugin.apply(initCommand)
+
+            verify(strategy, times(1)).apply(initCommand)
+        }
+    }
+
+    @Nested
     class ApplyTerraformFormatCommand {
         @Test
         void shouldApplyTheCorrectStrategyToTerraformFormatCommand() {
