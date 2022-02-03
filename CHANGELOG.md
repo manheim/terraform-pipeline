@@ -1,5 +1,4 @@
 # Unreleased
-
 - [Issue #422](https://github.com/manheim/terraform-pipeline/issues/422) TerraformPlugin and TerraformPluginVersion should implement TerraformInitCommandPlugin
 - [Issue #420](https://github.com/manheim/terraform-pipeline/issues/420) Add `withDirectory` argument to PassPlanFilePlugin
 
