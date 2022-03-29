@@ -31,7 +31,7 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         String variableName = getVariableName()
         Map tags = getTags(command)
 
-        command.withVariable(variableName, tags)
+        command.withVariableFile(variableName, tags)
     }
 
     public static withVariableName(String variableName) {

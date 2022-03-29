@@ -52,6 +52,17 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         return withVariable(key, convertMapToCliString(value))
     }
 
+    public TerraformPlanCommand withVariableFile(String key, Map value) {
+        def varFile = new File("${environment}.tfvars")
+        varFile.append("${key}=${convertMapToCliString(value)}")
+        return withVariableFile(varFile.getName())
+    }
+
+    public TerraformPlanCommand withVariableFile(String fileName) {
+        this.arguments << "-var-file=./${fileName}'"
+        return this
+    }
+
     public TerraformPlanCommand withVariable(String key, String value) {
         def pattern = variablePattern ?: { myKey, myValue -> "-var '${myKey}=${myValue}'" }
         this.arguments << pattern.call(key, value).toString()
