@@ -54,12 +54,12 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
 
     public TerraformPlanCommand withVariableFile(String key, Map value) {
         def varFile = new File("hello.tfvars")
-        if (varFile.createNewFile()) {
-            println "Successfully created file $varFile"
-        } else {
-            println "Failed to create file $varFile"
-        }
-        varFile.append("key")
+        // if (varFile.createNewFile()) {
+        //     println "Successfully created file"
+        // } else {
+        //     println "Failed to create file"
+        // }
+        // varFile.append("key")
         return withVariableFile("tests")
     }
 
