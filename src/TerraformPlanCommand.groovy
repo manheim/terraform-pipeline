@@ -59,7 +59,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
     }
 
     public TerraformPlanCommand withVariableFile(String fileName) {
-        this.arguments << "-var-file=./${fileName}'"
+        this.arguments << "-var-file=./${fileName}"
         return this
     }
 
