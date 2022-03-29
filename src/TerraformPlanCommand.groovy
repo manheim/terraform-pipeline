@@ -53,7 +53,8 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
     }
 
     public TerraformPlanCommand withVariableFile(String key, Map value) {
-        def varFile = new File("hello.tfvars")
+        String workspace = Jenkinsfile.instance.getEnv()['WORKSPACE']
+        def varFile = new File("${workspace}/hello.tfvars")
         // if (varFile.createNewFile()) {
         //     println "Successfully created file"
         // } else {
