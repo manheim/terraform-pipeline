@@ -53,7 +53,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
     }
 
     public TerraformPlanCommand withVariableFile(String key, Map value) {
-        def varFile = new File("${environment}.tfvars")
+        def varFile = new File("${this.environment}.tfvars")
         varFile.append("key")
         return withVariableFile("tests")
     }
