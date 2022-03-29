@@ -61,7 +61,7 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         //     println "Failed to create file"
         // }
         // varFile.append("key")
-        return withVariableFile("tests")
+        return withVariableFile(workspace)
     }
 
     public TerraformPlanCommand withVariableFile(String fileName) {
