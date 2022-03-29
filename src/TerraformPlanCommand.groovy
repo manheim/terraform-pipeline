@@ -1,3 +1,5 @@
+import hudson.FilePath;
+
 class TerraformPlanCommand implements TerraformCommand, Resettable {
     private boolean input = false
     private String terraformBinary = "terraform"
