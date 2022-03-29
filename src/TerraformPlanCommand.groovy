@@ -1,5 +1,3 @@
-import hudson.FilePath;
-
 class TerraformPlanCommand implements TerraformCommand, Resettable {
     private boolean input = false
     private String terraformBinary = "terraform"
@@ -55,22 +53,8 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
     }
 
     public TerraformPlanCommand withVariableFile(String key, Map value) {
-        if(build.workspace.isRemote())
-        {
-            channel = build.workspace.channel
-            fp = new FilePath(channel, build.workspace.toString() + "/hello.tfvars")
-        } else {
-            fp = new FilePath(new File(build.workspace.toString() + "/hello.tfvars"))
-        }
-
-        if(fp != null)
-        {
-            fp.write("test data", null)
-        }
-        // String workspace = Jenkinsfile.instance.getEnv()['WORKSPACE']
-        // FilePath varFile = new FilePath("${workspace}/hello.tfvars")
-        varFile.write("key", null)
-        return withVariableFile(workspace)
+        Jenkinsfile.writeFile('hello.tfvars', 'key')
+        return withVariableFile("hello.tfvars")
     }
 
     public TerraformPlanCommand withVariableFile(String fileName) {
