@@ -124,12 +124,6 @@ class Jenkinsfile implements Resettable {
         return null
     }
 
-    public static String writeFile(String filename, String content) {
-        original.writeFile(file: filename, text: content)
-
-        return null
-    }
-
     public static withInstance(Jenkinsfile newInstance) {
         this.instance = newInstance
     }
