@@ -267,4 +267,14 @@ class TagPluginTest {
             assertThat(result, equalTo(TagPlugin.class))
         }
     }
+
+    @Nested
+    class WriteToFile {
+        @Test
+        void isFluent() {
+            def result = TagPlugin.writeToFile()
+
+            assertThat(result, equalTo(TagPlugin.class))
+        }
+    }
 }
