@@ -4,6 +4,7 @@ class TagPlugin implements TerraformPlanCommandPlugin,
 
     private static variableName
     private static disableOnApply = false
+    private static writeToFile = false
     private static List tagClosures = []
 
     public static init() {
@@ -31,7 +32,11 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         String variableName = getVariableName()
         Map tags = getTags(command)
 
-        command.withVariableFile(variableName, tags)
+        if (writeToFile) {
+            command.withVariableFile(variableName, tags)
+        } else {
+            command.withVariable(variableName, tags)
+        }
     }
 
     public static withVariableName(String variableName) {
@@ -76,6 +81,11 @@ class TagPlugin implements TerraformPlanCommandPlugin,
 
     public static disableOnApply() {
         disableOnApply = true
+        return this
+    }
+
+    public static writeToFile() {
+        writeToFile = true
         return this
     }
 
