@@ -103,5 +103,6 @@ class TagPlugin implements TerraformPlanCommandPlugin,
         tagClosures = []
         variableName = null
         disableOnApply = false
+        writeToFile = false
     }
 }

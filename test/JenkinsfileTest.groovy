@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
-import static org.mockito.Mockito.when
+import static org.mockito.Mockito.verifyNoMoreInteractions
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -183,6 +183,23 @@ class JenkinsfileTest {
 
                 assertThat(results['protocol'], equalTo(expectedProtocol))
             }
+        }
+    }
+
+    @Nested
+    public class WriteFile {
+        @Test
+        void writesFile() {
+            def filename = 'filename'
+            def content = 'content'
+            def original = mock(MockWorkflowScript.class)
+            Jenkinsfile.original = original
+            def instance = new Jenkinsfile()
+
+            instance.writeFile(filename, content)
+
+            verify(original).writeFile(file: filename, text: content)
+            verifyNoMoreInteractions(original)
         }
     }
 
