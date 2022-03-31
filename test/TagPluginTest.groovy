@@ -9,12 +9,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-
-import static org.mockito.Mockito.verifyNoMoreInteractions
 
 @ExtendWith(ResetStaticStateExtension.class)
 class TagPluginTest {
