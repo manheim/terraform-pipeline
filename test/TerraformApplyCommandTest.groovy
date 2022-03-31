@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.verifyNoMoreInteractions
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -95,6 +96,57 @@ class TerraformApplyCommandTest {
                 def actualCommand = command.toString()
                 assertThat(actualCommand, containsString("boop-foo-bar-boop"))
             }
+        }
+    }
+
+    @Nested
+    public class WithVariableFile {
+        @Test
+        void isFluent1() {
+            def stage = new TerraformApplyCommand('foo')
+            def result = stage.withVariableFile('somekey')
+
+            assertThat(result, equalTo(stage))
+        }
+
+        @Test
+        void testWithFile() {
+            def filename = 'filename'
+            def command = new TerraformApplyCommand().withVariableFile(filename)
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var-file=./${filename}"))
+        }
+    }
+
+    @Nested
+    public class WithVariableFileAndMap {
+        @Test
+        void isFluent() {
+            def stage = new TerraformApplyCommand('foo')
+            Jenkinsfile.original = mock(MockWorkflowScript.class)
+            def result = stage.withVariableFile('somekey', ['key':'value'])
+
+            assertThat(result, equalTo(stage))
+        }
+
+        @Test
+        void testWithFileAndMap() {
+            def myKey = 'myKey'
+            def expectedValue = 'expValue'
+            def map = [expectedKey:expectedValue]
+            def original = mock(MockWorkflowScript.class)
+            Jenkinsfile.original = original
+            def command = spy(new TerraformApplyCommand("dev")).withVariableFile(myKey, map)
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var-file=./dev-${myKey}"))
+
+            def filename = "dev-${myKey}.tfvars"
+            verify(command).withVariableFile(filename)
+            def content = "${myKey}={expectedKey=\"${expectedValue}\"}"
+            verify(original).writeFile(file: filename.toString(), text: content.toString())
+            verifyNoMoreInteractions(original)
         }
     }
 
