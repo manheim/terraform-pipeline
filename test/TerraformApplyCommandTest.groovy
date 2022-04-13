@@ -236,6 +236,15 @@ class TerraformApplyCommandTest {
             def actualCommand = command.toString()
             assertThat(actualCommand, endsWith(" foobar"))
         }
+
+        @Test
+        void forcesApplyIfPlanFilePresent() {
+            def command = new TerraformApplyCommand().withPlanFile("foobar")
+                                                     .withCommand("destroy")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, startsWith("terraform apply"))
+        }
     }
 
     @Nested
