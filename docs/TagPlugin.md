@@ -113,7 +113,7 @@ validate.then(deployQa)
         .build()
 ```
 
-If you want to simplify the cli command you can pass the tags using `-var-file` instaed.
+If you want to simplify the cli command you can pass the tags using `-var-file` instead.
 
 ```
 // Jenkinsfile
@@ -130,7 +130,7 @@ TagPlugin.withTag('simple', 'sometag') // Simple static tags
 
 def validate = new TerraformValidateStage()
 
-// Tag variables will be passsed via `-var-file`
+// Tag variables will be passed via `-var-file`
 // -var-file=./qa-tags.tfvars
 def deployQa = new TerraformEnvironmentStage('qa')
 // -var-file=./uat-tags.tfvars
