@@ -113,3 +113,33 @@ validate.then(deployQa)
         .build()
 ```
 
+If you want to simplify the cli command you can pass the tags using `-var-file` instead.
+
+```
+// Jenkinsfile
+@Library(['terraform-pipeline']) _
+
+Jenkinsfile.init(this, env)
+TagPlugin.withTag('simple', 'sometag') // Simple static tags
+         .withTag('repo', Jenkinsfile.instance.getScmUrl()) // Dynamic tags from your git configuration
+         .withEnvironmentTag('environment') // Dynamic tags from TerraformEnvironmentStage
+         .withTagFromEnvironmentVariable('team', 'TEAM') // Dynamic tags from an environment variable
+         .withTagFromFile('changeId', 'change-id.txt') // Dynamic tags from file
+         .writeToFile()
+         .init()
+
+def validate = new TerraformValidateStage()
+
+// Tag variables will be passed via `-var-file`
+// -var-file=./qa-tags.tfvars
+def deployQa = new TerraformEnvironmentStage('qa')
+// -var-file=./uat-tags.tfvars
+def deployUat = new TerraformEnvironmentStage('uat')
+// -var-file=./prod-tags.tfvars
+def deployProd = new TerraformEnvironmentStage('prod')
+
+validate.then(deployQa)
+        .then(deployUat)
+        .then(deployProd)
+        .build()
+```

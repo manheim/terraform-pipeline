@@ -21,6 +21,7 @@ class MockWorkflowScript {
     public echo(String message) { println "MockWorkflowScript.echo ${message}" }
     public pwd(Map options) { return '/MockWorkflowScript/currentDir' }
     public writeFile(Map options) { println "MockWorkflowScript.writeFile: ${options.toString()}" }
+    public writeFile(String filename, String content) { println "MockWorkflowScript.writeFile: ${filename} : ${content}" }
     public readFile(String filename) { return "MockWorkflowScript.readFile(${filename}): some content" }
     public fileExists(String filename) { return false }
     public sh(String command) { println "MockWorkflowScript.sh: ${command.toString()}"; return 'MockWorkflowScript.sh output' }

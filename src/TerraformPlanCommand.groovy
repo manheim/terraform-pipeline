@@ -58,6 +58,18 @@ class TerraformPlanCommand implements TerraformCommand, Resettable {
         return this
     }
 
+    public TerraformPlanCommand withVariableFile(String key, Map values) {
+        String fileName = "${this.environment}-${key}.tfvars"
+        String value = convertMapToCliString(values)
+        Jenkinsfile.writeFile(fileName, "${key}=${value}")
+        return withVariableFile(fileName)
+    }
+
+    public TerraformPlanCommand withVariableFile(String fileName) {
+        this.arguments << "-var-file=./${fileName}"
+        return this
+    }
+
     public TerraformPlanCommand withVariablePattern(Closure pattern) {
         this.variablePattern = pattern
         return this

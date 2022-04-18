@@ -1,5 +1,7 @@
 # Unreleased
 
+ - [Issue #432](https://github.com/manheim/terraform-pipeline/issues/432) pass TagPlugin through `-var-file={env}-tags.tfvars`
+
 # v5.19
 
 - [Issue #422](https://github.com/manheim/terraform-pipeline/issues/422) TerraformPlugin and TerraformPluginVersion should implement TerraformInitCommandPlugin

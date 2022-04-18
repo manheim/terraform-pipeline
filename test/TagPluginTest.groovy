@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -150,6 +151,18 @@ class TagPluginTest {
                 verify(command).withVariable(expectedVariableName, expectedTags)
             }
         }
+
+        @Test
+        void writesToFile() {
+            def command = mock( TerraformApplyCommand.class)
+            def plugin = new TagPlugin()
+
+            TagPlugin.writeToFile()
+            plugin.apply(command)
+
+            verify(command, times(1)).withVariableFile(anyString(), anyMap())
+            verifyNoMoreInteractions(command)
+        }
     }
 
     @Nested
@@ -263,6 +276,16 @@ class TagPluginTest {
         @Test
         void isFluent() {
             def result = TagPlugin.disableOnApply()
+
+            assertThat(result, equalTo(TagPlugin.class))
+        }
+    }
+
+    @Nested
+    class WriteToFile {
+        @Test
+        void isFluent() {
+            def result = TagPlugin.writeToFile()
 
             assertThat(result, equalTo(TagPlugin.class))
         }
