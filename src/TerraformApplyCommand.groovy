@@ -107,7 +107,14 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
         if (directory && chdir_flag) {
             pieces << "-chdir=${directory}"
         }
-        pieces << command
+        // If we have a plan file, apply is the only command that works.
+        // Even on destroy, you must use `terraform apply` for a plan file
+        // created with the `-destroy` argument.
+        if (planFile) {
+            pieces << "apply"
+        } else {
+            pieces << command
+        }
         if (!input) {
             pieces << "-input=false"
         }
