@@ -61,7 +61,7 @@ class GithubPRPlanPluginTest {
             GithubPRPlanPlugin plugin = new GithubPRPlanPlugin()
             def environment = spy(new TerraformEnvironmentStage())
             MockJenkinsfile.withEnv(
-                'BRANCH_NAME': 'master',
+                'BRANCH_NAME': 'main',
                 'BUILD_URL': 'https://my-jenkins/job/my-org/job/my-repo/job/PR-1/2/'
             )
 
