@@ -1,6 +1,10 @@
 # Unreleased
 
-- [Issue #372](https://github.com/manheim/terraform-pipeline/issues/372) Replace `master` branch with `main` in code
+- [Issue #372](https://github.com/manheim/terraform-pipeline/issues/372) Replace `master` branch with `main` in documentation
+- [Issue #372](https://github.com/manheim/terraform-pipeline/issues/372)
+  ConditionalApplyPlugin: Support main and master branches
+- [Issue #372](https://github.com/manheim/terraform-pipeline/issues/372)
+  TerraformTaintPlugin: Support main and master branches
 - [Issue #432](https://github.com/manheim/terraform-pipeline/issues/432) pass TagPlugin through `-var-file={env}-tags.tfvars`
 - [Issue #417](https://github.com/manheim/terraform-pipeline/issues/417) DestroyPlugin & PassPlanFilePlugin - Terraform Destroy can't be called with a plan file
 
