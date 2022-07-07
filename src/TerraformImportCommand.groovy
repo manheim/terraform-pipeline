@@ -35,7 +35,7 @@ class TerraformImportCommand implements TerraformCommand, Resettable {
     }
 
     public String getTargetPath() {
-        return this.targetPath
+        return targetPath
     }
 
     public TerraformImportCommand withTargetPath(String targetPath) {
@@ -44,7 +44,7 @@ class TerraformImportCommand implements TerraformCommand, Resettable {
     }
 
     public String getResource() {
-        return this.resource
+        return resource
     }
 
     public static void reset() {
@@ -97,6 +97,6 @@ class TerraformImportCommand implements TerraformCommand, Resettable {
     }
 
     public String getEnvironment() {
-        return this.environment
+        return environment
     }
 }
