@@ -6,6 +6,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     private prefixes = []
     private suffixes = []
     private args = []
+    private vars = []
     private String directory
     private String planFile
     private boolean chdir_flag = false
@@ -39,7 +40,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
 
     public TerraformApplyCommand withVariable(String key, String value) {
         def pattern = variablePattern ?: { myKey, myValue -> "-var '${myKey}=${myValue}'" }
-        this.args << pattern.call(key, value).toString()
+        this.vars << pattern.call(key, value).toString()
         return this
     }
 
@@ -51,7 +52,7 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
     }
 
     public TerraformApplyCommand withVariableFile(String fileName) {
-        this.args << "-var-file=./${fileName}"
+        this.vars << "-var-file=./${fileName}"
         return this
     }
 
@@ -119,6 +120,11 @@ class TerraformApplyCommand implements TerraformCommand, Resettable {
             pieces << "-input=false"
         }
         pieces += args
+        // If we have a plan file, we cannot pass vars, they're already
+        // baked into the plan.
+        if (!planFile) {
+            pieces += vars
+        }
         if (directory && !chdir_flag && !planFile) {
             pieces << directory
         }
