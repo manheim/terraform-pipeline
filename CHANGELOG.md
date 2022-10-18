@@ -2,6 +2,7 @@
 
 - [Issue #432](https://github.com/manheim/terraform-pipeline/issues/432) pass TagPlugin through `-var-file={env}-tags.tfvars`
 - [Issue #417](https://github.com/manheim/terraform-pipeline/issues/417) DestroyPlugin & PassPlanFilePlugin - Terraform Destroy can't be called with a plan file
+- [Issue #436](https://github.com/manheim/terraform-pipeline/issues/436) Bug Fix: Omit variables and variable files from apply command if a plan file is specified
 
 # v5.19
 
