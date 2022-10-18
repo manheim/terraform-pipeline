@@ -256,6 +256,16 @@ class TerraformApplyCommandTest {
             assertThat(actualCommand, not(containsString("-var")))
             assertThat(actualCommand, not(containsString("-var-file")))
         }
+
+        @Test
+        void usesVarsIfPlanFileNotPresent() {
+            def command = new TerraformApplyCommand().withVariable("foo", "bar")
+                                                     .withVariableFile("varfile")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var"))
+            assertThat(actualCommand, containsString("-var-file"))
+        }
     }
 
     @Nested
