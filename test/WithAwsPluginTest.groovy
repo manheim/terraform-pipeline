@@ -85,44 +85,32 @@ class WithAwsPluginTest {
     }
 
     @Nested
-    public class WithExplicitRole {
+    public class WithDefaultDuration {
         @Test
-        void returnsProvidedRole() {
-            def expectedRole = "myRole"
+        void returnsDefaultDuration() {
+            def expectedDuration = 3600
             def plugin = new WithAwsPlugin()
+            MockJenkinsfile.withEnv(AWS_ROLE_ARN: 'foo')
 
-            plugin.withRole(expectedRole)
+            plugin.withRole()
 
-            def actualRole = plugin.getRole()
-
-            assertThat(actualRole, is(expectedRole))
+            def actualDuration = plugin.getDuration()
+            assertThat(actualDuration, is(expectedDuration))
         }
+    }
 
+    @Nested
+    public class WithExplicitDuration {
         @Test
-        void prefersProvidedRoleOverGenericRole() {
-            def expectedRole = "correctRole"
+        void returnsExplicitDuration() {
+            def expectedDuration = 43200
             def plugin = new WithAwsPlugin()
-            MockJenkinsfile.withEnv(AWS_ROLE_ARN: 'incorrectRole')
 
-            plugin.withRole(expectedRole)
+            plugin.withRole(duration: expectedDuration)
 
-            def actualRole = plugin.getRole()
+            def actualDuration = plugin.getDuration()
 
-            assertThat(actualRole, is(expectedRole))
-        }
-
-        @Test
-        void prefersProvidedRoleOverEnvironmntSpecificRole() {
-            def expectedRole = "correctRole"
-            def plugin = new WithAwsPlugin()
-            MockJenkinsfile.withEnv(QA_AWS_ROLE_ARN: 'incorrectRole')
-
-            plugin.withRole(expectedRole)
-
-            def actualRole = plugin.getRole('qa')
-
-            assertThat(actualRole, is(expectedRole))
+            assertThat(actualDuration, is(expectedDuration))
         }
     }
 }
-

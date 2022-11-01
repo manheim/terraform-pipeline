@@ -2,6 +2,7 @@ import static TerraformEnvironmentStage.ALL
 
 class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     private static role
+    private static duration
 
     public static void init() {
         WithAwsPlugin plugin = new WithAwsPlugin()
@@ -19,9 +20,10 @@ class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     public Closure addWithAwsRole(String environment) {
         return { closure ->
             String iamRole = getRole(environment)
+            Integer sessionDuration = getDuration()
 
             if (iamRole != null) {
-                withAWS(role: iamRole) {
+                withAWS(role: iamRole, duration: sessionDuration) {
                     sh "echo Running AWS commands under the role: ${iamRole}"
                     closure()
                 }
@@ -32,8 +34,9 @@ class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
         }
     }
 
-    public static withRole(String role = null) {
+    public static withRole(String role = null, Integer duration = 3600) {
         this.role = role
+        this.duration = duration
 
         return this
     }
@@ -56,7 +59,12 @@ class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
         return tempRole
     }
 
+    public Integer getDuration() {
+        return this.duration
+    }
+
     public static void reset() {
         this.role = null
+        this.duration = 3600
     }
 }
