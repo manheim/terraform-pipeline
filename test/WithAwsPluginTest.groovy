@@ -106,7 +106,7 @@ class WithAwsPluginTest {
             def expectedDuration = 43200
             def plugin = new WithAwsPlugin()
 
-            plugin.withRole(duration: expectedDuration)
+            plugin.withRole(null, expectedDuration)
 
             def actualDuration = plugin.getDuration()
 
