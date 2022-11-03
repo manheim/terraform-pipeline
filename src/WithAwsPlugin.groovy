@@ -20,7 +20,7 @@ class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     public Closure addWithAwsRole(String environment) {
         return { closure ->
             String iamRole = getRole(environment)
-            Integer sessionDuration = this.duration
+            Integer sessionDuration = getDuration()
 
             if (iamRole != null) {
                 withAWS(role: iamRole, duration: sessionDuration) {
@@ -57,6 +57,10 @@ class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
         }
 
         return tempRole
+    }
+
+    public Integer getDuration() {
+        return this.@duration
     }
 
     public static void reset() {
