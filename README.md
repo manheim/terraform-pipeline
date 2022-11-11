@@ -9,7 +9,7 @@ A reusable pipeline template to apply terraform configuration serially across mu
     2.  `terraform plan`
     3.  `terraform apply`
 2.  After running a terraform plan, your pipeline will pause.  A human must review and confirm the plan before `terraform apply` is run.  See: [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md).
-3.  When running your pipeline on a branch, only the `terraform init` and `terraform plan` commands will be run across all of your environments.  `terraform apply` is only made available on the master branch. See: [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md).
+3.  When running your pipeline on a branch, only the `terraform init` and `terraform plan` commands will be run across all of your environments.  `terraform apply` is only made available on the main branch. See: [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md).
 4.  If your environments might create conflicting resources, a TF_VAR_environment variable is automatically available to your project and can be used to namespace your resources and avoid conflicts. See: [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md).
 5.  Import terraform-pipeline as a Jenkinsfile library to your Jenkins instance.
 ![Importing Pipeline Library](./images/import-terraform-pipeline.png)
@@ -95,7 +95,7 @@ The example above gives you a bare-bones pipeline, and there may be Jenkinsfile 
 ### Default Plugins
 * [BuildWithParametersPlugin](./docs/BuildWithParametersPlugin.md): use this plugin to manage the "Build with Parameters" feature of pipelines.
 * [ConfirmApplyPlugin](./docs/ConfirmApplyPlugin.md): pause and review the plan, before applying any changes.
-* [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on master branch.
+* [ConditionalApplyPlugin](./docs/ConditionalApplyPlugin.md): only allow apply on main branch.
 * [DefaultEnvironmentPlugin](./docs/DefaultEnvironmentPlugin.md): automatically set `TF_VAR_environment` variable.
 * [TerraformPlugin](./docs/TerraformPlugin.md): apply version-specific terraform behavior based on the version of terraform in use.
 ### Credentials and Configuration Management
@@ -208,7 +208,7 @@ By default, the pipeline jobs are not assigned to a particular Jenkins slave lab
 Jenkinsfile.defaultNodeName = 'myNode'
 ```
 
-Alternatively, you can assign all of your pipelines to a particular Jenkins slave label without using code, by setting a `DEFAULT_NODE_NAME` environment variable on your Jenkins master.
+Alternatively, you can assign all of your pipelines to a particular Jenkins agent label without using code, by setting a `DEFAULT_NODE_NAME` environment variable on your Jenkins server.
 
 # Pipeline Stages
 
@@ -403,4 +403,4 @@ If no `.terraform-version` file is found, and no explicit version is provided, t
     2.  It should be possible to add behaviors through Plugins and Decorations - this makes behavior addable/removable/extenable.
     3.  Think of plugins as interchangeable Lego pieces - you can swap one piece out for another, without fundamentally altering what it is to be a Pipeline.
 4.  There should only be one way to Production, and that way should be crystal clear.
-    1.  The master branch (or its equivalent) is the one-and-only way to Production.
+    1.  The main branch (or its equivalent) is the one-and-only way to Production.

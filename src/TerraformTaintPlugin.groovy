@@ -1,7 +1,7 @@
 import static TerraformEnvironmentStage.PLAN_COMMAND
 
 class TerraformTaintPlugin implements TerraformEnvironmentStagePlugin, TerraformTaintCommandPlugin, TerraformUntaintCommandPlugin, Resettable {
-    private static DEFAULT_BRANCHES = ['master']
+    private static DEFAULT_BRANCHES = ['main', 'master']
     private static branches = DEFAULT_BRANCHES
 
     public static void init() {

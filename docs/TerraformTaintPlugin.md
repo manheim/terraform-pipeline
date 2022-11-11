@@ -21,7 +21,7 @@ There are several ways to customize where and when the taint/untaint can run:
 Jenkinsfile.init(this, env)
 
 // This enables the "taint" and "untaint" functionality
-// It will only apply to the master branch (default behavior)
+// It will only apply to the main branch (default behavior)
 TerraformTaintPlugin.init()
 
 def validate = new TerraformValidateStage()

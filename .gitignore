@@ -5,3 +5,8 @@ build
 .idea
 *.iml
 /out
+.history
+tags
+.vscode
+shell.nix
+nix/

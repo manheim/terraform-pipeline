@@ -3,7 +3,7 @@
 Enable this plugin to color the output for terraform plan and apply.
 
 One-time setup:
-* Install the [AnsiColorPlugin](https://wiki.jenkins.io/display/JENKINS/AnsiColor+Plugin) on your Jenkins master.
+* Install the [AnsiColorPlugin](https://wiki.jenkins.io/display/JENKINS/AnsiColor+Plugin) on your Jenkins server.
 
 ```
 // Jenkinsfile
