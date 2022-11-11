@@ -48,13 +48,13 @@ class RegressionStage implements Stage, DecoratableStage, Resettable {
                             checkout scm
                             sh testCommand
                         } else if (automationRepoList.size() == 1) {
-                            checkout resolveScm(source: [$class: 'GitSCMSource', remote: automationRepoList.first(), traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'], [$class: 'LocalBranchTrait']]], targets: [BRANCH_NAME, 'master'])
+                            checkout resolveScm(source: [$class: 'GitSCMSource', remote: automationRepoList.first(), traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'], [$class: 'LocalBranchTrait']]], targets: [BRANCH_NAME, 'main'])
                             sh testCommand
                         } else {
                             for (url in automationRepoList) {
                                 def dirName = url.split('/').last() - '.git'
                                 dir(dirName) {
-                                    checkout resolveScm(source: [$class: 'GitSCMSource', remote: url, traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'], [$class: 'LocalBranchTrait']]], targets: [BRANCH_NAME, 'master'])
+                                    checkout resolveScm(source: [$class: 'GitSCMSource', remote: url, traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'], [$class: 'LocalBranchTrait']]], targets: [BRANCH_NAME, 'main'])
                                 }
                             }
 

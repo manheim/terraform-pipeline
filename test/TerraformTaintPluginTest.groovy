@@ -120,16 +120,16 @@ class TerraformTaintPluginTest {
         @Test
         void returnsFalseWhenWrongBranch() {
             TerraformTaintPlugin plugin = new TerraformTaintPlugin()
-            MockJenkinsfile.withEnv(['BRANCH_NAME': 'notmaster', 'GIT_URL': 'https://git.foo/username/repo'])
+            MockJenkinsfile.withEnv(['BRANCH_NAME': 'notmain', 'GIT_URL': 'https://git.foo/username/repo'])
 
             def result = plugin.shouldApply()
             assertThat(result, equalTo(false))
         }
 
         @Test
-        void usesMasterAsDefaultBranch() {
+        void usesMainAsDefaultBranch() {
             TerraformTaintPlugin plugin = new TerraformTaintPlugin()
-            MockJenkinsfile.withEnv(['BRANCH_NAME': 'master', 'GIT_URL': 'https://git.foo/username/repo'])
+            MockJenkinsfile.withEnv(['BRANCH_NAME': 'main', 'GIT_URL': 'https://git.foo/username/repo'])
 
             def result = plugin.shouldApply()
             assertThat(result, equalTo(true))
@@ -147,9 +147,9 @@ class TerraformTaintPluginTest {
 
         @Test
         void worksWithMultipleCustomBranches() {
-            TerraformTaintPlugin.onBranch("main").onBranch("notmaster")
+            TerraformTaintPlugin.onBranch("main").onBranch("notmain")
             TerraformTaintPlugin plugin = new TerraformTaintPlugin()
-            MockJenkinsfile.withEnv(['BRANCH_NAME': 'notmaster', 'GIT_URL': 'https://git.foo/username/repo'])
+            MockJenkinsfile.withEnv(['BRANCH_NAME': 'notmain', 'GIT_URL': 'https://git.foo/username/repo'])
 
             def result = plugin.shouldApply()
             assertThat(result, equalTo(true))

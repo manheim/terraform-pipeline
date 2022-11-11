@@ -6,5 +6,8 @@ build
 *.iml
 /out
 .history
-.vscode
 bin/
+tags
+.vscode
+shell.nix
+nix/

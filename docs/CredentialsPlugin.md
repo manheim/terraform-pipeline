@@ -3,7 +3,7 @@
 Enable this plugin to inject credentials into your stages using the [Jenkins Credentials Plugin](https://wiki.jenkins.io/display/JENKINS/Credentials+Plugin).
 
 One-time setup:
-* Install the [Jenkins Credentials Binding Plugin](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) on your Jenkins master.
+* Install the [Jenkins Credentials Binding Plugin](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) on your Jenkins server.
 * Define a credential that you want to inject.
 
 Add any number of credentials bindings that you want to wrap your stages, with `withBinding`.  Each call to this method will cumulatively add more credentials.  See the [Credentials Binding Plugin homepage](https://www.jenkins.io/doc/pipeline/steps/credentials-binding/) for the list of supported bindings.
