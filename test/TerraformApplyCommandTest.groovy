@@ -245,6 +245,27 @@ class TerraformApplyCommandTest {
             def actualCommand = command.toString()
             assertThat(actualCommand, startsWith("terraform apply"))
         }
+
+        @Test
+        void ignoresVarsIfPlanFilePresent() {
+            def command = new TerraformApplyCommand().withPlanFile("foobar")
+                                                     .withVariable("foo", "bar")
+                                                     .withVariableFile("varfile")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, not(containsString("-var")))
+            assertThat(actualCommand, not(containsString("-var-file")))
+        }
+
+        @Test
+        void usesVarsIfPlanFileNotPresent() {
+            def command = new TerraformApplyCommand().withVariable("foo", "bar")
+                                                     .withVariableFile("varfile")
+
+            def actualCommand = command.toString()
+            assertThat(actualCommand, containsString("-var"))
+            assertThat(actualCommand, containsString("-var-file"))
+        }
     }
 
     @Nested
