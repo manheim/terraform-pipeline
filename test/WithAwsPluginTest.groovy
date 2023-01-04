@@ -92,8 +92,6 @@ class WithAwsPluginTest {
             def plugin = new WithAwsPlugin()
             MockJenkinsfile.withEnv(AWS_ROLE_ARN: 'foo')
 
-            plugin.withRole()
-
             def actualDuration = plugin.getDuration()
             assertThat(actualDuration, is(expectedDuration))
         }
@@ -106,7 +104,7 @@ class WithAwsPluginTest {
             def expectedDuration = 43200
             def plugin = new WithAwsPlugin()
 
-            plugin.withRole(null, expectedDuration)
+            plugin.withDuration(expectedDuration)
 
             def actualDuration = plugin.getDuration()
 

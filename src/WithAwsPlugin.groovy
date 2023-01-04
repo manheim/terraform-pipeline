@@ -34,8 +34,13 @@ class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
         }
     }
 
-    public static withRole(String role = null, Integer duration = 3600) {
+    public static withRole(String role = null) {
         this.role = role
+
+        return this
+    }
+
+    public static withDuration(Integer duration = 3600) {
         this.duration = duration
 
         return this
@@ -60,7 +65,13 @@ class WithAwsPlugin implements TerraformEnvironmentStagePlugin, Resettable {
     }
 
     public Integer getDuration() {
-        return this.@duration
+        def tempDuration = this.@duration
+
+        if (tempDuration == null) {
+            tempDuration = 3600
+        }
+
+        return tempDuration
     }
 
     public static void reset() {
