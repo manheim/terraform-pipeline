@@ -60,3 +60,15 @@ validate.then(deployQa)
         .then(deployProd)
         .build()
 ```
+
+If you want to specify a role session duration other than the default of 1 hour (3600 seconds), you can do so by providing an integer duration to `withDuration()`:
+
+```
+WithAwsPlugin.withDuration(43200).init()
+```
+
+or, with a specific role ARN
+
+```
+WithAwsPlugin.withRole('MY_ROLE_ARN').withDuration(43200).init()
+```
