@@ -1,5 +1,7 @@
 # Unreleased
 
+# v5.20.0
+
 - [Issue #372](https://github.com/manheim/terraform-pipeline/issues/372) Replace `master` branch with `main` in documentation
 - [Issue #372](https://github.com/manheim/terraform-pipeline/issues/372)
   ConditionalApplyPlugin: Support main and master branches
