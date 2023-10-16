@@ -43,7 +43,7 @@ class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePl
 
     @Override
     public void apply(RegressionStage stage) {
-        stage.decorate(ALL, unstashArtifact(ARTIFACT_STASH_KEY))
+        stage.decorate(unstashArtifact(ARTIFACT_STASH_KEY))
     }
 
     private Closure unstashArtifact(String artifactStashKey) {
