@@ -24,6 +24,7 @@ class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePl
     public BuildStage saveArtifact(String artifactIncludePattern) {
         this.artifactIncludePattern = artifactIncludePattern
         TerraformEnvironmentStage.addPlugin(this)
+        RegressionStage.addPlugin(this)
         return this
     }
 
@@ -37,6 +38,11 @@ class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePl
 
     @Override
     public void apply(TerraformEnvironmentStage stage) {
+        stage.decorate(ALL, unstashArtifact(ARTIFACT_STASH_KEY))
+    }
+
+    @Override
+    public void apply(RegressionStage stage) {
         stage.decorate(ALL, unstashArtifact(ARTIFACT_STASH_KEY))
     }
 
