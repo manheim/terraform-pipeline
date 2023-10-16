@@ -1,6 +1,6 @@
 import static TerraformEnvironmentStage.ALL
 
-class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePlugin, Resettable {
+class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePlugin, RegressionStagePlugin, Resettable {
     private final String ARTIFACT_STASH_KEY = 'buildArtifact'
 
     public String buildCommand
