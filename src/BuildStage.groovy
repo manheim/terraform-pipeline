@@ -1,6 +1,6 @@
 import static TerraformEnvironmentStage.ALL
 
-class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePlugin, Resettable {
+class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePlugin, RegressionStagePlugin, Resettable {
     private final String ARTIFACT_STASH_KEY = 'buildArtifact'
 
     public String buildCommand
@@ -24,6 +24,7 @@ class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePl
     public BuildStage saveArtifact(String artifactIncludePattern) {
         this.artifactIncludePattern = artifactIncludePattern
         TerraformEnvironmentStage.addPlugin(this)
+        RegressionStage.addPlugin(this)
         return this
     }
 
@@ -40,13 +41,21 @@ class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePl
         stage.decorate(ALL, unstashArtifact(ARTIFACT_STASH_KEY))
     }
 
-    private Closure unstashArtifact(String artifactStashKey) {
-        return { closure ->
-            unstash "${artifactStashKey}"
-            closure()
-        }
+    @Override
+    public void apply(RegressionStage stage) {
+        stage.decorate(unstashArtifact(ARTIFACT_STASH_KEY))
     }
 
+    private Closure unstashArtifact(String artifactStashKey) {
+        return { closure ->
+            sh "echo this is the directory before the unstash; ls -l"
+            unstash "${artifactStashKey}"
+            sh "echo this is the directory after the unstash; ls -l"
+            closure()
+            sh "echo this is the directory at the end of the unstashClosure; ls -l"
+        }
+    }
+  
     public void decorate(Closure decoration) {
         decorations.add(decoration)
     }

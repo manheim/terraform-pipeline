@@ -1,5 +1,7 @@
 # Unreleased
 
+- [Issue #448](https://github.com/manheim/terraform-pipeline/issues/448) Added RegressionStage for unstashing of artifacts
+
 # v5.20.0
 
 - [Issue #372](https://github.com/manheim/terraform-pipeline/issues/372) Replace `master` branch with `main` in documentation
