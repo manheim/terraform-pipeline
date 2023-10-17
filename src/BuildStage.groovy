@@ -48,11 +48,14 @@ class BuildStage implements Stage, DecoratableStage, TerraformEnvironmentStagePl
 
     private Closure unstashArtifact(String artifactStashKey) {
         return { closure ->
+            sh "echo this is the directory before the unstash; ls -l"
             unstash "${artifactStashKey}"
+            sh "echo this is the directory after the unstash; ls -l"
             closure()
+            sh "echo this is the directory at the end of the unstashClosure; ls -l"
         }
     }
-
+  
     public void decorate(Closure decoration) {
         decorations.add(decoration)
     }
